@@ -6,6 +6,7 @@ import React from 'react'
 import AppTemplate from './containers/AppTemplate'
 import IndexPage from './containers/IndexPage'
 import NotFoundPage from './containers/NotFoundPage'
+import TaskDetailPage from './containers/TaskDetailPage'
 import TasksPage from './containers/TasksPage'
 
 function AppRoutes() {
@@ -14,6 +15,7 @@ function AppRoutes() {
       <Switch>
         <Route path="/app/" exact component={TasksPage} />
         <Route path="/app/list" component={TasksPage} />
+        <Route path="/app/detail" component={TaskDetailPage} />
         <Route component={NotFoundPage} />
       </Switch>
     </AppTemplate>

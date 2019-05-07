@@ -14,7 +14,7 @@ import PropTypes from 'prop-types'
 
 import TaskLists from './drawer/TaskLists'
 
-const drawerWidth = 240
+const drawerWidth = 280
 
 const useStyles = makeStyles(theme => ({
   root: {

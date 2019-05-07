@@ -3,8 +3,6 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import Checkbox from '@material-ui/core/Checkbox'
 import DetailIcon from '@material-ui/icons/ChevronRight'
 import IconButton from '@material-ui/core/IconButton'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -13,6 +11,7 @@ import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
 import AppTemplate from './AppTemplate'
+import DraggableList from '../components/DraggableList'
 import ListActionsToolbar from './tasks/ListActionsToolbar'
 import ListContextMenu from './tasks/ListContextMenu'
 
@@ -59,44 +58,54 @@ function CheckboxList() {
 
   return (
     <AppTemplate toolbar="TODO" contextMenu={<ListContextMenu />}>
-      <List className={classes.root}>
-        <ListActionsToolbar />
-        {[0, 1, 2, 3, 4, 5, 6, 7].map(value => {
+      <ListActionsToolbar />
+      <DraggableList
+        onDragEnd={() => 0}
+        items={[1, 2, 3, 4, 5, 6, 7].map(value => {
           const isChecked = checked.indexOf(value) !== -1
-          return (
-            <ListItem key={value} role={undefined} dense button>
-              <ListItemIcon>
-                <GreenCheckbox
-                  edge="start"
-                  checked={isChecked}
-                  tabIndex={-1}
-                  disableRipple
-                  onClick={handleToggle(value)}
-                />
-              </ListItemIcon>
-              <ListItemText
-                primary={
-                  <TextField
-                    defaultValue={`Line item ${value + 1}`}
-                    margin="none"
-                    fullWidth
-                    InputProps={{
-                      disableUnderline: true,
-                      classes: { input: isChecked && classes.completedInput },
-                    }}
+          return {
+            id: value,
+            children: (
+              <>
+                <ListItemIcon>
+                  <GreenCheckbox
+                    edge="start"
+                    checked={isChecked}
+                    tabIndex={-1}
+                    disableRipple
+                    onClick={handleToggle(value)}
                   />
-                }
-                secondary={value === 5 && 'some description haha'}
-              />
-              <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="Comments" component={MyLink}>
-                  <DetailIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          )
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <TextField
+                      defaultValue={`Line item ${value + 1}`}
+                      margin="none"
+                      fullWidth
+                      InputProps={{
+                        disableUnderline: true,
+                        classes: {
+                          input: isChecked && classes.completedInput,
+                        },
+                      }}
+                    />
+                  }
+                  secondary={value === 5 && 'some description haha'}
+                />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="Comments"
+                    component={MyLink}
+                  >
+                    <DetailIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </>
+            ),
+          }
         })}
-      </List>
+      />
     </AppTemplate>
   )
 }

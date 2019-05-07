@@ -2,6 +2,7 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import { makeStyles } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import BackIcon from '@material-ui/icons/ArrowBack'
+import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import React from 'react'
@@ -34,6 +35,11 @@ export default function TaskDetailPage() {
       toolbar={
         <IconButton component={MyLink} className={classes.button}>
           <BackIcon />
+        </IconButton>
+      }
+      contextMenu={
+        <IconButton component={MyLink} className={classes.button}>
+          <DeleteIcon />
         </IconButton>
       }
     >

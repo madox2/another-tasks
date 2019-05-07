@@ -12,7 +12,9 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
+import AppTemplate from './AppTemplate'
 import ListActionsToolbar from './tasks/ListActionsToolbar'
+import ListContextMenu from './tasks/ListContextMenu'
 
 const MyLink = React.forwardRef((props, ref) => (
   <Link to="/app/detail" {...props} ref={ref} />
@@ -56,44 +58,46 @@ function CheckboxList() {
   }
 
   return (
-    <List className={classes.root}>
-      <ListActionsToolbar />
-      {[0, 1, 2, 3, 4, 5, 6, 7].map(value => {
-        const isChecked = checked.indexOf(value) !== -1
-        return (
-          <ListItem key={value} role={undefined} dense button>
-            <ListItemIcon>
-              <GreenCheckbox
-                edge="start"
-                checked={isChecked}
-                tabIndex={-1}
-                disableRipple
-                onClick={handleToggle(value)}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primary={
-                <TextField
-                  defaultValue={`Line item ${value + 1}`}
-                  margin="none"
-                  fullWidth
-                  InputProps={{
-                    disableUnderline: true,
-                    classes: { input: isChecked && classes.completedInput },
-                  }}
+    <AppTemplate toolbar="TODO" contextMenu={<ListContextMenu />}>
+      <List className={classes.root}>
+        <ListActionsToolbar />
+        {[0, 1, 2, 3, 4, 5, 6, 7].map(value => {
+          const isChecked = checked.indexOf(value) !== -1
+          return (
+            <ListItem key={value} role={undefined} dense button>
+              <ListItemIcon>
+                <GreenCheckbox
+                  edge="start"
+                  checked={isChecked}
+                  tabIndex={-1}
+                  disableRipple
+                  onClick={handleToggle(value)}
                 />
-              }
-              secondary={value === 5 && 'some description haha'}
-            />
-            <ListItemSecondaryAction>
-              <IconButton edge="end" aria-label="Comments" component={MyLink}>
-                <DetailIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        )
-      })}
-    </List>
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <TextField
+                    defaultValue={`Line item ${value + 1}`}
+                    margin="none"
+                    fullWidth
+                    InputProps={{
+                      disableUnderline: true,
+                      classes: { input: isChecked && classes.completedInput },
+                    }}
+                  />
+                }
+                secondary={value === 5 && 'some description haha'}
+              />
+              <ListItemSecondaryAction>
+                <IconButton edge="end" aria-label="Comments" component={MyLink}>
+                  <DetailIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          )
+        })}
+      </List>
+    </AppTemplate>
   )
 }
 

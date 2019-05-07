@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core'
 import DragIcon from '@material-ui/icons/DragIndicator'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import React from 'react'
 import RootRef from '@material-ui/core/RootRef'
 import grey from '@material-ui/core/colors/grey'
@@ -36,20 +35,20 @@ export default function DraggableList(props) {
             {props.items.map((item, index) => (
               <Draggable key={item.id} draggableId={item.id} index={index}>
                 {(provided, snapshot) => (
-                  <ListItem
-                    ContainerProps={{ ref: provided.innerRef }}
-                    {...provided.draggableProps}
-                    style={getItemStyle(
-                      snapshot.isDragging,
-                      provided.draggableProps.style
-                    )}
-                  >
-                    {item.children}
-                    <span {...provided.dragHandleProps}>
-                      <DragIcon className={classes.icon} />
-                    </span>
-                    <ListItemSecondaryAction />
-                  </ListItem>
+                  <div ref={provided.innerRef}>
+                    <ListItem
+                      {...provided.draggableProps}
+                      style={getItemStyle(
+                        snapshot.isDragging,
+                        provided.draggableProps.style
+                      )}
+                    >
+                      {item.children}
+                      <span {...provided.dragHandleProps}>
+                        <DragIcon className={classes.icon} />
+                      </span>
+                    </ListItem>
+                  </div>
                 )}
               </Draggable>
             ))}

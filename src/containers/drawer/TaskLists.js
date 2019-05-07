@@ -22,6 +22,8 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
+let hackToPreventIdCollisions = 1
+
 export default function TaskLists() {
   const classes = useStyles()
 
@@ -36,7 +38,10 @@ export default function TaskLists() {
     <List>
       <ListSubheader>Task lists</ListSubheader>
       {['TODO', 'Tomorrow', 'Tmp', 'Work'].map((text, index) => (
-        <Droppable key={text} droppableId={`tasklist-${index}`}>
+        <Droppable
+          key={text}
+          droppableId={`tasklist-${hackToPreventIdCollisions++}-${index}`}
+        >
           {(provided, snapshot) => (
             <div ref={provided.innerRef}>
               <div style={{ visibility: 'hidden', height: 0 }}>

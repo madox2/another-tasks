@@ -1,3 +1,4 @@
+import { Droppable } from 'react-beautiful-dnd'
 import { makeStyles } from '@material-ui/core/styles'
 import AddIcon from '@material-ui/icons/Add'
 import Fab from '@material-ui/core/Fab'
@@ -35,18 +36,27 @@ export default function TaskLists() {
     <List>
       <ListSubheader>Task lists</ListSubheader>
       {['TODO', 'Tomorrow', 'Tmp', 'Work'].map((text, index) => (
-        <ListItem button key={text} selected={index === 0}>
-          <ListItemText primary={text} />
-          <ListItemSecondaryAction>
-            <IconButton
-              edge="end"
-              aria-label="Comments"
-              onClick={handleActionsClick}
-            >
-              <MoreIcon />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
+        <Droppable key={text} droppableId={`tasklist-${index}`}>
+          {(provided, snapshot) => (
+            <div ref={provided.innerRef}>
+              <div style={{ visibility: 'hidden', height: 0 }}>
+                {provided.placeholder}
+              </div>
+              <ListItem button selected={index === 0}>
+                <ListItemText primary={text} />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="Comments"
+                    onClick={handleActionsClick}
+                  >
+                    <MoreIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            </div>
+          )}
+        </Droppable>
       ))}
       <Fab
         variant="extended"

@@ -1,3 +1,4 @@
+import { DragDropContext } from 'react-beautiful-dnd'
 import { Link } from 'react-router-dom'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import Checkbox from '@material-ui/core/Checkbox'
@@ -57,56 +58,81 @@ function CheckboxList() {
   }
 
   return (
-    <AppTemplate toolbar="TODO" contextMenu={<ListContextMenu />}>
-      <ListActionsToolbar />
-      <DraggableList
-        onDragEnd={() => 0}
-        items={[1, 2, 3, 4, 5, 6, 7].map(value => {
-          const isChecked = checked.indexOf(value) !== -1
-          return {
-            id: value,
-            children: (
-              <>
-                <ListItemIcon>
-                  <GreenCheckbox
-                    edge="start"
-                    checked={isChecked}
-                    tabIndex={-1}
-                    disableRipple
-                    onClick={handleToggle(value)}
-                  />
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <TextField
-                      defaultValue={`Line item ${value + 1}`}
-                      margin="none"
-                      fullWidth
-                      InputProps={{
-                        disableUnderline: true,
-                        classes: {
-                          input: isChecked && classes.completedInput,
-                        },
-                      }}
+    <DragDropContext
+      onDragEnd={result => {
+        console.log('droppable result', result)
+        // dropped outside the list
+        /*
+        if (!result.destination) {
+          return
+        }
+        // a little function to help us with reordering the result
+        const reorder = (list, startIndex, endIndex) => {
+          const result = Array.from(list)
+          const [removed] = result.splice(startIndex, 1)
+          result.splice(endIndex, 0, removed)
+
+          return result
+        }
+        const items = reorder(
+          props.items,
+          result.source.index,
+          result.destination.index
+        )
+        */
+      }}
+    >
+      <AppTemplate toolbar="TODO" contextMenu={<ListContextMenu />}>
+        <ListActionsToolbar />
+        <DraggableList
+          onDragEnd={() => 0}
+          items={[1, 2, 3, 4, 5, 6, 7].map(value => {
+            const isChecked = checked.indexOf(value) !== -1
+            return {
+              id: value,
+              children: (
+                <>
+                  <ListItemIcon>
+                    <GreenCheckbox
+                      edge="start"
+                      checked={isChecked}
+                      tabIndex={-1}
+                      disableRipple
+                      onClick={handleToggle(value)}
                     />
-                  }
-                  secondary={value === 5 && 'some description haha'}
-                />
-                <ListItemSecondaryAction>
-                  <IconButton
-                    edge="end"
-                    aria-label="Comments"
-                    component={MyLink}
-                  >
-                    <DetailIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </>
-            ),
-          }
-        })}
-      />
-    </AppTemplate>
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <TextField
+                        defaultValue={`Line item ${value + 1}`}
+                        margin="none"
+                        fullWidth
+                        InputProps={{
+                          disableUnderline: true,
+                          classes: {
+                            input: isChecked && classes.completedInput,
+                          },
+                        }}
+                      />
+                    }
+                    secondary={value === 5 && 'some description haha'}
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
+                      aria-label="Comments"
+                      component={MyLink}
+                    >
+                      <DetailIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </>
+              ),
+            }
+          })}
+        />
+      </AppTemplate>
+    </DragDropContext>
   )
 }
 

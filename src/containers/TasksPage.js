@@ -5,6 +5,7 @@ import Checkbox from '@material-ui/core/Checkbox'
 import DetailIcon from '@material-ui/icons/ChevronRight'
 import IconButton from '@material-ui/core/IconButton'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import React from 'react'
 import TextField from '@material-ui/core/TextField'
@@ -102,35 +103,29 @@ function CheckboxList() {
                   </ListItemIcon>
                   <ListItemText
                     primary={
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          paddingRight: 15,
+                      <TextField
+                        defaultValue={`Line item ${value + 1}`}
+                        margin="none"
+                        fullWidth
+                        InputProps={{
+                          disableUnderline: true,
+                          classes: {
+                            input: isChecked && classes.completedInput,
+                          },
                         }}
-                      >
-                        <TextField
-                          defaultValue={`Line item ${value + 1}`}
-                          margin="none"
-                          fullWidth
-                          InputProps={{
-                            disableUnderline: true,
-                            classes: {
-                              input: isChecked && classes.completedInput,
-                            },
-                          }}
-                        />
-                        <IconButton
-                          edge="end"
-                          aria-label="Comments"
-                          component={MyLink}
-                        >
-                          <DetailIcon />
-                        </IconButton>
-                      </div>
+                      />
                     }
                     secondary={value === 5 && 'some description haha'}
                   />
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
+                      aria-label="Comments"
+                      component={MyLink}
+                    >
+                      <DetailIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
                 </>
               ),
             }

@@ -35,7 +35,7 @@ export default function DraggableList(props) {
             {props.items.map((item, index) => (
               <Draggable key={item.id} draggableId={item.id} index={index}>
                 {(provided, snapshot) => (
-                  <div ref={provided.innerRef}>
+                  <div style={{ position: 'relative' }}>
                     <ListItem
                       {...provided.draggableProps}
                       style={getItemStyle(
@@ -43,10 +43,24 @@ export default function DraggableList(props) {
                         provided.draggableProps.style
                       )}
                     >
+                      <div
+                        ref={provided.innerRef}
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          bottom: 0,
+                          left: 4,
+                          width: 300,
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span {...provided.dragHandleProps}>
+                          <DragIcon className={classes.icon} />
+                        </span>
+                      </div>
+                      <div style={{ display: 'inline-block', width: 23 }} />
                       {item.children}
-                      <span {...provided.dragHandleProps}>
-                        <DragIcon className={classes.icon} />
-                      </span>
                     </ListItem>
                   </div>
                 )}

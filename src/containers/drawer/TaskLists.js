@@ -47,7 +47,15 @@ export default function TaskLists() {
               <div style={{ visibility: 'hidden', height: 0 }}>
                 {provided.placeholder}
               </div>
-              <ListItem button selected={index === 0}>
+              <ListItem
+                selected={index === 0}
+                style={{
+                  cursor: 'pointer',
+                  backgroundColor: snapshot.isDraggingOver
+                    ? 'rgb(235,235,235)'
+                    : undefined,
+                }}
+              >
                 <ListItemText primary={text} />
                 <ListItemSecondaryAction>
                   <IconButton

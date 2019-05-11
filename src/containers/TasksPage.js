@@ -25,29 +25,12 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function TasksPage() {
-  const classes = useStyles()
-  const [checked, setChecked] = React.useState([0])
-
-  const handleToggle = value => () => {
-    const currentIndex = checked.indexOf(value)
-    const newChecked = [...checked]
-
-    if (currentIndex === -1) {
-      newChecked.push(value)
-    } else {
-      newChecked.splice(currentIndex, 1)
-    }
-
-    setChecked(newChecked)
-  }
-
-  return (
-    <DragDropContext
-      onDragEnd={result => {
-        console.log('droppable result', result)
-        // dropped outside the list
-        /*
+const Container = props => (
+  <DragDropContext
+    onDragEnd={result => {
+      console.log('droppable result', result)
+      // dropped outside the list
+      /*
         if (!result.destination) {
           return
         }
@@ -65,12 +48,44 @@ function TasksPage() {
           result.destination.index
         )
         */
-      }}
-    >
+    }}
+    {...props}
+  />
+)
+
+const NoListSelected = ({ children }) => (
+  <Container>
+    <Template toolbar="Select list">{children}</Template>
+  </Container>
+)
+
+function TasksPage({ match: { params } }) {
+  const classes = useStyles()
+  const [checked, setChecked] = React.useState([0])
+
+  if (!params.id) {
+    return <NoListSelected />
+  }
+  const handleToggle = value => () => {
+    const currentIndex = checked.indexOf(value)
+    const newChecked = [...checked]
+
+    if (currentIndex === -1) {
+      newChecked.push(value)
+    } else {
+      newChecked.splice(currentIndex, 1)
+    }
+
+    setChecked(newChecked)
+  }
+
+  return (
+    <Container>
       <Query
+        variables={{ id: params.id }}
         query={gql`
-          {
-            taskList(id: "1") {
+          query TaskList($id: String!) {
+            taskList(id: $id) {
               id
               title
               tasks {
@@ -83,8 +98,8 @@ function TasksPage() {
         `}
       >
         {({ loading, error, data }) => {
-          if (loading) return <p>Loading...</p>
-          if (error) return <p>Error :(</p>
+          if (loading) return <NoListSelected>Loading...</NoListSelected>
+          if (error) return <NoListSelected>Error :(</NoListSelected>
 
           return (
             <Template toolbar="TODO" right={<ListContextMenu />}>
@@ -126,7 +141,7 @@ function TasksPage() {
                           <IconButton
                             edge="end"
                             aria-label="Task detail"
-                            component={TaskDetailLink}
+                            component={TaskDetailLink(id)}
                           >
                             <DetailIcon />
                           </IconButton>
@@ -140,7 +155,7 @@ function TasksPage() {
           )
         }}
       </Query>
-    </DragDropContext>
+    </Container>
   )
 }
 

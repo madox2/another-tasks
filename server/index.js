@@ -21,8 +21,8 @@ const data = [
     id: '2',
     tasks: [
       {
-        id: '1',
-        title: 'Something',
+        id: '3',
+        title: 'Something else',
       },
     ],
   },

@@ -20,8 +20,8 @@ function App() {
           <Switch>
             <Route path="/" exact component={IndexPage} />
             <Route path="/app/" exact component={TasksPage} />
-            <Route path="/app/list" component={TasksPage} />
-            <Route path="/app/detail" component={TaskDetailPage} />
+            <Route path="/app/task/:id" component={TaskDetailPage} />
+            <Route path="/app/list/:id" component={TasksPage} />
             <Route component={NotFoundPage} />
           </Switch>
         </Router>

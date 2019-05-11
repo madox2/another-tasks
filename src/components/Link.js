@@ -9,4 +9,5 @@ export function link(to) {
 }
 
 export const TasksLink = link('/app/list')
-export const TaskDetailLink = link('/app/detail')
+export const TaskDetailLink = id => link(`/app/task/${id}`)
+export const TaskListLink = id => link(`/app/list/${id}`)

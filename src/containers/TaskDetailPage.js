@@ -8,7 +8,6 @@ import React from 'react'
 import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 
-import { TasksLink } from '../components/Link'
 import Template from './app/Template'
 import ToolbarButton from '../components/ToolbarButton'
 
@@ -22,13 +21,17 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function TaskDetailPage() {
+export default function TaskDetailPage({ match: { params }, history }) {
   const classes = useStyles()
   return (
     <DragDropContext>
       <Template
-        toolbar={<ToolbarButton component={TasksLink} Icon={BackIcon} />}
-        right={<ToolbarButton component={TasksLink} Icon={DeleteIcon} />}
+        toolbar={
+          <ToolbarButton onClick={() => history.goBack()} Icon={BackIcon} />
+        }
+        right={
+          <ToolbarButton onClick={() => history.goBack()} Icon={DeleteIcon} />
+        }
       >
         <div style={{ padding: 20 }}>
           <TextField

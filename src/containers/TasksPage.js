@@ -11,10 +11,10 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
-import AppTemplate from './AppTemplate'
 import DraggableList from '../components/DraggableList'
 import ListActionsToolbar from './tasks/ListActionsToolbar'
 import ListContextMenu from './tasks/ListContextMenu'
+import Template from './app/Template'
 
 const MyLink = React.forwardRef((props, ref) => (
   <Link to="/app/detail" {...props} ref={ref} />
@@ -82,7 +82,7 @@ function CheckboxList() {
         */
       }}
     >
-      <AppTemplate toolbar="TODO" contextMenu={<ListContextMenu />}>
+      <Template toolbar="TODO" contextMenu={<ListContextMenu />}>
         <ListActionsToolbar />
         <DraggableList
           onDragEnd={() => 0}
@@ -131,7 +131,7 @@ function CheckboxList() {
             }
           })}
         />
-      </AppTemplate>
+      </Template>
     </DragDropContext>
   )
 }

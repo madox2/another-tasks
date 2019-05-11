@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography'
 
 import PropTypes from 'prop-types'
 
-import TaskLists from './drawer/TaskLists'
+import Sidebar from './Sidebar'
 
 const drawerWidth = 280
 
@@ -61,7 +61,7 @@ function ResponsiveDrawer(props) {
     <div>
       <div className={classes.toolbar} />
       <Divider />
-      <TaskLists />
+      <Sidebar />
     </div>
   )
 

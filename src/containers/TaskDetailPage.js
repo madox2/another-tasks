@@ -10,7 +10,7 @@ import React from 'react'
 import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 
-import AppTemplate from './AppTemplate'
+import Template from './app/Template'
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -33,7 +33,7 @@ export default function TaskDetailPage() {
   const classes = useStyles()
   return (
     <DragDropContext>
-      <AppTemplate
+      <Template
         toolbar={
           <IconButton component={MyLink} className={classes.button}>
             <BackIcon />
@@ -78,7 +78,7 @@ export default function TaskDetailPage() {
             }}
           />
         </div>
-      </AppTemplate>
+      </Template>
     </DragDropContext>
   )
 }

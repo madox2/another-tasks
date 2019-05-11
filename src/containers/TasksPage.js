@@ -1,5 +1,4 @@
 import { DragDropContext } from 'react-beautiful-dnd'
-import { Link } from 'react-router-dom'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import Checkbox from '@material-ui/core/Checkbox'
 import DetailIcon from '@material-ui/icons/ChevronRight'
@@ -11,33 +10,26 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
+import { TaskDetailLink } from '../components/Link'
 import DraggableList from '../components/DraggableList'
-import ListActionsToolbar from './tasks/ListActionsToolbar'
-import ListContextMenu from './tasks/ListContextMenu'
+import ListActionsToolbar from './app/tasks/ListActionsToolbar'
+import ListContextMenu from './app/tasks/ListContextMenu'
 import Template from './app/Template'
 
-const MyLink = React.forwardRef((props, ref) => (
-  <Link to="/app/detail" {...props} ref={ref} />
-))
-
 const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-  },
   completedInput: {
     textDecoration: 'line-through',
     color: grey[400],
   },
 }))
 
-const GreenCheckbox = withStyles({
+const GreyCheckbox = withStyles({
   root: {
     color: grey[500],
     '&$checked': {
       color: grey[400],
     },
   },
-  checked: {},
 })(props => <Checkbox color="default" {...props} />)
 
 function CheckboxList() {
@@ -82,7 +74,7 @@ function CheckboxList() {
         */
       }}
     >
-      <Template toolbar="TODO" contextMenu={<ListContextMenu />}>
+      <Template toolbar="TODO" right={<ListContextMenu />}>
         <ListActionsToolbar />
         <DraggableList
           onDragEnd={() => 0}
@@ -93,7 +85,7 @@ function CheckboxList() {
               children: (
                 <>
                   <ListItemIcon>
-                    <GreenCheckbox
+                    <GreyCheckbox
                       edge="start"
                       checked={isChecked}
                       tabIndex={-1}
@@ -120,8 +112,8 @@ function CheckboxList() {
                   <ListItemSecondaryAction>
                     <IconButton
                       edge="end"
-                      aria-label="Comments"
-                      component={MyLink}
+                      aria-label="Task detail"
+                      component={TaskDetailLink}
                     >
                       <DetailIcon />
                     </IconButton>

@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function ResponsiveDrawer(props) {
-  const { contextMenu, toolbar, container, children } = props
+  const { right, toolbar, container, children } = props
   const classes = useStyles()
   const theme = useTheme()
   const [mobileOpen, setMobileOpen] = React.useState(false)
@@ -83,7 +83,7 @@ function ResponsiveDrawer(props) {
             {toolbar}
           </Typography>
           <div style={{ flex: 1 }} />
-          {contextMenu}
+          {right}
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer}>

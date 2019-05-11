@@ -61,12 +61,14 @@ const typeDefs = gql`
   }
   type Query {
     taskLists: [TaskList]
+    taskList(id: String!): TaskList
   }
 `
 
 const resolvers = {
   Query: {
     taskLists: () => data,
+    taskList: (_, { id }) => data.find(d => d.id === id),
   },
 }
 

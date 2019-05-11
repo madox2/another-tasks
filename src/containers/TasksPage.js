@@ -1,4 +1,6 @@
 import { DragDropContext } from 'react-beautiful-dnd'
+import { Query } from 'react-apollo'
+import { gql } from 'apollo-boost'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import Checkbox from '@material-ui/core/Checkbox'
 import DetailIcon from '@material-ui/icons/ChevronRight'
@@ -74,56 +76,79 @@ function CheckboxList() {
         */
       }}
     >
-      <Template toolbar="TODO" right={<ListContextMenu />}>
-        <ListActionsToolbar />
-        <DraggableList
-          onDragEnd={() => 0}
-          items={[1, 2, 3, 4, 5, 6, 7].map(value => {
-            const isChecked = checked.indexOf(value) !== -1
-            return {
-              id: value,
-              children: (
-                <>
-                  <ListItemIcon>
-                    <GreyCheckbox
-                      edge="start"
-                      checked={isChecked}
-                      tabIndex={-1}
-                      disableRipple
-                      onClick={handleToggle(value)}
-                    />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <TextField
-                        defaultValue={`Line item ${value + 1}`}
-                        margin="none"
-                        fullWidth
-                        InputProps={{
-                          disableUnderline: true,
-                          classes: {
-                            input: isChecked && classes.completedInput,
-                          },
-                        }}
-                      />
-                    }
-                    secondary={value === 5 && 'some description haha'}
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      edge="end"
-                      aria-label="Task detail"
-                      component={TaskDetailLink}
-                    >
-                      <DetailIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </>
-              ),
+      <Query
+        query={gql`
+          {
+            taskList(id: "1") {
+              id
+              title
+              tasks {
+                id
+                title
+                notes
+              }
             }
-          })}
-        />
-      </Template>
+          }
+        `}
+      >
+        {({ loading, error, data }) => {
+          if (loading) return <p>Loading...</p>
+          if (error) return <p>Error :(</p>
+
+          return (
+            <Template toolbar="TODO" right={<ListContextMenu />}>
+              <ListActionsToolbar />
+              <DraggableList
+                onDragEnd={() => 0}
+                items={data.taskList.tasks.map(({ title, notes, id }) => {
+                  const isChecked = checked.indexOf(id) !== -1
+                  return {
+                    id: id,
+                    children: (
+                      <>
+                        <ListItemIcon>
+                          <GreyCheckbox
+                            edge="start"
+                            checked={isChecked}
+                            tabIndex={-1}
+                            disableRipple
+                            onClick={handleToggle(id)}
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <TextField
+                              defaultValue={title}
+                              margin="none"
+                              fullWidth
+                              InputProps={{
+                                disableUnderline: true,
+                                classes: {
+                                  input: isChecked && classes.completedInput,
+                                },
+                              }}
+                            />
+                          }
+                          secondary={notes}
+                        />
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            edge="end"
+                            aria-label="Task detail"
+                            component={TaskDetailLink}
+                          >
+                            <DetailIcon />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </>
+                    ),
+                  }
+                })}
+              />
+            </Template>
+          )
+        }}
+      </Query>
     </DragDropContext>
   )
 }

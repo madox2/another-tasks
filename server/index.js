@@ -1,5 +1,4 @@
 const { ApolloServer, gql } = require('apollo-server')
-const { flatten } = require('lodash')
 
 const data = [
   {
@@ -14,6 +13,7 @@ const data = [
       {
         id: '2',
         title: 'Jurassic Park',
+        due: '2017-05-24',
       },
     ],
   },
@@ -63,7 +63,7 @@ const typeDefs = gql`
   type Query {
     taskLists: [TaskList]
     taskList(id: String!): TaskList
-    task(id: String!): Task
+    task(listId: String!, id: String!): Task
   }
   type Mutation {
     addList(title: String!): TaskList
@@ -74,8 +74,8 @@ const resolvers = {
   Query: {
     taskLists: () => data,
     taskList: (_, { id }) => data.find(d => d.id === id),
-    task: (_, { id }) => flatten(data.map(l => l.tasks))
-      .find(t => t.id === id),
+    task: (_, { listId, id }) =>
+      data.find(l => l.id === listId).tasks.find(t => t.id === id),
   },
   Mutation: {
     addList: (_, { title }) => {

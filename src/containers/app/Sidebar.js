@@ -19,7 +19,7 @@ import AddTaskListButton from './taskLists/AddTaskListButton'
 let hackToPreventIdCollisions = 1
 
 const isSelected = (match, id) =>
-  match.path === '/app/list/:id' && id === match.params.id
+  match.path === '/app/list/:listId' && id === match.params.listId
 
 export const TASK_LISTS = gql`
   {

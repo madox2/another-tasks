@@ -77,7 +77,7 @@ function TasksPage({ match: { params } }) {
   const classes = useStyles()
   const [checked, setChecked] = React.useState([0])
 
-  if (!params.id) {
+  if (!params.listId) {
     return <NoListSelected toolbar="Select list" />
   }
   const handleToggle = value => () => {
@@ -95,7 +95,7 @@ function TasksPage({ match: { params } }) {
 
   return (
     <Container>
-      <Query variables={{ id: params.id }} query={TASK_LIST}>
+      <Query variables={{ id: params.listId }} query={TASK_LIST}>
         {({ loading, error, data }) => {
           if (loading) return <NoListSelected>Loading...</NoListSelected>
           if (error) return <NoListSelected>Error :(</NoListSelected>
@@ -140,7 +140,7 @@ function TasksPage({ match: { params } }) {
                           <IconButton
                             edge="end"
                             aria-label="Task detail"
-                            component={TaskDetailLink(id)}
+                            component={TaskDetailLink(params.listId, id)}
                           >
                             <DetailIcon />
                           </IconButton>

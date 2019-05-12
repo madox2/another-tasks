@@ -1,9 +1,9 @@
 import { makeStyles } from '@material-ui/core'
 import FormHelperText from '@material-ui/core/FormHelperText'
-import MenuItem from '@material-ui/core/MenuItem'
 import React, { useState } from 'react'
-import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
+
+import TaskListSelect from '../taskLists/TaskListSelect'
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -15,9 +15,11 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function TaskForm({ data }) {
+export default function TaskForm({ data, listId }) {
   const [title, setTitle] = useState(data.task.title)
   const [notes, setNotes] = useState(data.task.notes || '')
+  const [due, setDue] = useState(data.task.due || '')
+  const [list, setList] = useState(listId)
   const classes = useStyles()
   return (
     <div style={{ padding: 20 }}>
@@ -40,12 +42,11 @@ export default function TaskForm({ data }) {
       <br />
       <div>
         <FormHelperText>Move to list</FormHelperText>
-        <Select value={1} className={classes.shortInput}>
-          <MenuItem value={1}>TODO</MenuItem>
-          <MenuItem value={2}>Tomorrow</MenuItem>
-          <MenuItem value={3}>Tmp</MenuItem>
-          <MenuItem value={4}>Work</MenuItem>
-        </Select>
+        <TaskListSelect
+          className={classes.shortInput}
+          value={list}
+          onChange={e => setList(e.target.value)}
+        />
       </div>
       <br />
       <TextField
@@ -53,6 +54,8 @@ export default function TaskForm({ data }) {
         type="date"
         className={classes.shortInput}
         InputLabelProps={{ shrink: true }}
+        value={due}
+        onChange={e => setDue(e.target.value)}
       />
     </div>
   )

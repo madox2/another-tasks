@@ -53,18 +53,32 @@ const Container = props => (
   />
 )
 
-const NoListSelected = ({ children }) => (
+const NoListSelected = ({ children, ...other }) => (
   <Container>
-    <Template toolbar="Select list">{children}</Template>
+    <Template {...other}>{children}</Template>
   </Container>
 )
+
+export const TASK_LIST = gql`
+  query TaskList($id: String!) {
+    taskList(id: $id) {
+      id
+      title
+      tasks {
+        id
+        title
+        notes
+      }
+    }
+  }
+`
 
 function TasksPage({ match: { params } }) {
   const classes = useStyles()
   const [checked, setChecked] = React.useState([0])
 
   if (!params.id) {
-    return <NoListSelected />
+    return <NoListSelected toolbar="Select list" />
   }
   const handleToggle = value => () => {
     const currentIndex = checked.indexOf(value)
@@ -81,28 +95,13 @@ function TasksPage({ match: { params } }) {
 
   return (
     <Container>
-      <Query
-        variables={{ id: params.id }}
-        query={gql`
-          query TaskList($id: String!) {
-            taskList(id: $id) {
-              id
-              title
-              tasks {
-                id
-                title
-                notes
-              }
-            }
-          }
-        `}
-      >
+      <Query variables={{ id: params.id }} query={TASK_LIST}>
         {({ loading, error, data }) => {
           if (loading) return <NoListSelected>Loading...</NoListSelected>
           if (error) return <NoListSelected>Error :(</NoListSelected>
 
           return (
-            <Template toolbar="TODO" right={<ListContextMenu />}>
+            <Template toolbar={data.taskList.title} right={<ListContextMenu />}>
               <ListActionsToolbar />
               <DraggableList
                 onDragEnd={() => 0}

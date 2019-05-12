@@ -63,12 +63,26 @@ const typeDefs = gql`
     taskLists: [TaskList]
     taskList(id: String!): TaskList
   }
+  type Mutation {
+    addList(title: String!): TaskList
+  }
 `
 
 const resolvers = {
   Query: {
     taskLists: () => data,
     taskList: (_, { id }) => data.find(d => d.id === id),
+  },
+  Mutation: {
+    addList: (_, { title }) => {
+      const list = {
+        id: 1 * data[data.length - 1].id + 1 + '',
+        title,
+        tasks: [],
+      }
+      data.push(list)
+      return list
+    },
   },
 }
 

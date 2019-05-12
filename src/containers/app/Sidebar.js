@@ -2,7 +2,6 @@ import { Droppable } from 'react-beautiful-dnd'
 import { Query } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import { withRouter } from 'react-router-dom'
-import AddIcon from '@material-ui/icons/Add'
 import IconButton from '@material-ui/core/IconButton'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -15,12 +14,21 @@ import MoreIcon from '@material-ui/icons/MoreVert'
 import React from 'react'
 
 import { TaskListLink } from '../../components/Link'
-import FabButton from '../../components/FabButton'
+import AddTaskListButton from './taskLists/AddTaskListButton'
 
 let hackToPreventIdCollisions = 1
 
 const isSelected = (match, id) =>
   match.path === '/app/list/:id' && id === match.params.id
+
+export const TASK_LISTS = gql`
+  {
+    taskLists {
+      id
+      title
+    }
+  }
+`
 
 function Sidebar({ match }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -31,16 +39,7 @@ function Sidebar({ match }) {
     setAnchorEl(null)
   }
   return (
-    <Query
-      query={gql`
-        {
-          taskLists {
-            id
-            title
-          }
-        }
-      `}
-    >
+    <Query query={TASK_LISTS}>
       {({ loading, error, data }) => {
         if (loading) return <p>Loading...</p>
         if (error) return <p>Error :(</p>
@@ -84,9 +83,7 @@ function Sidebar({ match }) {
                 )}
               </Droppable>
             ))}
-            <FabButton aria-label="Add list" Icon={AddIcon}>
-              Add list
-            </FabButton>
+            <AddTaskListButton />
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}

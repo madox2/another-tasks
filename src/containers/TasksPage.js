@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
@@ -75,7 +75,8 @@ export const TASK_LIST = gql`
 
 function TasksPage({ match: { params } }) {
   const classes = useStyles()
-  const [checked, setChecked] = React.useState([0])
+  const [checked, setChecked] = useState([0])
+  const firstTaskText = useRef()
 
   if (!params.listId) {
     return <NoListSelected toolbar="Select list" />
@@ -102,10 +103,15 @@ function TasksPage({ match: { params } }) {
 
           return (
             <Template toolbar={data.taskList.title} right={<ListContextMenu />}>
-              <ListActionsToolbar />
+              <ListActionsToolbar
+                listId={params.listId}
+                onTaskAdd={() => {
+                  firstTaskText.current.focus()
+                }}
+              />
               <DraggableList
                 onDragEnd={() => 0}
-                items={data.taskList.tasks.map(({ title, notes, id }) => {
+                items={data.taskList.tasks.map(({ title, notes, id }, idx) => {
                   const isChecked = checked.indexOf(id) !== -1
                   return {
                     id: id,
@@ -126,6 +132,7 @@ function TasksPage({ match: { params } }) {
                               defaultValue={title}
                               margin="none"
                               fullWidth
+                              inputRef={idx === 0 ? firstTaskText : undefined}
                               InputProps={{
                                 disableUnderline: true,
                                 classes: {

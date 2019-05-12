@@ -1,17 +1,22 @@
 const { ApolloServer, gql } = require('apollo-server')
 
+const nextId = (function() {
+  let id = 0
+  return () => ++id + ''
+})()
+
 const data = [
   {
     title: 'TODO',
-    id: '1',
+    id: nextId(),
     tasks: [
       {
-        id: '1',
+        id: nextId(),
         title: 'Something',
         notes: 'Harry Potter and the Chamber of Secrets',
       },
       {
-        id: '2',
+        id: nextId(),
         title: 'Jurassic Park',
         due: '2017-05-24',
       },
@@ -19,10 +24,10 @@ const data = [
   },
   {
     title: 'Tmp',
-    id: '2',
+    id: nextId(),
     tasks: [
       {
-        id: '3',
+        id: nextId(),
         title: 'Something else',
       },
     ],
@@ -67,6 +72,7 @@ const typeDefs = gql`
   }
   type Mutation {
     addList(title: String!): TaskList
+    addTask(listId: String!): Task
     updateTask(
       title: String
       notes: String
@@ -87,7 +93,7 @@ const resolvers = {
   Mutation: {
     addList: (_, { title }) => {
       const list = {
-        id: 1 * data[data.length - 1].id + 1 + '',
+        id: nextId(),
         title,
         tasks: [],
       }
@@ -99,6 +105,12 @@ const resolvers = {
       task.title = title
       task.notes = notes
       task.due = due
+      return task
+    },
+    addTask: (_, { listId }) => {
+      const list = data.find(l => l.id === listId)
+      const task = { id: nextId(), title: '' }
+      list.tasks = [task, ...list.tasks]
       return task
     },
   },

@@ -41,7 +41,7 @@ const UPDATE_TASK = gql`
 `
 
 function TaskForm({ data, listId, updateTask }) {
-  const [title, setTitle] = useState(data.task.title)
+  const [title, setTitle] = useState(data.task.title || '')
   const [notes, setNotes] = useState(data.task.notes || '')
   const [due, setDue] = useState(data.task.due || '')
   const [list, setList] = useState(listId)

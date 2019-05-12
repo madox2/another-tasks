@@ -67,6 +67,13 @@ const typeDefs = gql`
   }
   type Mutation {
     addList(title: String!): TaskList
+    updateTask(
+      title: String
+      notes: String
+      due: String
+      id: String
+      listId: String
+    ): Task
   }
 `
 
@@ -86,6 +93,13 @@ const resolvers = {
       }
       data.push(list)
       return list
+    },
+    updateTask: (_, { title, notes, due, id, listId }) => {
+      const task = data.find(l => l.id === listId).tasks.find(t => t.id === id)
+      task.title = title
+      task.notes = notes
+      task.due = due
+      return task
     },
   },
 }

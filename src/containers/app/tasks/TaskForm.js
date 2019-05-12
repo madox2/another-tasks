@@ -1,6 +1,8 @@
+import { Mutation } from 'react-apollo'
+import { gql } from 'apollo-boost'
 import { makeStyles } from '@material-ui/core'
 import FormHelperText from '@material-ui/core/FormHelperText'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import TextField from '@material-ui/core/TextField'
 
 import TaskListSelect from '../taskLists/TaskListSelect'
@@ -15,12 +17,51 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function TaskForm({ data, listId }) {
+const UPDATE_TASK = gql`
+  mutation UpdateTask(
+    $title: String
+    $notes: String
+    $due: String
+    $id: String
+    $listId: String
+  ) {
+    updateTask(
+      title: $title
+      notes: $notes
+      due: $due
+      id: $id
+      listId: $listId
+    ) {
+      id
+      title
+      notes
+      due
+    }
+  }
+`
+
+function TaskForm({ data, listId, updateTask }) {
   const [title, setTitle] = useState(data.task.title)
   const [notes, setNotes] = useState(data.task.notes || '')
   const [due, setDue] = useState(data.task.due || '')
   const [list, setList] = useState(listId)
   const classes = useStyles()
+  useEffect(() => {
+    updateTask({
+      variables: { title, notes, due, listId, id: data.task.id },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        updateComment: {
+          id: data.task.id,
+          __typename: 'Task',
+          title,
+          notes,
+          due,
+        },
+      },
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, notes, due])
   return (
     <div style={{ padding: 20 }}>
       <TextField
@@ -58,5 +99,15 @@ export default function TaskForm({ data, listId }) {
         onChange={e => setDue(e.target.value)}
       />
     </div>
+  )
+}
+
+export default function WithUpdateMutation(props) {
+  return (
+    <Mutation mutation={UPDATE_TASK}>
+      {(updateTask, { data }) => (
+        <TaskForm {...props} updateTask={updateTask} />
+      )}
+    </Mutation>
   )
 }

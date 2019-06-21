@@ -22,6 +22,7 @@ const UPDATE_TASK = gql`
     $title: String
     $notes: String
     $due: String
+    $completed: Boolean
     $id: String
     $listId: String
   ) {
@@ -30,22 +31,24 @@ const UPDATE_TASK = gql`
       notes: $notes
       due: $due
       id: $id
+      completed: $completed
       listId: $listId
     ) {
       id
       title
       notes
       due
+      completed
     }
   }
 `
 
 export function updateTaskEffect(updateTask, task) {
-  const { title, notes, due, listId, id } = task
+  const { title, notes, due, listId, id, completed } = task
   // eslint-disable-next-line
   useEffect(() => {
     updateTask({
-      variables: { title, notes, due, listId, id },
+      variables: { title, notes, due, listId, id, completed },
       optimisticResponse: {
         __typename: 'Mutation',
         updateTask: {
@@ -54,11 +57,12 @@ export function updateTaskEffect(updateTask, task) {
           title,
           notes,
           due,
+          completed,
         },
       },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, notes, due])
+  }, [title, notes, due, completed])
 }
 
 function TaskForm({ data, listId, updateTask }) {
@@ -68,11 +72,11 @@ function TaskForm({ data, listId, updateTask }) {
   const [list, setList] = useState(listId)
   const classes = useStyles()
   updateTaskEffect(updateTask, {
+    ...data.task,
     title,
     notes,
     due,
     listId,
-    id: data.task.id,
   })
   return (
     <div style={{ padding: 20 }}>

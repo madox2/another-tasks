@@ -51,7 +51,7 @@ const typeDefs = gql`
     notes: String
     status: String
     due: String
-    completed: String
+    completed: Boolean
     deleted: String
     hidden: String
     links: [Link]
@@ -77,6 +77,7 @@ const typeDefs = gql`
       title: String
       notes: String
       due: String
+      completed: Boolean
       id: String
       listId: String
     ): Task
@@ -100,11 +101,12 @@ const resolvers = {
       data.push(list)
       return list
     },
-    updateTask: (_, { title, notes, due, id, listId }) => {
+    updateTask: (_, { title, notes, completed, due, id, listId }) => {
       const task = data.find(l => l.id === listId).tasks.find(t => t.id === id)
       task.title = title
       task.notes = notes
       task.due = due
+      task.completed = completed
       return task
     },
     addTask: (_, { listId }) => {

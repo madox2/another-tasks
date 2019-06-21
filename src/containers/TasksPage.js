@@ -70,24 +70,20 @@ export const TASK_LIST = gql`
         title
         notes
         due
+        completed
       }
     }
   }
 `
 
-function TaskItemComponent({
-  task,
-  isChecked,
-  inputRef,
-  handleToggle,
-  listId,
-  updateTask,
-}) {
+function TaskItemComponent({ task, inputRef, listId, updateTask }) {
   const [title, setTitle] = useState(task.title || '')
+  const [completed, setCompleted] = useState(task.completed || false)
   updateTaskEffect(updateTask, {
     ...task,
     listId,
     title,
+    completed,
   })
   const { notes, id } = task
   const classes = useStyles()
@@ -96,10 +92,10 @@ function TaskItemComponent({
       <ListItemIcon>
         <CompletedCheckbox
           edge="start"
-          checked={isChecked}
+          checked={completed}
           tabIndex={-1}
           disableRipple
-          onClick={handleToggle(id)}
+          onClick={() => setCompleted(!completed)}
         />
       </ListItemIcon>
       <ListItemText
@@ -113,7 +109,7 @@ function TaskItemComponent({
             InputProps={{
               disableUnderline: true,
               classes: {
-                input: isChecked && classes.completedInput,
+                input: completed && classes.completedInput,
               },
             }}
           />
@@ -136,25 +132,11 @@ function TaskItemComponent({
 const TaskItem = withUpdateTaskMutation(TaskItemComponent)
 
 function TasksPage({ match: { params } }) {
-  const [checked, setChecked] = useState([0])
   const firstTaskText = useRef()
 
   if (!params.listId) {
     return <NoListSelected toolbar="Select list" />
   }
-  const handleToggle = value => () => {
-    const currentIndex = checked.indexOf(value)
-    const newChecked = [...checked]
-
-    if (currentIndex === -1) {
-      newChecked.push(value)
-    } else {
-      newChecked.splice(currentIndex, 1)
-    }
-
-    setChecked(newChecked)
-  }
-
   return (
     <Container>
       <Query variables={{ id: params.listId }} query={TASK_LIST}>
@@ -179,9 +161,7 @@ function TasksPage({ match: { params } }) {
                       <TaskItem
                         key={task.id}
                         task={task}
-                        isChecked={checked.indexOf(task.id) !== -1}
                         inputRef={idx === 0 ? firstTaskText : undefined}
-                        handleToggle={handleToggle}
                         listId={params.listId}
                       />
                     ),

@@ -1,68 +1,36 @@
 import { DragDropContext } from 'react-beautiful-dnd'
-import { Link } from 'react-router-dom'
-import { makeStyles, withStyles } from '@material-ui/core/styles'
-import Checkbox from '@material-ui/core/Checkbox'
+import { Query } from 'react-apollo'
+import { gql } from 'apollo-boost'
+import { makeStyles } from '@material-ui/core/styles'
 import DetailIcon from '@material-ui/icons/ChevronRight'
 import IconButton from '@material-ui/core/IconButton'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
-import AppTemplate from './AppTemplate'
+import { TaskDetailLink } from '../components/Link'
+import CompletedCheckbox from '../components/CompletedCheckbox'
 import DraggableList from '../components/DraggableList'
-import ListActionsToolbar from './tasks/ListActionsToolbar'
-import ListContextMenu from './tasks/ListContextMenu'
-
-const MyLink = React.forwardRef((props, ref) => (
-  <Link to="/app/detail" {...props} ref={ref} />
-))
+import ListActionsToolbar from './app/tasks/ListActionsToolbar'
+import ListContextMenu from './app/tasks/ListContextMenu'
+import Template from './app/Template'
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-  },
   completedInput: {
     textDecoration: 'line-through',
     color: grey[400],
   },
 }))
 
-const GreenCheckbox = withStyles({
-  root: {
-    color: grey[500],
-    '&$checked': {
-      color: grey[400],
-    },
-  },
-  checked: {},
-})(props => <Checkbox color="default" {...props} />)
-
-function CheckboxList() {
-  const classes = useStyles()
-  const [checked, setChecked] = React.useState([0])
-
-  const handleToggle = value => () => {
-    const currentIndex = checked.indexOf(value)
-    const newChecked = [...checked]
-
-    if (currentIndex === -1) {
-      newChecked.push(value)
-    } else {
-      newChecked.splice(currentIndex, 1)
-    }
-
-    setChecked(newChecked)
-  }
-
-  return (
-    <DragDropContext
-      onDragEnd={result => {
-        console.log('droppable result', result)
-        // dropped outside the list
-        /*
+const Container = props => (
+  <DragDropContext
+    onDragEnd={result => {
+      console.log('droppable result', result)
+      // dropped outside the list
+      /*
         if (!result.destination) {
           return
         }
@@ -80,60 +48,121 @@ function CheckboxList() {
           result.destination.index
         )
         */
-      }}
-    >
-      <AppTemplate toolbar="TODO" contextMenu={<ListContextMenu />}>
-        <ListActionsToolbar />
-        <DraggableList
-          onDragEnd={() => 0}
-          items={[1, 2, 3, 4, 5, 6, 7].map(value => {
-            const isChecked = checked.indexOf(value) !== -1
-            return {
-              id: value,
-              children: (
-                <>
-                  <ListItemIcon>
-                    <GreenCheckbox
-                      edge="start"
-                      checked={isChecked}
-                      tabIndex={-1}
-                      disableRipple
-                      onClick={handleToggle(value)}
-                    />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <TextField
-                        defaultValue={`Line item ${value + 1}`}
-                        margin="none"
-                        fullWidth
-                        InputProps={{
-                          disableUnderline: true,
-                          classes: {
-                            input: isChecked && classes.completedInput,
-                          },
-                        }}
-                      />
-                    }
-                    secondary={value === 5 && 'some description haha'}
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      edge="end"
-                      aria-label="Comments"
-                      component={MyLink}
-                    >
-                      <DetailIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </>
-              ),
-            }
-          })}
-        />
-      </AppTemplate>
-    </DragDropContext>
+    }}
+    {...props}
+  />
+)
+
+const NoListSelected = ({ children, ...other }) => (
+  <Container>
+    <Template {...other}>{children}</Template>
+  </Container>
+)
+
+export const TASK_LIST = gql`
+  query TaskList($id: String!) {
+    taskList(id: $id) {
+      id
+      title
+      tasks {
+        id
+        title
+        notes
+      }
+    }
+  }
+`
+
+function TasksPage({ match: { params } }) {
+  const classes = useStyles()
+  const [checked, setChecked] = useState([0])
+  const firstTaskText = useRef()
+
+  if (!params.listId) {
+    return <NoListSelected toolbar="Select list" />
+  }
+  const handleToggle = value => () => {
+    const currentIndex = checked.indexOf(value)
+    const newChecked = [...checked]
+
+    if (currentIndex === -1) {
+      newChecked.push(value)
+    } else {
+      newChecked.splice(currentIndex, 1)
+    }
+
+    setChecked(newChecked)
+  }
+
+  return (
+    <Container>
+      <Query variables={{ id: params.listId }} query={TASK_LIST}>
+        {({ loading, error, data }) => {
+          if (loading) return <NoListSelected>Loading...</NoListSelected>
+          if (error) return <NoListSelected>Error :(</NoListSelected>
+
+          return (
+            <Template toolbar={data.taskList.title} right={<ListContextMenu />}>
+              <ListActionsToolbar
+                listId={params.listId}
+                onTaskAdd={() => {
+                  firstTaskText.current.focus()
+                }}
+              />
+              <DraggableList
+                onDragEnd={() => 0}
+                items={data.taskList.tasks.map(({ title, notes, id }, idx) => {
+                  const isChecked = checked.indexOf(id) !== -1
+                  return {
+                    id: id,
+                    children: (
+                      <>
+                        <ListItemIcon>
+                          <CompletedCheckbox
+                            edge="start"
+                            checked={isChecked}
+                            tabIndex={-1}
+                            disableRipple
+                            onClick={handleToggle(id)}
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <TextField
+                              defaultValue={title}
+                              margin="none"
+                              fullWidth
+                              inputRef={idx === 0 ? firstTaskText : undefined}
+                              InputProps={{
+                                disableUnderline: true,
+                                classes: {
+                                  input: isChecked && classes.completedInput,
+                                },
+                              }}
+                            />
+                          }
+                          secondary={notes}
+                        />
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            edge="end"
+                            aria-label="Task detail"
+                            component={TaskDetailLink(params.listId, id)}
+                          >
+                            <DetailIcon />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </>
+                    ),
+                  }
+                })}
+              />
+            </Template>
+          )
+        }}
+      </Query>
+    </Container>
   )
 }
 
-export default CheckboxList
+export default TasksPage

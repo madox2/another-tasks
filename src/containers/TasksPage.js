@@ -12,6 +12,7 @@ import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
 import { TaskDetailLink } from '../components/Link'
+import { updateTaskEffect, withUpdateTaskMutation } from './app/tasks/TaskForm'
 import CompletedCheckbox from '../components/CompletedCheckbox'
 import DraggableList from '../components/DraggableList'
 import ListActionsToolbar from './app/tasks/ListActionsToolbar'
@@ -68,13 +69,73 @@ export const TASK_LIST = gql`
         id
         title
         notes
+        due
       }
     }
   }
 `
 
-function TasksPage({ match: { params } }) {
+function TaskItemComponent({
+  task,
+  isChecked,
+  inputRef,
+  handleToggle,
+  listId,
+  updateTask,
+}) {
+  const [title, setTitle] = useState(task.title || '')
+  updateTaskEffect(updateTask, {
+    ...task,
+    listId,
+    title,
+  })
+  const { notes, id } = task
   const classes = useStyles()
+  return (
+    <>
+      <ListItemIcon>
+        <CompletedCheckbox
+          edge="start"
+          checked={isChecked}
+          tabIndex={-1}
+          disableRipple
+          onClick={handleToggle(id)}
+        />
+      </ListItemIcon>
+      <ListItemText
+        primary={
+          <TextField
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            margin="none"
+            fullWidth
+            inputRef={inputRef}
+            InputProps={{
+              disableUnderline: true,
+              classes: {
+                input: isChecked && classes.completedInput,
+              },
+            }}
+          />
+        }
+        secondary={notes}
+      />
+      <ListItemSecondaryAction>
+        <IconButton
+          edge="end"
+          aria-label="Task detail"
+          component={TaskDetailLink(listId, id)}
+        >
+          <DetailIcon />
+        </IconButton>
+      </ListItemSecondaryAction>
+    </>
+  )
+}
+
+const TaskItem = withUpdateTaskMutation(TaskItemComponent)
+
+function TasksPage({ match: { params } }) {
   const [checked, setChecked] = useState([0])
   const firstTaskText = useRef()
 
@@ -111,48 +172,18 @@ function TasksPage({ match: { params } }) {
               />
               <DraggableList
                 onDragEnd={() => 0}
-                items={data.taskList.tasks.map(({ title, notes, id }, idx) => {
-                  const isChecked = checked.indexOf(id) !== -1
+                items={data.taskList.tasks.map((task, idx) => {
                   return {
-                    id: id,
+                    id: task.id,
                     children: (
-                      <>
-                        <ListItemIcon>
-                          <CompletedCheckbox
-                            edge="start"
-                            checked={isChecked}
-                            tabIndex={-1}
-                            disableRipple
-                            onClick={handleToggle(id)}
-                          />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={
-                            <TextField
-                              defaultValue={title}
-                              margin="none"
-                              fullWidth
-                              inputRef={idx === 0 ? firstTaskText : undefined}
-                              InputProps={{
-                                disableUnderline: true,
-                                classes: {
-                                  input: isChecked && classes.completedInput,
-                                },
-                              }}
-                            />
-                          }
-                          secondary={notes}
-                        />
-                        <ListItemSecondaryAction>
-                          <IconButton
-                            edge="end"
-                            aria-label="Task detail"
-                            component={TaskDetailLink(params.listId, id)}
-                          >
-                            <DetailIcon />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </>
+                      <TaskItem
+                        key={task.id}
+                        task={task}
+                        isChecked={checked.indexOf(task.id) !== -1}
+                        inputRef={idx === 0 ? firstTaskText : undefined}
+                        handleToggle={handleToggle}
+                        listId={params.listId}
+                      />
                     ),
                   }
                 })}

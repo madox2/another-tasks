@@ -40,19 +40,16 @@ const UPDATE_TASK = gql`
   }
 `
 
-function TaskForm({ data, listId, updateTask }) {
-  const [title, setTitle] = useState(data.task.title || '')
-  const [notes, setNotes] = useState(data.task.notes || '')
-  const [due, setDue] = useState(data.task.due || '')
-  const [list, setList] = useState(listId)
-  const classes = useStyles()
+export function updateTaskEffect(updateTask, task) {
+  const { title, notes, due, listId, id } = task
+  // eslint-disable-next-line
   useEffect(() => {
     updateTask({
-      variables: { title, notes, due, listId, id: data.task.id },
+      variables: { title, notes, due, listId, id },
       optimisticResponse: {
         __typename: 'Mutation',
         updateTask: {
-          id: data.task.id,
+          id: id,
           __typename: 'Task',
           title,
           notes,
@@ -62,6 +59,21 @@ function TaskForm({ data, listId, updateTask }) {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, notes, due])
+}
+
+function TaskForm({ data, listId, updateTask }) {
+  const [title, setTitle] = useState(data.task.title || '')
+  const [notes, setNotes] = useState(data.task.notes || '')
+  const [due, setDue] = useState(data.task.due || '')
+  const [list, setList] = useState(listId)
+  const classes = useStyles()
+  updateTaskEffect(updateTask, {
+    title,
+    notes,
+    due,
+    listId,
+    id: data.task.id,
+  })
   return (
     <div style={{ padding: 20 }}>
       <TextField
@@ -102,12 +114,10 @@ function TaskForm({ data, listId, updateTask }) {
   )
 }
 
-export default function WithUpdateMutation(props) {
-  return (
-    <Mutation mutation={UPDATE_TASK}>
-      {(updateTask, { data }) => (
-        <TaskForm {...props} updateTask={updateTask} />
-      )}
-    </Mutation>
-  )
-}
+export const withUpdateTaskMutation = Component => props => (
+  <Mutation mutation={UPDATE_TASK}>
+    {(updateTask, { data }) => <Component {...props} updateTask={updateTask} />}
+  </Mutation>
+)
+
+export default withUpdateTaskMutation(TaskForm)

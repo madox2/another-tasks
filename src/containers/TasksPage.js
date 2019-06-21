@@ -1,4 +1,3 @@
-import { DragDropContext } from 'react-beautiful-dnd'
 import { Query } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import { makeStyles } from '@material-ui/core/styles'
@@ -12,9 +11,13 @@ import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
 import { TaskDetailLink } from '../components/Link'
-import { useUpdateTaskEffect, withUpdateTaskMutation } from './app/tasks/TaskForm'
+import {
+  useUpdateTaskEffect,
+  withUpdateTaskMutation,
+} from './app/tasks/TaskForm'
 import CompletedCheckbox from '../components/CompletedCheckbox'
 import DraggableList from '../components/DraggableList'
+import DropTaskContainer from './app/tasks/DropTaskContainer'
 import ListActionsToolbar from './app/tasks/ListActionsToolbar'
 import ListContextMenu from './app/tasks/ListContextMenu'
 import Template from './app/Template'
@@ -26,38 +29,10 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const Container = props => (
-  <DragDropContext
-    onDragEnd={result => {
-      console.log('droppable result', result)
-      // dropped outside the list
-      /*
-        if (!result.destination) {
-          return
-        }
-        // a little function to help us with reordering the result
-        const reorder = (list, startIndex, endIndex) => {
-          const result = Array.from(list)
-          const [removed] = result.splice(startIndex, 1)
-          result.splice(endIndex, 0, removed)
-
-          return result
-        }
-        const items = reorder(
-          props.items,
-          result.source.index,
-          result.destination.index
-        )
-        */
-    }}
-    {...props}
-  />
-)
-
 const NoListSelected = ({ children, ...other }) => (
-  <Container>
+  <DropTaskContainer>
     <Template {...other}>{children}</Template>
-  </Container>
+  </DropTaskContainer>
 )
 
 export const TASK_LIST = gql`
@@ -138,13 +113,13 @@ function TasksPage({ match: { params } }) {
     return <NoListSelected toolbar="Select list" />
   }
   return (
-    <Container>
-      <Query variables={{ id: params.listId }} query={TASK_LIST}>
-        {({ loading, error, data }) => {
-          if (loading) return <NoListSelected>Loading...</NoListSelected>
-          if (error) return <NoListSelected>Error :(</NoListSelected>
+    <Query variables={{ id: params.listId }} query={TASK_LIST}>
+      {({ loading, error, data }) => {
+        if (loading) return <NoListSelected>Loading...</NoListSelected>
+        if (error) return <NoListSelected>Error :(</NoListSelected>
 
-          return (
+        return (
+          <DropTaskContainer data={data} listId={params.listId}>
             <Template toolbar={data.taskList.title} right={<ListContextMenu />}>
               <ListActionsToolbar
                 listId={params.listId}
@@ -169,10 +144,10 @@ function TasksPage({ match: { params } }) {
                 })}
               />
             </Template>
-          )
-        }}
-      </Query>
-    </Container>
+          </DropTaskContainer>
+        )
+      }}
+    </Query>
   )
 }
 

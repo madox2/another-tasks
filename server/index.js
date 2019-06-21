@@ -86,6 +86,7 @@ const typeDefs = gql`
       id: String
       listId: String
     ): Task
+    moveTask(listId: String!, id: String!, previousId: String): TaskList
   }
 `
 
@@ -125,6 +126,19 @@ const resolvers = {
       }
       list.tasks = [task, ...list.tasks]
       return task
+    },
+    moveTask: (_, { listId, id, previousId }) => {
+      const list = data.find(l => l.id === listId)
+      const task = list.tasks.find(t => t.id === id)
+      list.tasks = list.tasks.filter(t => t.id !== id)
+      if (previousId) {
+        const prevIndex = list.tasks.findIndex(t => t.id === previousId)
+        list.tasks.splice(prevIndex + 1, 0, task)
+      } else {
+        // push to beginning
+        list.tasks.unshift(task)
+      }
+      return list
     },
   },
 }

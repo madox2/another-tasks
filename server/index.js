@@ -14,11 +14,14 @@ const data = [
         id: nextId(),
         title: 'Something',
         notes: 'Harry Potter and the Chamber of Secrets',
+        completed: false,
       },
       {
         id: nextId(),
         title: 'Jurassic Park',
         due: '2017-05-24',
+        completed: false,
+        notes: '',
       },
     ],
   },
@@ -29,6 +32,8 @@ const data = [
       {
         id: nextId(),
         title: 'Something else',
+        completed: false,
+        notes: '',
       },
     ],
   },
@@ -111,7 +116,13 @@ const resolvers = {
     },
     addTask: (_, { listId }) => {
       const list = data.find(l => l.id === listId)
-      const task = { id: nextId(), title: '' }
+      const task = {
+        id: nextId(),
+        title: '',
+        notes: '',
+        due: undefined,
+        completed: false,
+      }
       list.tasks = [task, ...list.tasks]
       return task
     },

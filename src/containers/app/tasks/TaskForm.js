@@ -43,10 +43,15 @@ const UPDATE_TASK = gql`
   }
 `
 
-export function updateTaskEffect(updateTask, task) {
+export function useUpdateTaskEffect(updateTask, task) {
   const { title, notes, due, listId, id, completed } = task
-  // eslint-disable-next-line
+  const [shouldUpdate, setShouldUpdate] = useState(false)
   useEffect(() => {
+    if (!shouldUpdate) {
+      // skip first update
+      setShouldUpdate(true)
+      return
+    }
     updateTask({
       variables: { title, notes, due, listId, id, completed },
       optimisticResponse: {
@@ -71,7 +76,7 @@ function TaskForm({ data, listId, updateTask }) {
   const [due, setDue] = useState(data.task.due || '')
   const [list, setList] = useState(listId)
   const classes = useStyles()
-  updateTaskEffect(updateTask, {
+  useUpdateTaskEffect(updateTask, {
     ...data.task,
     title,
     notes,

@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
 import { TaskDetailLink } from '../components/Link'
-import { updateTaskEffect, withUpdateTaskMutation } from './app/tasks/TaskForm'
+import { useUpdateTaskEffect, withUpdateTaskMutation } from './app/tasks/TaskForm'
 import CompletedCheckbox from '../components/CompletedCheckbox'
 import DraggableList from '../components/DraggableList'
 import ListActionsToolbar from './app/tasks/ListActionsToolbar'
@@ -79,7 +79,7 @@ export const TASK_LIST = gql`
 function TaskItemComponent({ task, inputRef, listId, updateTask }) {
   const [title, setTitle] = useState(task.title || '')
   const [completed, setCompleted] = useState(task.completed || false)
-  updateTaskEffect(updateTask, {
+  useUpdateTaskEffect(updateTask, {
     ...task,
     listId,
     title,

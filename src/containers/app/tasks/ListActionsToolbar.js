@@ -19,6 +19,12 @@ const ADD_TASK = gql`
   }
 `
 
+const CLEAR_COMPLETED = gql`
+  mutation ClearCompleted($listId: String!) {
+    clearCompleted(listId: $listId)
+  }
+`
+
 export default function ListActionsToolbar({ listId, onTaskAdd }) {
   return (
     <div>
@@ -63,9 +69,38 @@ export default function ListActionsToolbar({ listId, onTaskAdd }) {
           </FabButton>
         )}
       </Mutation>
-      <FabButton aria-label="Clear completed" Icon={ClearCompletedIcon}>
-        Clear completed
-      </FabButton>
+      <Mutation
+        mutation={CLEAR_COMPLETED}
+        variables={{ listId }}
+        optimisticResponse={{
+          __typename: 'Mutation',
+          clearCompleted: true,
+        }}
+        update={(proxy, { data: { clearCompleted } }) => {
+          const data = proxy.readQuery({
+            query: TASK_LIST,
+            variables: { id: listId },
+          })
+          data.taskList.tasks = data.taskList.tasks.filter(
+            t => t.status !== 'completed'
+          )
+          proxy.writeQuery({
+            query: TASK_LIST,
+            variables: { id: listId },
+            data,
+          })
+        }}
+      >
+        {clearCompleted => (
+          <FabButton
+            aria-label="Clear completed"
+            Icon={ClearCompletedIcon}
+            onClick={clearCompleted}
+          >
+            Clear completed
+          </FabButton>
+        )}
+      </Mutation>
     </div>
   )
 }

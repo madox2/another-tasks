@@ -62,6 +62,7 @@ const typeDefs = `
     moveTask(listId: String!, id: String!, previousId: String): TaskList
     logout: User
     login: User
+    clearCompleted(listId: String): Boolean
   }
 `
 

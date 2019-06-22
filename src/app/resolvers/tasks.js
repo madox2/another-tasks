@@ -117,6 +117,11 @@ const updateList = (listId, title) =>
 const deleteList = listId =>
   doDelete(`https://www.googleapis.com/tasks/v1/users/@me/lists/${listId}`)
 
+const clearCompleted = async listId => {
+  await doPost(`https://www.googleapis.com/tasks/v1/lists/${listId}/clear`)
+  return true
+}
+
 export const tasksResolvers = {
   Query: {
     taskLists: () => getLists(),
@@ -130,6 +135,7 @@ export const tasksResolvers = {
     updateTask: (_, { title, notes, status, due, id, listId }) =>
       updateTask({ title, notes, status, due, id, listId }),
     addTask: (_, { listId }) => createTask(listId),
+    clearCompleted: (_, { listId }) => clearCompleted(listId),
     moveTask: (_, { listId, id, previousId }) => {
       const list = data.find(l => l.id === listId)
       const task = list.tasks.find(t => t.id === id)

@@ -1,5 +1,5 @@
 import { Mutation } from 'react-apollo'
-import { debounce } from 'lodash'
+import { throttle } from 'lodash'
 import { gql } from 'apollo-boost'
 import { makeStyles } from '@material-ui/core'
 import FormHelperText from '@material-ui/core/FormHelperText'
@@ -61,7 +61,7 @@ const update = (updateTask, { title, notes, due, listId, id, status }) =>
     },
   })
 
-const debouncedUpdate = debounce(update, 1000)
+const throttledUpdate = throttle(update, 500, { leading: false })
 
 export function useUpdateTaskEffect(updateTask, task) {
   const { title, notes, due, listId, id, status } = task
@@ -72,7 +72,7 @@ export function useUpdateTaskEffect(updateTask, task) {
       setShouldUpdate(true)
       return
     }
-    debouncedUpdate(updateTask, { title, notes, due, listId, id, status })
+    throttledUpdate(updateTask, { title, notes, due, listId, id, status })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, notes, due, status])
 }

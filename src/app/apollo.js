@@ -7,7 +7,8 @@ import { onError } from 'apollo-link-error'
 
 import { schema } from './schema'
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError(error => {
+  const { graphQLErrors, networkError } = error
   if (graphQLErrors)
     graphQLErrors.map(({ message, locations, path }) =>
       console.error(

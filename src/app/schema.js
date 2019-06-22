@@ -48,6 +48,8 @@ const typeDefs = `
   }
   type Mutation {
     addList(title: String!): TaskList
+    deleteList(listId: String!): TaskList
+    editList(listId: String!, title: String): TaskList
     addTask(listId: String!): Task
     updateTask(
       title: String

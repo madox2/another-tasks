@@ -40,51 +40,78 @@ const data = [
   },
 ]
 
-async function fetchResult(path) {
+async function fetchResult(path, { method = 'GET', body } = {}) {
   try {
     await loadPromise
-    const response = await gapi.client.request({
-      path,
-    })
+    const payload = { path, method }
+    if (body) payload.body = body
+    console.log(`${method}: request:`, payload)
+    const response = await gapi.client.request(payload)
+    console.log(`${method}: response:`, response)
     return response.result
   } catch (e) {
-    console.log(`error fetching data ${path}`, e)
+    console.log(`${method}: error fetching data ${path}`, e)
   }
+}
+
+async function doPut(path, body) {
+  return fetchResult(path, { body, method: 'PUT' })
+}
+
+async function doPost(path, body) {
+  return fetchResult(path, { body, method: 'POST' })
+}
+
+async function doDelete(path) {
+  return fetchResult(path, { method: 'DELETE' })
 }
 
 async function fetchItems(path) {
   const result = await fetchResult(path)
-  return result && result.items
+  return (result && result.items) || []
 }
+
+const getTasks = id =>
+  fetchItems(`https://www.googleapis.com/tasks/v1/lists/${id}/tasks`)
+
+const getList = async id => {
+  const result = await fetchResult(
+    `https://www.googleapis.com/tasks/v1/users/@me/lists/${id}`
+  )
+  return {
+    ...result,
+    tasks: await getTasks(id),
+  }
+}
+
+const getLists = () =>
+  fetchItems('https://www.googleapis.com/tasks/v1/users/@me/lists')
+
+const getTask = (id, listId) =>
+  fetchResult(`https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}`)
+
+const addList = title =>
+  doPost('https://www.googleapis.com/tasks/v1/users/@me/lists', { title })
+
+const updateList = (listId, title) =>
+  doPut(`https://www.googleapis.com/tasks/v1/users/@me/lists/${listId}`, {
+    title,
+    id: listId,
+  })
+
+const deleteList = listId =>
+  doDelete(`https://www.googleapis.com/tasks/v1/users/@me/lists/${listId}`)
 
 export const tasksResolvers = {
   Query: {
-    taskLists: () =>
-      fetchItems('https://www.googleapis.com/tasks/v1/users/@me/lists'),
-    taskList: async (_, { id }) => {
-      const result = await fetchResult(
-        `https://www.googleapis.com/tasks/v1/users/@me/lists/${id}`
-      )
-      return {
-        ...result,
-        tasks: await fetchItems(
-          `https://www.googleapis.com/tasks/v1/lists/${id}/tasks`
-        ),
-      }
-    },
-    task: (_, { listId, id }) =>
-      data.find(l => l.id === listId).tasks.find(t => t.id === id),
+    taskLists: () => getLists(),
+    taskList: (_, { id }) => getList(id),
+    task: (_, { listId, id }) => getTask(id, listId),
   },
   Mutation: {
-    addList: (_, { title }) => {
-      const list = {
-        id: nextId(),
-        title,
-        tasks: [],
-      }
-      data.push(list)
-      return list
-    },
+    addList: (_, { title }) => addList(title),
+    deleteList: (_, { listId }) => deleteList(listId),
+    editList: (_, { listId, title }) => updateList(listId, title),
     updateTask: (_, { title, notes, completed, due, id, listId }) => {
       const task = data.find(l => l.id === listId).tasks.find(t => t.id === id)
       task.title = title

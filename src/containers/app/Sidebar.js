@@ -8,13 +8,12 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListSubheader from '@material-ui/core/ListSubheader'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import React from 'react'
 
 import { TaskListLink } from '../../components/Link'
 import AddTaskListButton from './taskLists/AddTaskListButton'
+import ListSidebarContextMenu from './taskLists/ListSidebarContextMenu'
 
 let hackToPreventIdCollisions = 1
 
@@ -32,8 +31,10 @@ export const TASK_LISTS = gql`
 
 function Sidebar({ match }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
-  function handleActionsClick(event) {
+  const [list, setList] = React.useState(null)
+  function handleActionsClick(event, list) {
     setAnchorEl(event.currentTarget)
+    setList(list)
   }
   function handleActionsClose() {
     setAnchorEl(null)
@@ -73,7 +74,7 @@ function Sidebar({ match }) {
                         <IconButton
                           edge="end"
                           aria-label="List actions"
-                          onClick={handleActionsClick}
+                          onClick={e => handleActionsClick(e, { id, title })}
                         >
                           <MoreIcon />
                         </IconButton>
@@ -84,14 +85,13 @@ function Sidebar({ match }) {
               </Droppable>
             ))}
             <AddTaskListButton />
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleActionsClose}
-            >
-              <MenuItem onClick={handleActionsClose}>Rename list</MenuItem>
-              <MenuItem onClick={handleActionsClose}>Delete list</MenuItem>
-            </Menu>
+            {list && (
+              <ListSidebarContextMenu
+                list={list}
+                anchorEl={anchorEl}
+                handleActionsClose={handleActionsClose}
+              />
+            )}
           </List>
         )
       }}

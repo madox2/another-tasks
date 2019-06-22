@@ -14,7 +14,7 @@ const ADD_TASK = gql`
       title
       notes
       due
-      completed
+      status
     }
   }
 `
@@ -29,10 +29,10 @@ export default function ListActionsToolbar({ listId, onTaskAdd }) {
           __typename: 'Mutation',
           addTask: {
             id: Date.now() + '',
-            title: '',
-            notes: '',
+            title: null,
+            notes: null,
             due: null,
-            completed: false,
+            status: 'needsAction',
             __typename: 'Task',
           },
         }}

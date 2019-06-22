@@ -55,7 +55,7 @@ const typeDefs = `
       title: String
       notes: String
       due: String
-      completed: String
+      status: String
       id: String
       listId: String
     ): Task

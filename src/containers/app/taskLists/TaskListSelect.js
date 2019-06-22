@@ -9,8 +9,8 @@ export default function TaskListSelect({ ...props }) {
   return (
     <Query query={TASK_LISTS}>
       {({ loading, error, data }) => {
-        if (loading) return <Select />
-        if (error) return <Select />
+        if (loading) return <Select value="" />
+        if (error) return <Select value="" />
 
         return (
           <Select {...props}>

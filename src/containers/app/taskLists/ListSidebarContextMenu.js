@@ -20,7 +20,7 @@ const DELETE_LIST = gql`
 
 const EDIT_LIST = gql`
   mutation EditList($listId: String!, $title: String) {
-    editList(listId: $listId)
+    editList(listId: $listId, title: $title)
   }
 `
 
@@ -68,12 +68,13 @@ const ListSidebarContextMenu = ({ anchorEl, handleActionsClose, list }) => {
                     Cancel
                   </Button>
                   <Button
-                    onClick={() =>
+                    onClick={() => {
                       editList({
                         variables: { listId: list.id, title },
                         refetchQueries: [{ query: TASK_LISTS }],
-                      }).then(handleActionsClose)
-                    }
+                      })
+                      handleActionsClose()
+                    }}
                     color="primary"
                   >
                     Edit
@@ -89,12 +90,13 @@ const ListSidebarContextMenu = ({ anchorEl, handleActionsClose, list }) => {
         {(deleteList, { data }) => {
           return (
             <MenuItem
-              onClick={() =>
+              onClick={() => {
                 deleteList({
                   variables: { listId: list.id },
                   refetchQueries: [{ query: TASK_LISTS }],
-                }).then(handleActionsClose)
-              }
+                })
+                handleActionsClose()
+              }}
             >
               Delete list
             </MenuItem>

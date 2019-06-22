@@ -90,6 +90,15 @@ const getLists = () =>
 const getTask = (id, listId) =>
   fetchResult(`https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}`)
 
+const createTask = listId =>
+  doPost(`https://www.googleapis.com/tasks/v1/lists/${listId}/tasks`)
+
+const updateTask = task =>
+  doPut(
+    `https://www.googleapis.com/tasks/v1/lists/${task.listId}/tasks/${task.id}`,
+    task
+  )
+
 const addList = title =>
   doPost('https://www.googleapis.com/tasks/v1/users/@me/lists', { title })
 
@@ -112,26 +121,9 @@ export const tasksResolvers = {
     addList: (_, { title }) => addList(title),
     deleteList: (_, { listId }) => deleteList(listId),
     editList: (_, { listId, title }) => updateList(listId, title),
-    updateTask: (_, { title, notes, completed, due, id, listId }) => {
-      const task = data.find(l => l.id === listId).tasks.find(t => t.id === id)
-      task.title = title
-      task.notes = notes
-      task.due = due
-      task.completed = completed
-      return task
-    },
-    addTask: (_, { listId }) => {
-      const list = data.find(l => l.id === listId)
-      const task = {
-        id: nextId(),
-        title: '',
-        notes: '',
-        due: undefined,
-        completed: false,
-      }
-      list.tasks = [task, ...list.tasks]
-      return task
-    },
+    updateTask: (_, { title, notes, status, due, id, listId }) =>
+      updateTask({ title, notes, status, due, id, listId }),
+    addTask: (_, { listId }) => createTask(listId),
     moveTask: (_, { listId, id, previousId }) => {
       const list = data.find(l => l.id === listId)
       const task = list.tasks.find(t => t.id === id)

@@ -22,7 +22,7 @@ const UPDATE_TASK = gql`
     $title: String
     $notes: String
     $due: String
-    $completed: Boolean
+    $status: String
     $id: String
     $listId: String
   ) {
@@ -31,20 +31,20 @@ const UPDATE_TASK = gql`
       notes: $notes
       due: $due
       id: $id
-      completed: $completed
+      status: $status
       listId: $listId
     ) {
       id
       title
       notes
       due
-      completed
+      status
     }
   }
 `
 
 export function useUpdateTaskEffect(updateTask, task) {
-  const { title, notes, due, listId, id, completed } = task
+  const { title, notes, due, listId, id, status } = task
   const [shouldUpdate, setShouldUpdate] = useState(false)
   useEffect(() => {
     if (!shouldUpdate) {
@@ -53,7 +53,7 @@ export function useUpdateTaskEffect(updateTask, task) {
       return
     }
     updateTask({
-      variables: { title, notes, due, listId, id, completed },
+      variables: { title, notes, due, listId, id, status },
       optimisticResponse: {
         __typename: 'Mutation',
         updateTask: {
@@ -62,16 +62,16 @@ export function useUpdateTaskEffect(updateTask, task) {
           title,
           notes,
           due,
-          completed,
+          status,
         },
       },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, notes, due, completed])
+  }, [title, notes, due, status])
 }
 
 function TaskForm({ data, listId, updateTask }) {
-  const [title, setTitle] = useState(data.task.title || '')
+  const [title, setTitle] = useState(data.task.title)
   const [notes, setNotes] = useState(data.task.notes || '')
   const [due, setDue] = useState(data.task.due || '')
   const [list, setList] = useState(listId)
@@ -79,8 +79,8 @@ function TaskForm({ data, listId, updateTask }) {
   useUpdateTaskEffect(updateTask, {
     ...data.task,
     title,
-    notes,
-    due,
+    notes: notes || null,
+    due: due || null,
     listId,
   })
   return (

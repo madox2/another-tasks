@@ -45,7 +45,7 @@ export const TASK_LIST = gql`
         title
         notes
         due
-        completed
+        status
       }
     }
   }
@@ -53,12 +53,12 @@ export const TASK_LIST = gql`
 
 function TaskItemComponent({ task, inputRef, listId, updateTask }) {
   const [title, setTitle] = useState(task.title || '')
-  const [completed, setCompleted] = useState(task.completed || false)
+  const [status, setStatus] = useState(task.status)
   useUpdateTaskEffect(updateTask, {
     ...task,
     listId,
-    title,
-    completed,
+    title: title || null,
+    status,
   })
   const { notes, id } = task
   const classes = useStyles()
@@ -67,10 +67,10 @@ function TaskItemComponent({ task, inputRef, listId, updateTask }) {
       <ListItemIcon>
         <CompletedCheckbox
           edge="start"
-          checked={!!completed}
+          status={status}
+          setStatus={setStatus}
           tabIndex={-1}
           disableRipple
-          onClick={() => setCompleted(!completed)}
         />
       </ListItemIcon>
       <ListItemText
@@ -84,7 +84,7 @@ function TaskItemComponent({ task, inputRef, listId, updateTask }) {
             InputProps={{
               disableUnderline: true,
               classes: {
-                input: completed && classes.completedInput,
+                input: status === 'completed' && classes.completedInput,
               },
             }}
           />

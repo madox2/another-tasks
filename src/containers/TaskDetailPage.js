@@ -17,6 +17,7 @@ export const TASK = gql`
       title
       notes
       due
+      status
     }
   }
 `

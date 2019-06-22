@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import React, { useState, useEffect } from 'react'
 import TextField from '@material-ui/core/TextField'
+import { debounce } from 'lodash'
 
 import TaskListSelect from '../taskLists/TaskListSelect'
 
@@ -43,6 +44,24 @@ const UPDATE_TASK = gql`
   }
 `
 
+const update = (updateTask, { title, notes, due, listId, id, status }) =>
+  updateTask({
+    variables: { title, notes, due, listId, id, status },
+    optimisticResponse: {
+      __typename: 'Mutation',
+      updateTask: {
+        id: id,
+        __typename: 'Task',
+        title,
+        notes,
+        due,
+        status,
+      },
+    },
+  })
+
+const debouncedUpdate = debounce(update, 1000)
+
 export function useUpdateTaskEffect(updateTask, task) {
   const { title, notes, due, listId, id, status } = task
   const [shouldUpdate, setShouldUpdate] = useState(false)
@@ -52,20 +71,7 @@ export function useUpdateTaskEffect(updateTask, task) {
       setShouldUpdate(true)
       return
     }
-    updateTask({
-      variables: { title, notes, due, listId, id, status },
-      optimisticResponse: {
-        __typename: 'Mutation',
-        updateTask: {
-          id: id,
-          __typename: 'Task',
-          title,
-          notes,
-          due,
-          status,
-        },
-      },
-    })
+    debouncedUpdate(updateTask, { title, notes, due, listId, id, status })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, notes, due, status])
 }

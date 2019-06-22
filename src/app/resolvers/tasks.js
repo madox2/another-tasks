@@ -71,8 +71,14 @@ async function fetchItems(path) {
   return (result && result.items) || []
 }
 
-const getTasks = id =>
-  fetchItems(`https://www.googleapis.com/tasks/v1/lists/${id}/tasks`)
+const getTasks = async id => {
+  const tasks = await fetchItems(
+    `https://www.googleapis.com/tasks/v1/lists/${id}/tasks`
+  )
+  tasks.sort((a, b) => a.position.localeCompare(b.position))
+  console.log('tas', tasks)
+  return tasks
+}
 
 const getList = async id => {
   const result = await fetchResult(

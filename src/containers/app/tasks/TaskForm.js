@@ -1,11 +1,12 @@
 import { Mutation } from 'react-apollo'
+import { debounce } from 'lodash'
 import { gql } from 'apollo-boost'
 import { makeStyles } from '@material-ui/core'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import React, { useState, useEffect } from 'react'
 import TextField from '@material-ui/core/TextField'
-import { debounce } from 'lodash'
 
+import DateTimePicker from '../../../components/DateTimePicker'
 import TaskListSelect from '../taskLists/TaskListSelect'
 
 const useStyles = makeStyles(theme => ({
@@ -117,13 +118,12 @@ function TaskForm({ data, listId, updateTask }) {
         />
       </div>
       <br />
-      <TextField
+      <DateTimePicker
+        value={due}
+        onChange={setDue}
         label="Add date/time"
-        type="date"
         className={classes.shortInput}
         InputLabelProps={{ shrink: true }}
-        value={due}
-        onChange={e => setDue(e.target.value)}
       />
     </div>
   )

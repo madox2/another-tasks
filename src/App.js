@@ -2,15 +2,22 @@ import './App.css'
 
 import { ApolloProvider } from 'react-apollo'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import ApolloClient from 'apollo-boost'
+import { SchemaLink } from 'apollo-link-schema'
 import React from 'react'
 
+import { ApolloClient } from 'apollo-client'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+
+import { schema } from './app/schema'
 import IndexPage from './containers/IndexPage'
 import NotFoundPage from './containers/NotFoundPage'
 import TaskDetailPage from './containers/TaskDetailPage'
 import TasksPage from './containers/TasksPage'
 
-const client = new ApolloClient()
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: new SchemaLink({ schema }),
+})
 
 function App() {
   return (

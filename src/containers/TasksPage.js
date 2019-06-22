@@ -67,7 +67,7 @@ function TaskItemComponent({ task, inputRef, listId, updateTask }) {
       <ListItemIcon>
         <CompletedCheckbox
           edge="start"
-          checked={completed}
+          checked={!!completed}
           tabIndex={-1}
           disableRipple
           onClick={() => setCompleted(!completed)}

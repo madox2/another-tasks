@@ -1,4 +1,5 @@
-import { Redirect } from 'react-router-dom'
 import React from 'react'
 
-export default () => <Redirect to="/app/" />
+import LoginForm from './app/login/LoginForm'
+
+export default () => <LoginForm />

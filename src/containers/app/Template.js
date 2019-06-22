@@ -1,3 +1,5 @@
+import { Query } from 'react-apollo'
+import { Redirect } from 'react-router-dom'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -12,6 +14,8 @@ import Typography from '@material-ui/core/Typography'
 
 import PropTypes from 'prop-types'
 
+import { CURRENT_USER } from './login/LoginForm'
+import { LogoutButton } from './login/LogoutButton'
 import Sidebar from './Sidebar'
 
 const drawerWidth = 280
@@ -39,6 +43,11 @@ const useStyles = makeStyles(theme => ({
     },
   },
   toolbar: theme.mixins.toolbar,
+  userToolbar: {
+    padding: 5,
+    display: 'flex',
+    alignItems: 'center',
+  },
   drawerPaper: {
     width: drawerWidth,
   },
@@ -47,7 +56,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function ResponsiveDrawer(props) {
+function Template(props) {
   const { right, toolbar, container, children } = props
   const classes = useStyles()
   const theme = useTheme()
@@ -59,7 +68,9 @@ function ResponsiveDrawer(props) {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar} />
+      <div className={`${classes.toolbar} ${classes.userToolbar}`}>
+        <LogoutButton />
+      </div>
       <Divider />
       <Sidebar />
     </div>
@@ -125,10 +136,21 @@ function ResponsiveDrawer(props) {
   )
 }
 
-ResponsiveDrawer.propTypes = {
+Template.propTypes = {
   // Injected by the documentation to work in an iframe.
   // You won't need it on your project.
   container: PropTypes.object,
 }
 
-export default ResponsiveDrawer
+const withAuthRedirect = Component => props => (
+  <Query query={CURRENT_USER}>
+    {({ loading, error, data }) => {
+      if (loading) return <p>Loading...</p>
+      if (error) return <Redirect to="/" />
+      const isSignedIn = data.currentUser && data.currentUser.isSignedIn
+      return isSignedIn ? <Component {...props} /> : <Redirect to="/" />
+    }}
+  </Query>
+)
+
+export default withAuthRedirect(Template)

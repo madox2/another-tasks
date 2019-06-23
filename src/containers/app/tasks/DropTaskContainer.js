@@ -3,14 +3,11 @@ import { Mutation } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import React from 'react'
 
+import { TASK_LIST } from '../../TasksPage'
+
 const MOVE_TASK = gql`
   mutation MoveTask($id: String!, $previousId: String, $listId: String!) {
-    moveTask(id: $id, previousId: $previousId, listId: $listId) {
-      id
-      tasks {
-        id
-      }
-    }
+    moveTask(id: $id, previousId: $previousId, listId: $listId)
   }
 `
 
@@ -45,12 +42,24 @@ const DropTaskContainer = ({ data, moveTask, listId, ...other }) => (
           variables: { listId, id, previousId },
           optimisticResponse: {
             __typename: 'Mutation',
-            moveTask: {
-              id: listId,
-              __typename: 'TaskList',
-              ...data,
-              tasks,
-            },
+            moveTask: true,
+          },
+          update: (proxy, { data: { moveTask } }) => {
+            const data = proxy.readQuery({
+              query: TASK_LIST,
+              variables: { id: listId },
+            })
+            proxy.writeQuery({
+              query: TASK_LIST,
+              variables: { id: listId },
+              data: {
+                ...data,
+                taskList: {
+                  ...data.taskList,
+                  tasks,
+                },
+              },
+            })
           },
         })
       } else {

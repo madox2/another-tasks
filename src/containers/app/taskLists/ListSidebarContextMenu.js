@@ -13,85 +13,90 @@ import { DELETE_LIST, EDIT_LIST } from '../../../queries/taskMutations'
 import { MINIMAL_TASK_LISTS } from '../../../queries/taskListsQueries'
 
 const ListSidebarContextMenu = ({ anchorEl, handleActionsClose, list }) => {
-  const [open, setOpen] = React.useState(false)
+  const [renameDialogOpen, setRenameDialogOpen] = React.useState(false)
   const [title, setTitle] = React.useState(list.title)
 
-  function handleClickOpen() {
-    setOpen(true)
+  function openRenameDialog() {
+    handleActionsClose()
+    setRenameDialogOpen(true)
   }
 
-  function handleCancel() {
-    setOpen(false)
+  function closeRenameDialog() {
+    setRenameDialogOpen(false)
   }
   return (
-    <Menu
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl)}
-      onClose={handleActionsClose}
-    >
-      <Mutation mutation={EDIT_LIST}>
-        {(editList, { data }) => {
-          return (
-            <>
-              <MenuItem onClick={handleClickOpen}>Rename list</MenuItem>
-              <Dialog
-                open={open}
-                onClose={handleCancel}
-                aria-labelledby="form-dialog-title"
-              >
-                <DialogTitle id="form-dialog-title">List</DialogTitle>
-                <DialogContent>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    label="List Name"
-                    type="text"
-                    fullWidth
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleCancel} color="primary">
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      editList({
-                        variables: { listId: list.id, title },
-                        refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
-                      })
-                      handleActionsClose()
-                    }}
-                    color="primary"
-                  >
-                    Edit
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </>
-          )
-        }}
-      </Mutation>
+    <>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleActionsClose}
+      >
+        <Mutation mutation={EDIT_LIST}>
+          {(editList, { data }) => {
+            return <MenuItem onClick={openRenameDialog}>Rename list</MenuItem>
+          }}
+        </Mutation>
 
-      <Mutation mutation={DELETE_LIST}>
-        {(deleteList, { data }) => {
-          return (
-            <MenuItem
-              onClick={() => {
-                deleteList({
-                  variables: { listId: list.id },
-                  refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
-                })
-                handleActionsClose()
-              }}
-            >
-              Delete list
-            </MenuItem>
-          )
-        }}
-      </Mutation>
-    </Menu>
+        <Mutation mutation={DELETE_LIST}>
+          {(deleteList, { data }) => {
+            return (
+              <MenuItem
+                onClick={() => {
+                  deleteList({
+                    variables: { listId: list.id },
+                    refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
+                  })
+                  handleActionsClose()
+                }}
+              >
+                Delete list
+              </MenuItem>
+            )
+          }}
+        </Mutation>
+      </Menu>
+      <Dialog
+        open={renameDialogOpen}
+        onClose={closeRenameDialog}
+        aria-labelledby="form-dialog-title"
+      >
+        <Mutation mutation={EDIT_LIST}>
+          {(editList, { data }) => (
+            <>
+              <DialogTitle id="form-dialog-title">List</DialogTitle>
+              <DialogContent>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  label="List Name"
+                  type="text"
+                  fullWidth
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={closeRenameDialog} color="primary">
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    editList({
+                      variables: { listId: list.id, title },
+                      refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
+                    })
+                    closeRenameDialog()
+                  }}
+                  color="primary"
+                >
+                  Edit
+                </Button>
+              </DialogActions>
+            </>
+          )}
+        </Mutation>
+      </Dialog>
+    </>
   )
 }
 

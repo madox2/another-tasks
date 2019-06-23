@@ -9,6 +9,7 @@ import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
 import { TaskDetailLink } from '../../../components/Link'
+import { shortenText } from '../../../app/utils/textUtils'
 import { useUpdateTaskEffect } from '../../../queries/taskHelpers'
 import { withUpdateTaskMutation } from '../../../queries/taskMutations'
 import CompletedCheckbox from '../../../components/CompletedCheckbox'
@@ -19,6 +20,8 @@ const useStyles = makeStyles(theme => ({
     color: grey[400],
   },
 }))
+
+const shortenNotes = shortenText(100)
 
 function TaskItem({ task, inputRef, listId, updateTask }) {
   const [title, setTitle] = useState(task.title || '')
@@ -58,7 +61,7 @@ function TaskItem({ task, inputRef, listId, updateTask }) {
             }}
           />
         }
-        secondary={notes}
+        secondary={shortenNotes(notes)}
       />
       <ListItemSecondaryAction>
         <IconButton

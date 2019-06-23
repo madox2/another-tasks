@@ -1,3 +1,5 @@
+import './SidebarTaskListItem.css'
+
 import { Droppable } from 'react-beautiful-dnd'
 import IconButton from '@material-ui/core/IconButton'
 import ListItem from '@material-ui/core/ListItem'
@@ -22,7 +24,7 @@ export default function SidebarTaskListItem({
       droppableId={`tasklist-${hackToPreventIdCollisions++}-${id}`}
     >
       {(provided, snapshot) => (
-        <div ref={provided.innerRef}>
+        <div ref={provided.innerRef} className="SidebarTaskListItem">
           <div style={{ visibility: 'hidden', height: 0 }}>
             {provided.placeholder}
           </div>
@@ -41,6 +43,7 @@ export default function SidebarTaskListItem({
             <ListItemSecondaryAction>
               <IconButton
                 edge="end"
+                className="SidebarTaskListItem-action"
                 aria-label="List actions"
                 onClick={e => handleActionsClick(e, { id, title })}
               >

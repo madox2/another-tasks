@@ -7,13 +7,16 @@ import Divider from '@material-ui/core/Divider'
 import Drawer from '@material-ui/core/Drawer'
 import Hidden from '@material-ui/core/Hidden'
 import IconButton from '@material-ui/core/IconButton'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import MenuIcon from '@material-ui/icons/Menu'
-import React from 'react'
+import React, { useContext } from 'react'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 
 import { CURRENT_USER } from '../../queries/loginQueries'
+import { LoadingConext } from './common/LoadingContext'
 import { LogoutButton } from './login/LogoutButton'
+import GlobalLoadingIndicator from './common/GlobalLoadingIndicator'
 import Sidebar from './Sidebar'
 import logo from '../../resources/logo.png'
 
@@ -62,6 +65,7 @@ function Template(props) {
   const classes = useStyles()
   const theme = useTheme()
   const [mobileOpen, setMobileOpen] = React.useState(false)
+  const { loading } = useContext(LoadingConext)
 
   function handleDrawerToggle() {
     setMobileOpen(!mobileOpen)
@@ -132,6 +136,7 @@ function Template(props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
+        {!!loading && <LinearProgress />}
         {children}
       </main>
     </div>
@@ -141,7 +146,7 @@ function Template(props) {
 const withAuthRedirect = Component => props => (
   <Query query={CURRENT_USER}>
     {({ loading, error, data }) => {
-      if (loading) return <p>Loading...</p>
+      if (loading) return <GlobalLoadingIndicator />
       if (error) return <Redirect to="/" />
       const isSignedIn = data.currentUser && data.currentUser.isSignedIn
       return isSignedIn ? <Component {...props} /> : <Redirect to="/" />

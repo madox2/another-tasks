@@ -4,12 +4,19 @@ import React from 'react'
 import Select from '@material-ui/core/Select'
 
 import { MINIMAL_TASK_LISTS } from '../../../queries/taskListsQueries'
+import GlobalLoadingIndicator from '../common/GlobalLoadingIndicator'
 
 export default function TaskListSelect({ ...props }) {
   return (
     <Query query={MINIMAL_TASK_LISTS}>
       {({ loading, error, data }) => {
-        if (loading) return <Select value="" />
+        if (loading)
+          return (
+            <>
+              <Select value="" />
+              <GlobalLoadingIndicator />
+            </>
+          )
         if (error) return <Select value="" />
 
         return (

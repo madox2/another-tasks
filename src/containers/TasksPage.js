@@ -2,8 +2,10 @@ import { Query } from 'react-apollo'
 import React, { useRef } from 'react'
 
 import { TASK_LIST } from '../queries/taskListsQueries'
+import DefaultError from '../components/DefaultError'
 import DraggableList from '../components/DraggableList'
 import DropTaskContainer from './app/tasks/DropTaskContainer'
+import GlobalLoadingIndicator from './app/common/GlobalLoadingIndicator'
 import ListActionsToolbar from './app/tasks/ListActionsToolbar'
 import ListContextMenu from './app/tasks/ListContextMenu'
 import TaskItem from './app/tasks/TaskItem'
@@ -24,8 +26,18 @@ function TasksPage({ match: { params } }) {
   return (
     <Query variables={{ id: params.listId }} query={TASK_LIST}>
       {({ loading, error, data }) => {
-        if (loading) return <NoListSelected>Loading...</NoListSelected>
-        if (error) return <NoListSelected>Error :(</NoListSelected>
+        if (loading)
+          return (
+            <NoListSelected>
+              <GlobalLoadingIndicator />
+            </NoListSelected>
+          )
+        if (error)
+          return (
+            <NoListSelected>
+              <DefaultError />
+            </NoListSelected>
+          )
 
         return (
           <DropTaskContainer data={data} listId={params.listId}>

@@ -1,4 +1,3 @@
-import { Mutation } from 'react-apollo'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -6,15 +5,20 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import React from 'react'
+import React, { useEffect } from 'react'
 import TextField from '@material-ui/core/TextField'
 
 import { DELETE_LIST, EDIT_LIST } from '../../../queries/taskMutations'
+import { LoadableMutation } from '../common/LoadableMutation'
 import { MINIMAL_TASK_LISTS } from '../../../queries/taskListsQueries'
 
 const ListSidebarContextMenu = ({ anchorEl, handleActionsClose, list }) => {
   const [renameDialogOpen, setRenameDialogOpen] = React.useState(false)
   const [title, setTitle] = React.useState(list.title)
+  useEffect(() => {
+    setTitle(list && list.title)
+    // eslint-disable-next-line
+  }, [list && list.id])
 
   function openRenameDialog() {
     handleActionsClose()
@@ -31,36 +35,39 @@ const ListSidebarContextMenu = ({ anchorEl, handleActionsClose, list }) => {
         open={Boolean(anchorEl)}
         onClose={handleActionsClose}
       >
-        <Mutation mutation={EDIT_LIST}>
-          {(editList, { data }) => {
-            return <MenuItem onClick={openRenameDialog}>Rename list</MenuItem>
-          }}
-        </Mutation>
+        <div>
+          <LoadableMutation mutation={EDIT_LIST}>
+            {(editList, { data }) => {
+              return <MenuItem onClick={openRenameDialog}>Rename list</MenuItem>
+            }}
+          </LoadableMutation>
 
-        <Mutation mutation={DELETE_LIST}>
-          {(deleteList, { data }) => {
-            return (
-              <MenuItem
-                onClick={() => {
-                  deleteList({
-                    variables: { listId: list.id },
-                    refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
-                  })
-                  handleActionsClose()
-                }}
-              >
-                Delete list
-              </MenuItem>
-            )
-          }}
-        </Mutation>
+          <LoadableMutation mutation={DELETE_LIST}>
+            {(deleteList, { data }) => {
+              return (
+                <MenuItem
+                  onClick={() => {
+                    deleteList({
+                      variables: { listId: list.id },
+                      refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
+                      awaitRefetchQueries: true,
+                    })
+                    handleActionsClose()
+                  }}
+                >
+                  Delete list
+                </MenuItem>
+              )
+            }}
+          </LoadableMutation>
+        </div>
       </Menu>
       <Dialog
         open={renameDialogOpen}
         onClose={closeRenameDialog}
         aria-labelledby="form-dialog-title"
       >
-        <Mutation mutation={EDIT_LIST}>
+        <LoadableMutation mutation={EDIT_LIST}>
           {(editList, { data }) => (
             <>
               <DialogTitle id="form-dialog-title">List</DialogTitle>
@@ -84,6 +91,7 @@ const ListSidebarContextMenu = ({ anchorEl, handleActionsClose, list }) => {
                     editList({
                       variables: { listId: list.id, title },
                       refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
+                      awaitRefetchQueries: true,
                     })
                     closeRenameDialog()
                   }}
@@ -94,7 +102,7 @@ const ListSidebarContextMenu = ({ anchorEl, handleActionsClose, list }) => {
               </DialogActions>
             </>
           )}
-        </Mutation>
+        </LoadableMutation>
       </Dialog>
     </>
   )

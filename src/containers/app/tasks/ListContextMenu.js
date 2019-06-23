@@ -36,9 +36,6 @@ export default function ListContextMenu() {
         <Divider />
         <MenuItem onClick={handleActionsClose}>Rename list</MenuItem>
         <MenuItem onClick={handleActionsClose}>Delete list</MenuItem>
-        <MenuItem onClick={handleActionsClose}>
-          Clear all completed tasks
-        </MenuItem>
       </Menu>
     </>
   )

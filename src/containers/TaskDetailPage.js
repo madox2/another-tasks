@@ -1,9 +1,9 @@
 import { DragDropContext } from 'react-beautiful-dnd'
-import { Query } from 'react-apollo'
 import BackIcon from '@material-ui/icons/ArrowBack'
 import DeleteIcon from '@material-ui/icons/Delete'
 import React from 'react'
 
+import { LoadableQuery } from './app/common/LoadableQuery'
 import { TASK } from '../queries/taskQueries'
 import { TaskListLink } from '../components/Link'
 import TaskForm from './app/tasks/TaskForm'
@@ -27,16 +27,14 @@ export default function TaskDetailPage({ match: { params }, history }) {
           />
         }
       >
-        <Query
+        <LoadableQuery
           query={TASK}
           variables={{ id: params.taskId, listId: params.listId }}
         >
-          {({ loading, error, data }) => {
-            if (loading) return <p>Loading...</p>
-            if (error) return <p>Error :(</p>
+          {({ data }) => {
             return <TaskForm data={data} listId={params.listId} />
           }}
-        </Query>
+        </LoadableQuery>
       </Template>
     </DragDropContext>
   )

@@ -1,4 +1,3 @@
-import { Mutation } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import AddIcon from '@material-ui/icons/Add'
 import Button from '@material-ui/core/Button'
@@ -10,6 +9,7 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 
 import { ADD_LIST } from '../../../queries/taskListsMutations'
+import { LoadableMutation } from '../common/LoadableMutation'
 import { MINIMAL_TASK_LISTS } from '../../../queries/taskListsQueries'
 import FabButton from '../../../components/FabButton'
 
@@ -51,11 +51,12 @@ function AddTaskListButton({ history }) {
           <Button onClick={handleCancel} color="primary">
             Cancel
           </Button>
-          <Mutation mutation={ADD_LIST}>
+          <LoadableMutation mutation={ADD_LIST}>
             {(addList, { data }) => {
               function handleCreate() {
                 addList({
                   variables: { title },
+                  awaitRefetchQueries: true,
                   refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
                 })
                   .then(result => {
@@ -73,7 +74,7 @@ function AddTaskListButton({ history }) {
                 </Button>
               )
             }}
-          </Mutation>
+          </LoadableMutation>
         </DialogActions>
       </Dialog>
     </>

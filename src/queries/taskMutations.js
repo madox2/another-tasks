@@ -2,8 +2,10 @@ import { Mutation } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import React from 'react'
 
+import { LoadableMutation } from '../containers/app/common/LoadableMutation'
+
 export const withMoveToListMutation = Component => props => (
-  <Mutation
+  <LoadableMutation
     mutation={gql`
       mutation MoveToList(
         $id: String!
@@ -15,7 +17,7 @@ export const withMoveToListMutation = Component => props => (
     `}
   >
     {(moveToList, { data }) => <Component {...props} moveToList={moveToList} />}
-  </Mutation>
+  </LoadableMutation>
 )
 
 const UPDATE_TASK = gql`

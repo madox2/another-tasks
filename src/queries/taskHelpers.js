@@ -58,6 +58,7 @@ export const mutateMoveToList = (moveToList, { listId, id, targetListId }) =>
         data,
       })
     },
+    awaitRefetchQueries: true,
     refetchQueries: [
       {
         query: TASK_LIST,

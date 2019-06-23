@@ -1,9 +1,9 @@
-import { Query } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import List from '@material-ui/core/List'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import React from 'react'
 
+import { LoadableQuery } from './common/LoadableQuery'
 import { MINIMAL_TASK_LISTS } from '../../queries/taskListsQueries'
 import AddTaskListButton from './taskLists/AddTaskListButton'
 import ListSidebarContextMenu from './taskLists/ListSidebarContextMenu'
@@ -23,11 +23,8 @@ function Sidebar({ match }) {
     setAnchorEl(null)
   }
   return (
-    <Query query={MINIMAL_TASK_LISTS}>
-      {({ loading, error, data }) => {
-        if (loading) return <p>Loading...</p>
-        if (error) return <p>Error :(</p>
-
+    <LoadableQuery query={MINIMAL_TASK_LISTS}>
+      {({ data }) => {
         return (
           <List>
             <ListSubheader>Task lists</ListSubheader>
@@ -51,7 +48,7 @@ function Sidebar({ match }) {
           </List>
         )
       }}
-    </Query>
+    </LoadableQuery>
   )
 }
 

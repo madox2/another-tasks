@@ -4,7 +4,7 @@ import AddIcon from '@material-ui/icons/Add'
 import ClearCompletedIcon from '@material-ui/icons/VisibilityOff'
 import React from 'react'
 
-import { TASK_LIST } from '../../TasksPage'
+import { TASK_LIST } from './mutations'
 import FabButton from '../../../components/FabButton'
 
 const ADD_TASK = gql`

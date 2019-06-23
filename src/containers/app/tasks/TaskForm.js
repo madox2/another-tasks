@@ -1,11 +1,16 @@
-import { Mutation } from 'react-apollo'
-import { throttle } from 'lodash'
-import { gql } from 'apollo-boost'
+import { compose } from 'react-apollo'
 import { makeStyles } from '@material-ui/core'
+import { withRouter } from 'react-router-dom'
 import FormHelperText from '@material-ui/core/FormHelperText'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 
+import {
+  mutateMoveToList,
+  useUpdateTaskEffect,
+  withMoveToListMutation,
+  withUpdateTaskMutation,
+} from './mutations'
 import DateTimePicker from '../../../components/DateTimePicker'
 import TaskListSelect from '../taskLists/TaskListSelect'
 
@@ -19,65 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const UPDATE_TASK = gql`
-  mutation UpdateTask(
-    $title: String
-    $notes: String
-    $due: String
-    $status: String
-    $id: String
-    $listId: String
-  ) {
-    updateTask(
-      title: $title
-      notes: $notes
-      due: $due
-      id: $id
-      status: $status
-      listId: $listId
-    ) {
-      id
-      title
-      notes
-      due
-      status
-    }
-  }
-`
-
-const update = (updateTask, { title, notes, due, listId, id, status }) =>
-  updateTask({
-    variables: { title, notes, due, listId, id, status },
-    optimisticResponse: {
-      __typename: 'Mutation',
-      updateTask: {
-        id: id,
-        __typename: 'Task',
-        title,
-        notes,
-        due,
-        status,
-      },
-    },
-  })
-
-const throttledUpdate = throttle(update, 500, { leading: false })
-
-export function useUpdateTaskEffect(updateTask, task) {
-  const { title, notes, due, listId, id, status } = task
-  const [shouldUpdate, setShouldUpdate] = useState(false)
-  useEffect(() => {
-    if (!shouldUpdate) {
-      // skip first update
-      setShouldUpdate(true)
-      return
-    }
-    throttledUpdate(updateTask, { title, notes, due, listId, id, status })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, notes, due, status])
-}
-
-function TaskForm({ data, listId, updateTask }) {
+function TaskForm({ data, listId, updateTask, moveToList, history }) {
   const [title, setTitle] = useState(data.task.title)
   const [notes, setNotes] = useState(data.task.notes || '')
   const [due, setDue] = useState(data.task.due || '')
@@ -114,7 +61,18 @@ function TaskForm({ data, listId, updateTask }) {
         <TaskListSelect
           className={classes.shortInput}
           value={list}
-          onChange={e => setList(e.target.value)}
+          onChange={e => {
+            const targetListId = e.target.value
+            setList(targetListId)
+            if (list !== targetListId) {
+              mutateMoveToList(moveToList, {
+                targetListId,
+                id: data.task.id,
+                listId: list,
+              })
+              history.push(`/app/list/${targetListId}`)
+            }
+          }}
         />
       </div>
       <br />
@@ -129,10 +87,8 @@ function TaskForm({ data, listId, updateTask }) {
   )
 }
 
-export const withUpdateTaskMutation = Component => props => (
-  <Mutation mutation={UPDATE_TASK}>
-    {(updateTask, { data }) => <Component {...props} updateTask={updateTask} />}
-  </Mutation>
-)
-
-export default withUpdateTaskMutation(TaskForm)
+export default compose(
+  withRouter,
+  withUpdateTaskMutation,
+  withMoveToListMutation
+)(TaskForm)

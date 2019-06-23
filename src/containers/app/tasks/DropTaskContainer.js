@@ -3,7 +3,11 @@ import { Mutation, compose } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import React from 'react'
 
-import { TASK_LIST } from '../../TasksPage'
+import {
+  TASK_LIST,
+  mutateMoveToList,
+  withMoveToListMutation,
+} from './mutations'
 
 export const withMoveTaskMutation = Component => props => (
   <Mutation
@@ -14,22 +18,6 @@ export const withMoveTaskMutation = Component => props => (
     `}
   >
     {(moveTask, { data }) => <Component {...props} moveTask={moveTask} />}
-  </Mutation>
-)
-
-export const withMoveToListMutation = Component => props => (
-  <Mutation
-    mutation={gql`
-      mutation MoveToList(
-        $id: String!
-        $listId: String!
-        $targetListId: String!
-      ) {
-        moveToList(id: $id, listId: $listId, targetListId: $targetListId)
-      }
-    `}
-  >
-    {(moveToList, { data }) => <Component {...props} moveToList={moveToList} />}
   </Mutation>
 )
 
@@ -95,35 +83,7 @@ const DropTaskContainer = ({
         if (listId === targetListId) {
           return
         }
-        moveToList({
-          variables: { listId, id, targetListId },
-          optimisticResponse: {
-            __typename: 'Mutation',
-            moveToList: true,
-          },
-          update: (proxy, { data: { moveTask } }) => {
-            const data = proxy.readQuery({
-              query: TASK_LIST,
-              variables: { id: listId },
-            })
-            data.taskList.tasks = data.taskList.tasks.filter(t => t.id !== id)
-            proxy.writeQuery({
-              query: TASK_LIST,
-              variables: { id: listId },
-              data,
-            })
-          },
-          refetchQueries: [
-            {
-              query: TASK_LIST,
-              variables: { id: targetListId },
-            },
-            {
-              query: TASK_LIST,
-              variables: { id: listId },
-            },
-          ],
-        })
+        mutateMoveToList(moveToList, { listId, id, targetListId })
       }
     }}
     {...other}

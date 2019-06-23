@@ -1,5 +1,4 @@
 import { Query } from 'react-apollo'
-import { gql } from 'apollo-boost'
 import { makeStyles } from '@material-ui/core/styles'
 import DetailIcon from '@material-ui/icons/ChevronRight'
 import IconButton from '@material-ui/core/IconButton'
@@ -10,11 +9,12 @@ import React, { useRef, useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
-import { TaskDetailLink } from '../components/Link'
 import {
+  TASK_LIST,
   useUpdateTaskEffect,
   withUpdateTaskMutation,
-} from './app/tasks/TaskForm'
+} from './app/tasks/mutations'
+import { TaskDetailLink } from '../components/Link'
 import CompletedCheckbox from '../components/CompletedCheckbox'
 import DraggableList from '../components/DraggableList'
 import DropTaskContainer from './app/tasks/DropTaskContainer'
@@ -34,22 +34,6 @@ const NoListSelected = ({ children, ...other }) => (
     <Template {...other}>{children}</Template>
   </DropTaskContainer>
 )
-
-export const TASK_LIST = gql`
-  query TaskList($id: String!) {
-    taskList(id: $id) {
-      id
-      title
-      tasks {
-        id
-        title
-        notes
-        due
-        status
-      }
-    }
-  }
-`
 
 function TaskItemComponent({ task, inputRef, listId, updateTask }) {
   const [title, setTitle] = useState(task.title || '')

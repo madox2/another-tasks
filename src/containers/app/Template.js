@@ -15,6 +15,7 @@ import Typography from '@material-ui/core/Typography'
 import { CURRENT_USER } from '../../queries/loginQueries'
 import { LogoutButton } from './login/LogoutButton'
 import Sidebar from './Sidebar'
+import logo from '../../resources/logo.png'
 
 const drawerWidth = 280
 
@@ -43,8 +44,10 @@ const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar,
   userToolbar: {
     padding: 5,
+    paddingLeft: 15,
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   drawerPaper: {
     width: drawerWidth,
@@ -67,6 +70,7 @@ function Template(props) {
   const drawer = (
     <div>
       <div className={`${classes.toolbar} ${classes.userToolbar}`}>
+        <img src={logo} style={{ height: 35 }} alt="logo" />
         <LogoutButton />
       </div>
       <Divider />

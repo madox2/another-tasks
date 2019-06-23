@@ -1,6 +1,5 @@
 import { Droppable } from 'react-beautiful-dnd'
 import { Query } from 'react-apollo'
-import { gql } from 'apollo-boost'
 import { withRouter } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 import List from '@material-ui/core/List'
@@ -11,6 +10,7 @@ import ListSubheader from '@material-ui/core/ListSubheader'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import React from 'react'
 
+import { MINIMAL_TASK_LISTS } from '../../queries/taskListsQueries'
 import { TaskListLink } from '../../components/Link'
 import AddTaskListButton from './taskLists/AddTaskListButton'
 import ListSidebarContextMenu from './taskLists/ListSidebarContextMenu'
@@ -19,15 +19,6 @@ let hackToPreventIdCollisions = 1
 
 const isSelected = (match, id) =>
   match.path === '/app/list/:listId' && id === match.params.listId
-
-export const TASK_LISTS = gql`
-  {
-    taskLists {
-      id
-      title
-    }
-  }
-`
 
 function Sidebar({ match }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -40,7 +31,7 @@ function Sidebar({ match }) {
     setAnchorEl(null)
   }
   return (
-    <Query query={TASK_LISTS}>
+    <Query query={MINIMAL_TASK_LISTS}>
       {({ loading, error, data }) => {
         if (loading) return <p>Loading...</p>
         if (error) return <p>Error :(</p>

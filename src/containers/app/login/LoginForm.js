@@ -4,14 +4,7 @@ import { gql } from 'apollo-boost'
 import Button from '@material-ui/core/Button'
 import React from 'react'
 
-export const CURRENT_USER = gql`
-  query CurrentUser {
-    currentUser {
-      id
-      isSignedIn
-    }
-  }
-`
+import { CURRENT_USER } from '../../../queries/loginQueries'
 
 const LoginButton = () => (
   <Mutation

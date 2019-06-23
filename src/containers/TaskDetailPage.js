@@ -1,26 +1,14 @@
 import { DragDropContext } from 'react-beautiful-dnd'
 import { Query } from 'react-apollo'
-import { gql } from 'apollo-boost'
 import BackIcon from '@material-ui/icons/ArrowBack'
 import DeleteIcon from '@material-ui/icons/Delete'
 import React from 'react'
 
+import { TASK } from '../queries/taskQueries'
 import { TaskListLink } from '../components/Link'
 import TaskForm from './app/tasks/TaskForm'
 import Template from './app/Template'
 import ToolbarButton from '../components/ToolbarButton'
-
-export const TASK = gql`
-  query Task($listId: String!, $id: String!) {
-    task(listId: $listId, id: $id) {
-      id
-      title
-      notes
-      due
-      status
-    }
-  }
-`
 
 export default function TaskDetailPage({ match: { params }, history }) {
   return (

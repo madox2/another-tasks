@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography'
 
 import PropTypes from 'prop-types'
 
-import { CURRENT_USER } from './login/LoginForm'
+import { CURRENT_USER } from '../../queries/loginQueries'
 import { LogoutButton } from './login/LogoutButton'
 import Sidebar from './Sidebar'
 

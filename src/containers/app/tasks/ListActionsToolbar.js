@@ -1,29 +1,11 @@
 import { Mutation } from 'react-apollo'
-import { gql } from 'apollo-boost'
 import AddIcon from '@material-ui/icons/Add'
 import ClearCompletedIcon from '@material-ui/icons/VisibilityOff'
 import React from 'react'
 
-import { TASK_LIST } from './mutations'
+import { ADD_TASK, CLEAR_COMPLETED } from '../../../queries/taskMutations'
+import { TASK_LIST } from '../../../queries/taskListsQueries'
 import FabButton from '../../../components/FabButton'
-
-const ADD_TASK = gql`
-  mutation AddTask($listId: String!) {
-    addTask(listId: $listId) {
-      id
-      title
-      notes
-      due
-      status
-    }
-  }
-`
-
-const CLEAR_COMPLETED = gql`
-  mutation ClearCompleted($listId: String!) {
-    clearCompleted(listId: $listId)
-  }
-`
 
 export default function ListActionsToolbar({ listId, onTaskAdd }) {
   return (

@@ -9,12 +9,10 @@ import React, { useRef, useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
-import {
-  TASK_LIST,
-  useUpdateTaskEffect,
-  withUpdateTaskMutation,
-} from './app/tasks/mutations'
+import { TASK_LIST } from '../queries/taskListsQueries'
 import { TaskDetailLink } from '../components/Link'
+import { useUpdateTaskEffect } from '../queries/taskHelpers'
+import { withUpdateTaskMutation } from '../queries/taskMutations'
 import CompletedCheckbox from '../components/CompletedCheckbox'
 import DraggableList from '../components/DraggableList'
 import DropTaskContainer from './app/tasks/DropTaskContainer'

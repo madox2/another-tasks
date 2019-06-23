@@ -1,25 +1,13 @@
 import { DragDropContext } from 'react-beautiful-dnd'
-import { Mutation, compose } from 'react-apollo'
-import { gql } from 'apollo-boost'
+import { compose } from 'react-apollo'
 import React from 'react'
 
+import { TASK_LIST } from '../../../queries/taskListsQueries'
+import { mutateMoveToList } from '../../../queries/taskHelpers'
 import {
-  TASK_LIST,
-  mutateMoveToList,
+  withMoveTaskMutation,
   withMoveToListMutation,
-} from './mutations'
-
-export const withMoveTaskMutation = Component => props => (
-  <Mutation
-    mutation={gql`
-      mutation MoveTask($id: String!, $previousId: String, $listId: String!) {
-        moveTask(id: $id, previousId: $previousId, listId: $listId)
-      }
-    `}
-  >
-    {(moveTask, { data }) => <Component {...props} moveTask={moveTask} />}
-  </Mutation>
-)
+} from '../../../queries/taskMutations'
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list)

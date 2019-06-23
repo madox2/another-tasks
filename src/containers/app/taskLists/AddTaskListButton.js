@@ -1,5 +1,4 @@
 import { Mutation } from 'react-apollo'
-import { gql } from 'apollo-boost'
 import { withRouter } from 'react-router-dom'
 import AddIcon from '@material-ui/icons/Add'
 import Button from '@material-ui/core/Button'
@@ -10,19 +9,9 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import React from 'react'
 import TextField from '@material-ui/core/TextField'
 
-import { TASK_LISTS } from '../Sidebar'
+import { ADD_LIST } from '../../../queries/taskListsMutations'
+import { MINIMAL_TASK_LISTS } from '../../../queries/taskListsQueries'
 import FabButton from '../../../components/FabButton'
-
-const ADD_LIST = gql`
-  mutation AddList($title: String!) {
-    addList(title: $title) {
-      id
-      title
-      due
-      completed
-    }
-  }
-`
 
 function AddTaskListButton({ history }) {
   const [open, setOpen] = React.useState(false)
@@ -67,7 +56,7 @@ function AddTaskListButton({ history }) {
               function handleCreate() {
                 addList({
                   variables: { title },
-                  refetchQueries: [{ query: TASK_LISTS }],
+                  refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
                 })
                   .then(result => {
                     history.push(`/app/list/${result.data.addList.id}`)

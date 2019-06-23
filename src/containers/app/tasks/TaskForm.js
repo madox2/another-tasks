@@ -8,9 +8,11 @@ import TextField from '@material-ui/core/TextField'
 import {
   mutateMoveToList,
   useUpdateTaskEffect,
+} from '../../../queries/taskHelpers'
+import {
   withMoveToListMutation,
   withUpdateTaskMutation,
-} from './mutations'
+} from '../../../queries/taskMutations'
 import DateTimePicker from '../../../components/DateTimePicker'
 import TaskListSelect from '../taskLists/TaskListSelect'
 

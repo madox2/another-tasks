@@ -1,28 +1,16 @@
+import { Mutation } from 'react-apollo'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import TextField from '@material-ui/core/TextField'
-import { Mutation } from 'react-apollo'
-import { gql } from 'apollo-boost'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import React from 'react'
+import TextField from '@material-ui/core/TextField'
 
-import { TASK_LISTS } from '../Sidebar'
-
-const DELETE_LIST = gql`
-  mutation DeleteList($listId: String!) {
-    deleteList(listId: $listId)
-  }
-`
-
-const EDIT_LIST = gql`
-  mutation EditList($listId: String!, $title: String) {
-    editList(listId: $listId, title: $title)
-  }
-`
+import { DELETE_LIST, EDIT_LIST } from '../../../queries/taskMutations'
+import { MINIMAL_TASK_LISTS } from '../../../queries/taskListsQueries'
 
 const ListSidebarContextMenu = ({ anchorEl, handleActionsClose, list }) => {
   const [open, setOpen] = React.useState(false)
@@ -71,7 +59,7 @@ const ListSidebarContextMenu = ({ anchorEl, handleActionsClose, list }) => {
                     onClick={() => {
                       editList({
                         variables: { listId: list.id, title },
-                        refetchQueries: [{ query: TASK_LISTS }],
+                        refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
                       })
                       handleActionsClose()
                     }}
@@ -93,7 +81,7 @@ const ListSidebarContextMenu = ({ anchorEl, handleActionsClose, list }) => {
               onClick={() => {
                 deleteList({
                   variables: { listId: list.id },
-                  refetchQueries: [{ query: TASK_LISTS }],
+                  refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
                 })
                 handleActionsClose()
               }}

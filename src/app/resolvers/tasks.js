@@ -1,3 +1,5 @@
+import { pick } from 'lodash'
+
 import { gapi } from '../gclient'
 import { loadPromise } from './auth'
 
@@ -58,8 +60,11 @@ const getLists = () =>
 const getTask = (id, listId) =>
   fetchResult(`https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}`)
 
-const createTask = listId =>
-  doPost(`https://www.googleapis.com/tasks/v1/lists/${listId}/tasks`)
+const createTask = (listId, task) =>
+  doPost(`https://www.googleapis.com/tasks/v1/lists/${listId}/tasks`, task)
+
+const deleteTask = (id, listId) =>
+  doDelete(`https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}`)
 
 const updateTask = task =>
   doPut(
@@ -91,6 +96,14 @@ const moveTask = async (id, previousId, listId) => {
   return true
 }
 
+const moveToList = async (id, listId, targetListId) => {
+  const task = await getTask(id, listId)
+  const movedTask = pick(task, ['title', 'notes', 'due', 'status'])
+  await createTask(targetListId, movedTask)
+  await deleteTask(id, listId)
+  return true
+}
+
 export const tasksResolvers = {
   Query: {
     taskLists: () => getLists(),
@@ -107,5 +120,7 @@ export const tasksResolvers = {
     clearCompleted: (_, { listId }) => clearCompleted(listId),
     moveTask: (_, { listId, id, previousId }) =>
       moveTask(id, previousId, listId),
+    moveToList: (_, { listId, id, targetListId }) =>
+      moveToList(id, listId, targetListId),
   },
 }

@@ -51,7 +51,7 @@ function Sidebar({ match }) {
             {data.taskLists.map(({ title, id }, index) => (
               <Droppable
                 key={id}
-                droppableId={`tasklist-${hackToPreventIdCollisions++}-${index}`}
+                droppableId={`tasklist-${hackToPreventIdCollisions++}-${id}`}
               >
                 {(provided, snapshot) => (
                   <div ref={provided.innerRef}>

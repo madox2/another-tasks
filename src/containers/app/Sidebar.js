@@ -1,21 +1,13 @@
-import { Droppable } from 'react-beautiful-dnd'
 import { Query } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
-import IconButton from '@material-ui/core/IconButton'
 import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
 import ListSubheader from '@material-ui/core/ListSubheader'
-import MoreIcon from '@material-ui/icons/MoreVert'
 import React from 'react'
 
 import { MINIMAL_TASK_LISTS } from '../../queries/taskListsQueries'
-import { TaskListLink } from '../../components/Link'
 import AddTaskListButton from './taskLists/AddTaskListButton'
 import ListSidebarContextMenu from './taskLists/ListSidebarContextMenu'
-
-let hackToPreventIdCollisions = 1
+import SidebarTaskListItem from './taskLists/SidebarTaskListItem'
 
 const isSelected = (match, id) =>
   match.path === '/app/list/:listId' && id === match.params.listId
@@ -40,40 +32,13 @@ function Sidebar({ match }) {
           <List>
             <ListSubheader>Task lists</ListSubheader>
             {data.taskLists.map(({ title, id }, index) => (
-              <Droppable
+              <SidebarTaskListItem
                 key={id}
-                droppableId={`tasklist-${hackToPreventIdCollisions++}-${id}`}
-              >
-                {(provided, snapshot) => (
-                  <div ref={provided.innerRef}>
-                    <div style={{ visibility: 'hidden', height: 0 }}>
-                      {provided.placeholder}
-                    </div>
-                    <ListItem
-                      selected={isSelected(match, id)}
-                      style={{
-                        cursor: 'pointer',
-                        backgroundColor: snapshot.isDraggingOver
-                          ? 'rgb(235,235,235)'
-                          : undefined,
-                      }}
-                      component={TaskListLink(id)}
-                      button
-                    >
-                      <ListItemText primary={title} />
-                      <ListItemSecondaryAction>
-                        <IconButton
-                          edge="end"
-                          aria-label="List actions"
-                          onClick={e => handleActionsClick(e, { id, title })}
-                        >
-                          <MoreIcon />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  </div>
-                )}
-              </Droppable>
+                id={id}
+                title={title}
+                handleActionsClick={handleActionsClick}
+                selected={isSelected(match, id)}
+              />
             ))}
             <AddTaskListButton />
             {list && (

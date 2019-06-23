@@ -28,4 +28,7 @@ module.exports = {
   },
   maxLineLength: 1000,
   environments: ['browser'],
+  namedExports: {
+    React: ['useState', 'useEffect'],
+  },
 }

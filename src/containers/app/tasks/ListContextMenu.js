@@ -37,7 +37,7 @@ export default function ListContextMenu() {
         <MenuItem onClick={handleActionsClose}>Rename list</MenuItem>
         <MenuItem onClick={handleActionsClose}>Delete list</MenuItem>
         <MenuItem onClick={handleActionsClose}>
-          Delete all completed tasks
+          Clear all completed tasks
         </MenuItem>
       </Menu>
     </>

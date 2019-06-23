@@ -51,6 +51,7 @@ async function fetchResult(path, { method = 'GET', body } = {}) {
     return response.result
   } catch (e) {
     console.log(`${method}: error fetching data ${path}`, e)
+    throw e
   }
 }
 

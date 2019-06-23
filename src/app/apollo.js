@@ -7,20 +7,30 @@ import { onError } from 'apollo-link-error'
 
 import { schema } from './schema'
 
-const errorLink = onError(error => {
-  const { graphQLErrors, networkError } = error
-  if (graphQLErrors)
-    graphQLErrors.map(({ message, locations, path }) =>
-      console.error(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+const makeErrorLink = ({ showError }) =>
+  onError(error => {
+    const { graphQLErrors, networkError } = error
+    const handleError = msg => {
+      console.error(msg)
+      showError(msg)
+    }
+    if (graphQLErrors)
+      graphQLErrors.map(({ message, locations, path }) =>
+        handleError(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+        )
       )
-    )
 
-  if (networkError) console.error(`[Network error]: ${networkError}`)
-})
-const link = ApolloLink.from([errorLink, new SchemaLink({ schema })])
+    if (networkError) handleError(`[Network error]: ${networkError}`)
+  })
 
-export const apolloClient = new ApolloClient({
-  cache: new InMemoryCache(),
-  link,
-})
+export function makeApolloClient({ showError }) {
+  const link = ApolloLink.from([
+    makeErrorLink({ showError }),
+    new SchemaLink({ schema }),
+  ])
+  return new ApolloClient({
+    cache: new InMemoryCache(),
+    link,
+  })
+}

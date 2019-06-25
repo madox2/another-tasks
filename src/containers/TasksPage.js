@@ -2,13 +2,12 @@ import { Query } from 'react-apollo'
 import React, { useRef } from 'react'
 
 import { TASK_LIST } from '../queries/taskListsQueries'
+import { getTaskKey } from '../app/optimisticCache'
 import DefaultError from '../components/DefaultError'
 import DraggableList from '../components/DraggableList'
 import DropTaskContainer from './app/tasks/DropTaskContainer'
 import GlobalLoadingIndicator from './app/common/GlobalLoadingIndicator'
-import ListActionsToolbar, {
-  optimisticKeys,
-} from './app/tasks/ListActionsToolbar'
+import ListActionsToolbar from './app/tasks/ListActionsToolbar'
 import ListContextMenu from './app/tasks/ListContextMenu'
 import TaskItem from './app/tasks/TaskItem'
 import Template from './app/Template'
@@ -53,7 +52,7 @@ function TasksPage({ match: { params } }) {
               <DraggableList
                 onDragEnd={() => 0}
                 items={data.taskList.tasks.map((task, idx) => {
-                  const key = optimisticKeys[task.id] || task.id
+                  const key = getTaskKey(task.id)
                   return {
                     id: task.id,
                     key,

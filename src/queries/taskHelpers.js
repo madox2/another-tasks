@@ -2,7 +2,7 @@ import { throttle } from 'lodash'
 import { useEffect, useState } from 'react'
 
 import { TASK_LIST } from './taskListsQueries'
-import { optimisticIds } from '../containers/app/tasks/ListActionsToolbar'
+import { isTaskOptimistic } from '../app/optimisticCache'
 
 const updateTaskFn = (updateTask, { title, notes, due, listId, id, status }) =>
   updateTask({
@@ -36,7 +36,7 @@ export function useUpdateTaskEffect(updateTask, task) {
       setShouldUpdate(true)
       return
     }
-    if (optimisticIds[id]) {
+    if (isTaskOptimistic(id)) {
       // don't update id does not have id yet
       return
     }

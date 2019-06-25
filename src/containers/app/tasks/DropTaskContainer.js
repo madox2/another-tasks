@@ -3,6 +3,7 @@ import { compose } from 'react-apollo'
 import React from 'react'
 
 import { TASK_LIST } from '../../../queries/taskListsQueries'
+import { isTaskOptimistic } from '../../../app/optimisticCache'
 import { mutateMoveToList } from '../../../queries/taskHelpers'
 import {
   withMoveTaskMutation,
@@ -30,6 +31,10 @@ const DropTaskContainer = ({
         return
       }
       console.log('droppable result', result)
+      const id = result.draggableId
+      if (isTaskOptimistic(id)) {
+        return
+      }
       const shouldMoveTask = result.destination.droppableId === 'droppable'
       if (shouldMoveTask) {
         const tasks = reorder(
@@ -37,7 +42,6 @@ const DropTaskContainer = ({
           result.source.index,
           result.destination.index
         )
-        const id = result.draggableId
         const prevIndex = tasks.findIndex(t => t.id === id) - 1
         const previousId = tasks[prevIndex] && tasks[prevIndex].id
         moveTask({
@@ -66,7 +70,6 @@ const DropTaskContainer = ({
         })
       } else {
         // move to list
-        const id = result.draggableId
         const targetListId = result.destination.droppableId.split('-')[2]
         if (listId === targetListId) {
           return

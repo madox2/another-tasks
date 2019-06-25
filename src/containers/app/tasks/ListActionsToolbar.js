@@ -5,10 +5,12 @@ import React from 'react'
 
 import { ADD_TASK, CLEAR_COMPLETED } from '../../../queries/taskMutations'
 import { TASK_LIST } from '../../../queries/taskListsQueries'
+import {
+  isTaskOptimistic,
+  makeTaskOptimisticId,
+  storeTaskOptimisticId,
+} from '../../../app/optimisticCache'
 import FabButton from '../../../components/FabButton'
-
-export const optimisticKeys = {}
-export const optimisticIds = {}
 
 export default function ListActionsToolbar({ listId, onTaskAdd }) {
   return (
@@ -19,8 +21,7 @@ export default function ListActionsToolbar({ listId, onTaskAdd }) {
             aria-label="Add task"
             Icon={AddIcon}
             onClick={() => {
-              const optimisticId = `${Date.now()}`
-              optimisticIds[optimisticId] = true
+              const optimisticId = makeTaskOptimisticId()
               addTask({
                 optimisticResponse: {
                   __typename: 'Mutation',
@@ -38,8 +39,8 @@ export default function ListActionsToolbar({ listId, onTaskAdd }) {
                     query: TASK_LIST,
                     variables: { id: listId },
                   })
-                  if (addTask.id !== optimisticId) {
-                    optimisticKeys[addTask.id] = optimisticId
+                  if (!isTaskOptimistic(addTask.id)) {
+                    storeTaskOptimisticId(addTask.id, optimisticId)
                   }
                   data.taskList.tasks.unshift(addTask)
                   proxy.writeQuery({

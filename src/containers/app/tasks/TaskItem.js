@@ -9,6 +9,7 @@ import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
 import { TaskDetailLink } from '../../../components/Link'
+import { isTaskOptimistic } from '../../../app/optimisticCache'
 import { shortenText } from '../../../app/utils/textUtils'
 import { useUpdateTaskEffect } from '../../../queries/taskHelpers'
 import { withUpdateTaskMutation } from '../../../queries/taskMutations'
@@ -34,13 +35,14 @@ function TaskItem({ task, inputRef, listId, updateTask }) {
   })
   const { notes, id } = task
   const classes = useStyles()
+  const isOptimistic = isTaskOptimistic(id)
   return (
     <>
       <ListItemIcon>
         <CompletedCheckbox
           edge="start"
           status={status}
-          setStatus={setStatus}
+          setStatus={isOptimistic ? () => 0 : setStatus}
           tabIndex={-1}
           disableRipple
         />
@@ -69,7 +71,7 @@ function TaskItem({ task, inputRef, listId, updateTask }) {
         <IconButton
           edge="end"
           aria-label="Task detail"
-          component={TaskDetailLink(listId, id)}
+          component={isOptimistic ? undefined : TaskDetailLink(listId, id)}
         >
           <DetailIcon />
         </IconButton>

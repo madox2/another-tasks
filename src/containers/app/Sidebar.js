@@ -40,7 +40,9 @@ function Sidebar({ match }) {
     <LoadableQuery query={MINIMAL_TASK_LISTS}>
       {({ data }) => {
         const taskLists = get(data, 'taskLists', [])
-        if (!match.params.listId && taskLists[0]) {
+        // unknown or undefined
+        const isUnknown = !taskLists.find(l => l.id === match.params.listId)
+        if (taskLists[0] && isUnknown) {
           return <Redirect to={initialListPath(taskLists)} />
         }
         return (

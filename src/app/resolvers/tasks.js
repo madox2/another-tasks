@@ -90,9 +90,15 @@ const clearCompleted = async listId => {
 }
 
 const moveTask = async (id, previousId, listId) => {
-  await doPost(
-    `https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}/move?previous=${previousId}`
-  )
+  if (previousId) {
+    await doPost(
+      `https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}/move?previous=${previousId}`
+    )
+  } else {
+    await doPost(
+      `https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}/move`
+    )
+  }
   return true
 }
 

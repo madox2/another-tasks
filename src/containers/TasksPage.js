@@ -1,6 +1,10 @@
 import { Query } from 'react-apollo'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 
+import {
+  LAST_LIST_STORAGE_KEY,
+  saveToLocalStorage,
+} from '../app/utils/storageUtils'
 import { TASK_LIST } from '../queries/taskListsQueries'
 import { getTaskKey } from '../app/optimisticCache'
 import DefaultError from '../components/DefaultError'
@@ -20,9 +24,15 @@ const NoListSelected = ({ children, ...other }) => (
 
 function TasksPage({ match: { params } }) {
   const firstTaskText = useRef()
+  useEffect(() => {
+    if (params.listId) {
+      saveToLocalStorage(LAST_LIST_STORAGE_KEY, params.listId)
+    }
+    // eslint-disable-next-line
+  }, [])
 
   if (!params.listId) {
-    return <NoListSelected toolbar="Select list" />
+    return <NoListSelected />
   }
   return (
     <Query variables={{ id: params.listId }} query={TASK_LIST}>

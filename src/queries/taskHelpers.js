@@ -2,6 +2,7 @@ import { throttle } from 'lodash'
 import { useEffect, useState } from 'react'
 
 import { TASK_LIST } from './taskListsQueries'
+import { optimisticIds } from '../containers/app/tasks/ListActionsToolbar'
 
 const updateTaskFn = (updateTask, { title, notes, due, listId, id, status }) =>
   updateTask({
@@ -27,11 +28,16 @@ export function useUpdateTaskEffect(updateTask, task) {
     // set only once
     const throttled = throttle(updateTaskFn, 500, { leading: false })
     setThrottledUpdate({ call: throttled })
+    // eslint-disable-next-line
   }, [])
   useEffect(() => {
     if (!shouldUpdate) {
       // skip first update
       setShouldUpdate(true)
+      return
+    }
+    if (optimisticIds[id]) {
+      // don't update id does not have id yet
       return
     }
     throttledUpdate.call(updateTask, { title, notes, due, listId, id, status })

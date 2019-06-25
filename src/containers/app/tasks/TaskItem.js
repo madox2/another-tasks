@@ -49,7 +49,9 @@ function TaskItem({ task, inputRef, listId, updateTask }) {
         primary={
           <TextField
             value={title}
-            onChange={e => setTitle(e.target.value)}
+            onChange={e => {
+              setTitle(e.target.value)
+            }}
             margin="none"
             fullWidth
             inputRef={inputRef}

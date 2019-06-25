@@ -6,7 +6,9 @@ import DefaultError from '../components/DefaultError'
 import DraggableList from '../components/DraggableList'
 import DropTaskContainer from './app/tasks/DropTaskContainer'
 import GlobalLoadingIndicator from './app/common/GlobalLoadingIndicator'
-import ListActionsToolbar from './app/tasks/ListActionsToolbar'
+import ListActionsToolbar, {
+  optimisticKeys,
+} from './app/tasks/ListActionsToolbar'
 import ListContextMenu from './app/tasks/ListContextMenu'
 import TaskItem from './app/tasks/TaskItem'
 import Template from './app/Template'
@@ -51,11 +53,13 @@ function TasksPage({ match: { params } }) {
               <DraggableList
                 onDragEnd={() => 0}
                 items={data.taskList.tasks.map((task, idx) => {
+                  const key = optimisticKeys[task.id] || task.id
                   return {
                     id: task.id,
+                    key,
                     children: (
                       <TaskItem
-                        key={task.id}
+                        key={key}
                         task={task}
                         inputRef={idx === 0 ? firstTaskText : undefined}
                         listId={params.listId}

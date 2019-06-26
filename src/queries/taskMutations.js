@@ -98,6 +98,9 @@ export const DELETE_LIST = gql`
 
 export const EDIT_LIST = gql`
   mutation EditList($listId: String!, $title: String) {
-    editList(listId: $listId, title: $title)
+    editList(listId: $listId, title: $title) {
+      id
+      title
+    }
   }
 `

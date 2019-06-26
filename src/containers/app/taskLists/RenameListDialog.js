@@ -1,3 +1,4 @@
+import { Mutation } from 'react-apollo'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -7,8 +8,6 @@ import React, { useEffect } from 'react'
 import TextField from '@material-ui/core/TextField'
 
 import { EDIT_LIST } from '../../../queries/taskMutations'
-import { LoadableMutation } from '../common/LoadableMutation'
-import { MINIMAL_TASK_LISTS } from '../../../queries/taskListsQueries'
 
 function RenameListDialog({ list, open, onClose }) {
   const { id } = list
@@ -19,7 +18,7 @@ function RenameListDialog({ list, open, onClose }) {
   }, [list && list.id])
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-      <LoadableMutation mutation={EDIT_LIST}>
+      <Mutation mutation={EDIT_LIST}>
         {(editList, { data }) => (
           <>
             <DialogTitle id="form-dialog-title">Rename list</DialogTitle>
@@ -42,8 +41,14 @@ function RenameListDialog({ list, open, onClose }) {
                 onClick={() => {
                   editList({
                     variables: { listId: id, title },
-                    refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
-                    awaitRefetchQueries: true,
+                    optimisticResponse: {
+                      __typename: 'Mutation',
+                      editList: {
+                        id: list.id,
+                        title: title,
+                        __typename: 'TaskList',
+                      },
+                    },
                   })
                   onClose()
                 }}
@@ -54,7 +59,7 @@ function RenameListDialog({ list, open, onClose }) {
             </DialogActions>
           </>
         )}
-      </LoadableMutation>
+      </Mutation>
     </Dialog>
   )
 }

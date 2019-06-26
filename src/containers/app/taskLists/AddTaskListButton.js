@@ -26,58 +26,71 @@ function AddTaskListButton({ history }) {
   }
 
   return (
-    <>
-      <FabButton aria-label="Add list" Icon={AddIcon} onClick={handleClickOpen}>
-        Add list
-      </FabButton>
-      <Dialog
-        open={open}
-        onClose={handleCancel}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">New list</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="List Name"
-            type="text"
-            fullWidth
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} color="primary">
-            Cancel
-          </Button>
-          <LoadableMutation mutation={ADD_LIST}>
-            {(addList, { data }) => {
-              function handleCreate() {
-                addList({
-                  variables: { title },
-                  awaitRefetchQueries: true,
-                  refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
-                })
-                  .then(result => {
-                    history.push(`/app/list/${result.data.addList.id}`)
-                  })
-                  .catch(err => {
-                    // TODO: handle error
-                    console.log(err)
-                  })
-                setOpen(false)
-              }
-              return (
-                <Button onClick={handleCreate} color="primary">
+    <LoadableMutation mutation={ADD_LIST}>
+      {(addList, { data, loading }) => {
+        function handleCreate() {
+          addList({
+            variables: { title },
+            awaitRefetchQueries: true,
+            refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
+          })
+            .then(result => {
+              setOpen(false)
+              history.push(`/app/list/${result.data.addList.id}`)
+            })
+            .catch(err => {
+              setOpen(false)
+              throw err
+            })
+        }
+        return (
+          <>
+            <FabButton
+              aria-label="Add list"
+              Icon={AddIcon}
+              onClick={handleClickOpen}
+            >
+              Add list
+            </FabButton>
+            <Dialog
+              open={open}
+              onClose={handleCancel}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">New list</DialogTitle>
+              <DialogContent>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  label="List Name"
+                  type="text"
+                  fullWidth
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  disabled={loading}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={handleCancel}
+                  color="primary"
+                  disabled={loading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleCreate}
+                  color="primary"
+                  disabled={loading}
+                >
                   Create
                 </Button>
-              )
-            }}
-          </LoadableMutation>
-        </DialogActions>
-      </Dialog>
-    </>
+              </DialogActions>
+            </Dialog>
+          </>
+        )
+      }}
+    </LoadableMutation>
   )
 }
 

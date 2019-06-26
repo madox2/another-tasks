@@ -52,7 +52,10 @@ function TasksPage({ match: { params } }) {
 
         return (
           <DropTaskContainer data={data} listId={params.listId}>
-            <Template toolbar={data.taskList.title} right={<ListContextMenu />}>
+            <Template
+              toolbar={data.taskList.title}
+              right={<ListContextMenu list={data.taskList} />}
+            >
               <ListActionsToolbar
                 listId={params.listId}
                 onTaskAdd={() => {

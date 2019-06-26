@@ -5,7 +5,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import React from 'react'
+import React, { useEffect } from 'react'
 import TextField from '@material-ui/core/TextField'
 
 import { ADD_LIST } from '../../../queries/taskListsMutations'
@@ -16,6 +16,9 @@ import FabButton from '../../../components/FabButton'
 function AddTaskListButton({ history }) {
   const [open, setOpen] = React.useState(false)
   const [title, setTitle] = React.useState('')
+  useEffect(() => {
+    setTitle('')
+  }, [open])
 
   function handleClickOpen() {
     setOpen(true)

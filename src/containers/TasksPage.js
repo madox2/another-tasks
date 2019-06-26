@@ -37,49 +37,46 @@ function TasksPage({ match: { params } }) {
   return (
     <Query variables={{ id: params.listId }} query={TASK_LIST}>
       {({ loading, error, data }) => {
-        if (loading)
-          return (
-            <NoListSelected>
-              <GlobalLoadingIndicator />
-            </NoListSelected>
-          )
-        if (error)
-          return (
-            <NoListSelected>
-              <DefaultError />
-            </NoListSelected>
-          )
+        const taskList = data && data.taskList
+        const loaded = !loading && !error
 
         return (
           <DropTaskContainer data={data} listId={params.listId}>
+            {loading && <GlobalLoadingIndicator />}
             <Template
-              toolbar={data.taskList.title}
-              right={<ListContextMenu list={data.taskList} />}
+              toolbar={loaded && taskList.title}
+              right={loaded && <ListContextMenu list={taskList} />}
             >
-              <ListActionsToolbar
-                listId={params.listId}
-                onTaskAdd={() => {
-                  firstTaskText.current.focus()
-                }}
-              />
-              <DraggableList
-                onDragEnd={() => 0}
-                items={data.taskList.tasks.map((task, idx) => {
-                  const key = getTaskKey(task.id)
-                  return {
-                    id: task.id,
-                    key,
-                    children: (
-                      <TaskItem
-                        key={key}
-                        task={task}
-                        inputRef={idx === 0 ? firstTaskText : undefined}
-                        listId={params.listId}
-                      />
-                    ),
-                  }
-                })}
-              />
+              {loading && <GlobalLoadingIndicator />}
+              {error && <DefaultError />}
+              {loaded && (
+                <>
+                  <ListActionsToolbar
+                    listId={params.listId}
+                    onTaskAdd={() => {
+                      firstTaskText.current.focus()
+                    }}
+                  />
+                  <DraggableList
+                    onDragEnd={() => 0}
+                    items={taskList.tasks.map((task, idx) => {
+                      const key = getTaskKey(task.id)
+                      return {
+                        id: task.id,
+                        key,
+                        children: (
+                          <TaskItem
+                            key={key}
+                            task={task}
+                            inputRef={idx === 0 ? firstTaskText : undefined}
+                            listId={params.listId}
+                          />
+                        ),
+                      }
+                    })}
+                  />
+                </>
+              )}
             </Template>
           </DropTaskContainer>
         )

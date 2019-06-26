@@ -17,7 +17,7 @@ function DeleteListDialog({ list, open, onClose }) {
           <>
             <DialogTitle id="form-dialog-title">Delete list</DialogTitle>
             <DialogContent>
-              Do you really want to delete this list?
+              Do you really want to delete list "{list.title}"?
             </DialogContent>
             <DialogActions>
               <Button onClick={onClose} color="primary">

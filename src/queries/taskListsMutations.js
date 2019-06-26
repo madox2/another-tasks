@@ -5,8 +5,6 @@ export const ADD_LIST = gql`
     addList(title: $title) {
       id
       title
-      due
-      completed
     }
   }
 `

@@ -5,6 +5,7 @@ import {
   LAST_LIST_STORAGE_KEY,
   saveToLocalStorage,
 } from '../app/utils/storageUtils'
+import { TASK } from '../queries/taskQueries'
 import { TASK_LIST } from '../queries/taskListsQueries'
 import { getTaskKey } from '../app/optimisticCache'
 import DefaultError from '../components/DefaultError'
@@ -15,6 +16,20 @@ import ListActionsToolbar from './app/tasks/ListActionsToolbar'
 import ListContextMenu from './app/tasks/ListContextMenu'
 import TaskItem from './app/tasks/TaskItem'
 import Template from './app/Template'
+
+function UpdateStore({ list, client }) {
+  useEffect(() => {
+    list.tasks.forEach(task => {
+      client.writeQuery({
+        query: TASK,
+        variables: { id: task.id, listId: list.id },
+        data: { task },
+      })
+    })
+    // eslint-disable-next-line
+  }, [])
+  return null
+}
 
 const NoListSelected = ({ children, ...other }) => (
   <DropTaskContainer>
@@ -36,7 +51,7 @@ function TasksPage({ match: { params } }) {
   }
   return (
     <Query variables={{ id: params.listId }} query={TASK_LIST}>
-      {({ loading, error, data }) => {
+      {({ loading, error, data, client }) => {
         const taskList = data && data.taskList
         const loaded = !loading && !error
 
@@ -51,6 +66,7 @@ function TasksPage({ match: { params } }) {
               {error && <DefaultError />}
               {loaded && (
                 <>
+                  <UpdateStore list={taskList} client={client} />
                   <ListActionsToolbar
                     listId={params.listId}
                     onTaskAdd={() => {

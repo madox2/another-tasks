@@ -1,3 +1,4 @@
+import { Mutation } from 'react-apollo'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -6,13 +7,12 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import React from 'react'
 
 import { DELETE_LIST } from '../../../queries/taskMutations'
-import { LoadableMutation } from '../common/LoadableMutation'
 import { MINIMAL_TASK_LISTS } from '../../../queries/taskListsQueries'
 
 function DeleteListDialog({ list, open, onClose }) {
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-      <LoadableMutation mutation={DELETE_LIST}>
+      <Mutation mutation={DELETE_LIST}>
         {(deleteList, { data }) => (
           <>
             <DialogTitle id="form-dialog-title">Delete list</DialogTitle>
@@ -27,8 +27,25 @@ function DeleteListDialog({ list, open, onClose }) {
                 onClick={() => {
                   deleteList({
                     variables: { listId: list.id },
-                    refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
-                    awaitRefetchQueries: true,
+                    optimisticResponse: {
+                      __typename: 'Mutation',
+                      deleteList: {
+                        id: list.id,
+                        __typename: 'TaskList',
+                      },
+                    },
+                    update: (proxy, { data: { deleteTask } }) => {
+                      const data = proxy.readQuery({
+                        query: MINIMAL_TASK_LISTS,
+                      })
+                      data.taskLists = data.taskLists.filter(
+                        t => t.id !== list.id
+                      )
+                      proxy.writeQuery({
+                        query: MINIMAL_TASK_LISTS,
+                        data,
+                      })
+                    },
                   })
                   onClose()
                 }}
@@ -39,7 +56,7 @@ function DeleteListDialog({ list, open, onClose }) {
             </DialogActions>
           </>
         )}
-      </LoadableMutation>
+      </Mutation>
     </Dialog>
   )
 }

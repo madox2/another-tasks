@@ -51,6 +51,7 @@ const typeDefs = `
     deleteList(listId: String!): TaskList
     editList(listId: String!, title: String): TaskList
     addTask(listId: String!): Task
+    deleteTask(listId: String!, id: String!): Task
     updateTask(
       title: String
       notes: String

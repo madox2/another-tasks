@@ -123,6 +123,7 @@ export const tasksResolvers = {
     updateTask: (_, { title, notes, status, due, id, listId }) =>
       updateTask({ title, notes, status, due, id, listId }),
     addTask: (_, { listId }) => createTask(listId),
+    deleteTask: (_, { listId, id }) => deleteTask(id, listId),
     clearCompleted: (_, { listId }) => clearCompleted(listId),
     moveTask: (_, { listId, id, previousId }) =>
       moveTask(id, previousId, listId),

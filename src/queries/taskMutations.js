@@ -64,6 +64,14 @@ export const ADD_TASK = gql`
   }
 `
 
+export const DELETE_TASK = gql`
+  mutation DeleteTask($listId: String!, $id: String!) {
+    deleteTask(listId: $listId, id: $id) {
+      id
+    }
+  }
+`
+
 export const CLEAR_COMPLETED = gql`
   mutation ClearCompleted($listId: String!) {
     clearCompleted(listId: $listId)

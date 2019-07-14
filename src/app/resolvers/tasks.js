@@ -2,6 +2,7 @@ import { pick } from 'lodash'
 
 import { gapi } from '../gclient'
 import { loadPromise } from './auth'
+import { log } from '../utils/devLogger'
 
 let updateTaskPromises = []
 function updatePromises(promises, promise) {
@@ -14,12 +15,12 @@ async function fetchResult(path, { method = 'GET', body } = {}) {
     await loadPromise
     const payload = { path, method }
     if (body) payload.body = body
-    console.log(`${method}: request:`, payload)
+    log(`${method}: request:`, payload)
     const response = await gapi.client.request(payload)
-    console.log(`${method}: response:`, response)
+    log(`${method}: response:`, response)
     return response.result
   } catch (e) {
-    console.log(`${method}: error fetching data ${path}`, e)
+    log(`${method}: error fetching data ${path}`, e)
     throw e
   }
 }

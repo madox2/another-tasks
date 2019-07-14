@@ -3,6 +3,12 @@ import { pick } from 'lodash'
 import { gapi } from '../gclient'
 import { loadPromise } from './auth'
 
+let updateTaskPromises = []
+function updatePromises(promises, promise) {
+  promises.push(promise)
+  return promise
+}
+
 async function fetchResult(path, { method = 'GET', body } = {}) {
   try {
     await loadPromise
@@ -40,7 +46,6 @@ const getTasks = async id => {
     `https://www.googleapis.com/tasks/v1/lists/${id}/tasks`
   )
   tasks.sort((a, b) => a.position.localeCompare(b.position))
-  console.log('tas', tasks)
   return tasks
 }
 
@@ -66,10 +71,13 @@ const createTask = (listId, task) =>
 const deleteTask = (id, listId) =>
   doDelete(`https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}`)
 
-const updateTask = task =>
-  doPut(
-    `https://www.googleapis.com/tasks/v1/lists/${task.listId}/tasks/${task.id}`,
-    task
+const updateTask = async task =>
+  await updatePromises(
+    updateTaskPromises,
+    doPut(
+      `https://www.googleapis.com/tasks/v1/lists/${task.listId}/tasks/${task.id}`,
+      task
+    )
   )
 
 const addList = title =>
@@ -85,6 +93,7 @@ const deleteList = listId =>
   doDelete(`https://www.googleapis.com/tasks/v1/users/@me/lists/${listId}`)
 
 const clearCompleted = async listId => {
+  await Promise.all(updateTaskPromises)
   await doPost(`https://www.googleapis.com/tasks/v1/lists/${listId}/clear`)
   return true
 }

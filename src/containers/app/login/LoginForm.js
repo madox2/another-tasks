@@ -6,6 +6,17 @@ import React from 'react'
 
 import { CURRENT_USER } from '../../../queries/loginQueries'
 import DefaultError from '../../../components/DefaultError'
+import googleIcon from '../../../resources/icon_google.svg'
+
+const iconStyle = {
+  height: 40,
+  width: 'auto',
+  position: 'absolute',
+  left: 0,
+  top: -2,
+}
+
+const GoogleIcon = () => <img src={googleIcon} alt="google" style={iconStyle} />
 
 const LoginButton = () => (
   <Mutation
@@ -20,8 +31,17 @@ const LoginButton = () => (
   >
     {(login, { data }) => {
       return (
-        <Button onClick={() => login()} color="primary">
-          Login
+        <Button onClick={() => login()} color="default" variant="contained">
+          <GoogleIcon />
+          <span
+            style={{
+              color: '#2d2d2d',
+              textTransform: 'none',
+              paddingLeft: 30,
+            }}
+          >
+            Sign in with Google
+          </span>
         </Button>
       )
     }}

@@ -1,5 +1,6 @@
-import { compose } from 'react-apollo'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { makeStyles } from '@material-ui/core'
+import { compose } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import React, { useState } from 'react'
@@ -13,6 +14,7 @@ import {
   withMoveToListMutation,
   withUpdateTaskMutation,
 } from '../../../queries/taskMutations'
+import CompletedCheckbox from '../../../components/CompletedCheckbox'
 import DateTimePicker from '../../../components/DateTimePicker'
 import TaskListSelect from '../taskLists/TaskListSelect'
 
@@ -31,6 +33,7 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
   const [notes, setNotes] = useState(data.task.notes || '')
   const [due, setDue] = useState(data.task.due || '')
   const [list, setList] = useState(listId)
+  const [status, setStatus] = useState(data.task.status)
   const classes = useStyles()
   useUpdateTaskEffect(updateTask, {
     ...data.task,
@@ -38,6 +41,7 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
     notes: notes || null,
     due: due || null,
     listId,
+    status,
   })
   return (
     <div style={{ padding: 20 }}>
@@ -56,6 +60,18 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
         margin="normal"
         value={notes}
         onChange={e => setNotes(e.target.value)}
+      />
+      <FormControlLabel
+        control={
+          <CompletedCheckbox
+            edge="start"
+            status={status}
+            setStatus={setStatus}
+            disableRipple
+          />
+        }
+        style={{ marginLeft: 0 }}
+        label="Completed"
       />
       <br />
       <div>

@@ -43,6 +43,9 @@ export default () => (
       Link to privacy policy of third party service providers used by the app
       <ul>
         <li>
+          <a href="https://policies.google.com/privacy">
+            Google Tasks (Google)
+          </a>
           <a href="https://marketingplatform.google.com/about/analytics/terms/us/">
             Google Analytics
           </a>

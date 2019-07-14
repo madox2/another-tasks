@@ -31,7 +31,7 @@ function FooterItem({ label, link, target = '_self' }) {
   )
 }
 
-export default function({ children, index }) {
+export default function({ children, index, ...other }) {
   return (
     <div
       style={{
@@ -47,12 +47,12 @@ export default function({ children, index }) {
           </IconButton>
         )}
         <Divider size={10} />
-        <div style={{ textAlign: 'center' }}>{children}</div>
+        <div {...other}>{children}</div>
       </div>
       <footer style={{ padding: 20 }}>
         <Typography paragraph style={{ margin: 0 }}>
           <FooterItem label="Contact" link={ContactLink} />
-          <FooterItem label="Terms of use" link={TermsLink} />
+          <FooterItem label="Privacy Policy" link={TermsLink} />
           <span style={{ float: 'right' }}>
             <FooterItem
               label="©2019 madox2"

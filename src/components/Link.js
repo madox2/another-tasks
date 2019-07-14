@@ -14,4 +14,4 @@ export const TaskDetailLink = (listId, id) =>
 export const TaskListLink = id => link(`/app/list/${id}`)
 export const WelcomeLink = link('/')
 export const ContactLink = link('/contact')
-export const TermsLink = link('/terms')
+export const TermsLink = link('/privacy')

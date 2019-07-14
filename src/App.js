@@ -23,7 +23,7 @@ function App() {
               <Switch>
                 <Route path="/" exact component={IndexPage} />
                 <Route path="/contact" exact component={ContactPage} />
-                <Route path="/terms" exact component={TermsPage} />
+                <Route path="/privacy" exact component={TermsPage} />
                 <Route path="/app/" exact component={TasksPage} />
                 <Route
                   path="/app/list/:listId/task/:taskId"

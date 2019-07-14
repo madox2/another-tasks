@@ -138,7 +138,9 @@ function Template(props) {
         </nav>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {!!loading && <LinearProgress />}
+          <div style={{ visibility: loading ? 'visible' : 'hidden' }}>
+            <LinearProgress />
+          </div>
           {children}
         </main>
       </div>

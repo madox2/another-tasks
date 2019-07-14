@@ -34,8 +34,8 @@ export default function ListContextMenu({ list }) {
         open={Boolean(anchorEl)}
         onClose={handleActionsClose}
       >
-        <ListSubheader>Sort by</ListSubheader>
         {/**
+        <ListSubheader>Sort by</ListSubheader>
         <MenuItem onClick={handleActionsClose}>My order</MenuItem>
         <MenuItem onClick={handleActionsClose}>Date</MenuItem>
         <Divider />

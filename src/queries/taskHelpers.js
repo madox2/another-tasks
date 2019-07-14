@@ -30,19 +30,20 @@ export function useUpdateTaskEffect(updateTask, task) {
     setThrottledUpdate({ call: throttled })
     // eslint-disable-next-line
   }, [])
+  const optimistic = isTaskOptimistic(id)
   useEffect(() => {
     if (!shouldUpdate) {
       // skip first update
       setShouldUpdate(true)
       return
     }
-    if (isTaskOptimistic(id)) {
+    if (optimistic) {
       // don't update id does not have id yet
       return
     }
     throttledUpdate.call(updateTask, { title, notes, due, listId, id, status })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, notes, due, status])
+  }, [title, notes, due, status, optimistic])
 }
 
 export const mutateMoveToList = (moveToList, { listId, id, targetListId }) =>

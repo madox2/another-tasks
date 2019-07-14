@@ -33,7 +33,12 @@ export default function DraggableList(props) {
         <RootRef rootRef={provided.innerRef}>
           <List>
             {props.items.map((item, index) => (
-              <Draggable key={item.key} draggableId={item.id} index={index}>
+              <Draggable
+                key={item.key}
+                draggableId={item.id}
+                index={index}
+                isDragDisabled={item.dragDisabled}
+              >
                 {(provided, snapshot) => (
                   <div style={{ position: 'relative' }}>
                     <ListItem

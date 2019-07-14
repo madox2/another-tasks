@@ -7,7 +7,7 @@ import {
 } from '../app/utils/storageUtils'
 import { TASK } from '../queries/taskQueries'
 import { TASK_LIST } from '../queries/taskListsQueries'
-import { getTaskKey } from '../app/optimisticCache'
+import { getTaskKey, isTaskOptimistic } from '../app/optimisticCache'
 import DefaultError from '../components/DefaultError'
 import DraggableList from '../components/DraggableList'
 import DropTaskContainer from './app/tasks/DropTaskContainer'
@@ -79,6 +79,7 @@ function TasksPage({ match: { params } }) {
                       const key = getTaskKey(task.id)
                       return {
                         id: task.id,
+                        dragDisabled: isTaskOptimistic(task.id),
                         key,
                         children: (
                           <TaskItem

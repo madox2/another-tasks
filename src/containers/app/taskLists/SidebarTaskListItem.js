@@ -9,6 +9,7 @@ import MoreIcon from '@material-ui/icons/MoreVert'
 import React from 'react'
 
 import { TaskListLink } from '../../../components/Link'
+import ErrorBoundary from '../../../components/ErrorBoundary'
 
 let hackToPreventIdCollisions = 1
 
@@ -19,40 +20,42 @@ export default function SidebarTaskListItem({
   selected,
 }) {
   return (
-    <Droppable
-      key={id}
-      droppableId={`tasklist-${hackToPreventIdCollisions++}-${id}`}
-    >
-      {(provided, snapshot) => (
-        <div ref={provided.innerRef} className="SidebarTaskListItem">
-          <div style={{ visibility: 'hidden', height: 0 }}>
-            {provided.placeholder}
+    <ErrorBoundary>
+      <Droppable
+        key={id}
+        droppableId={`tasklist-${hackToPreventIdCollisions++}-${id}`}
+      >
+        {(provided, snapshot) => (
+          <div ref={provided.innerRef} className="SidebarTaskListItem">
+            <div style={{ visibility: 'hidden', height: 0 }}>
+              {provided.placeholder}
+            </div>
+            <ListItem
+              selected={selected}
+              style={{
+                cursor: 'pointer',
+                backgroundColor: snapshot.isDraggingOver
+                  ? 'rgb(235,235,235)'
+                  : undefined,
+              }}
+              component={TaskListLink(id)}
+              button
+            >
+              <ListItemText primary={title} />
+              <ListItemSecondaryAction>
+                <IconButton
+                  edge="end"
+                  className="SidebarTaskListItem-action"
+                  aria-label="List actions"
+                  onClick={e => handleActionsClick(e, { id, title })}
+                >
+                  <MoreIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
           </div>
-          <ListItem
-            selected={selected}
-            style={{
-              cursor: 'pointer',
-              backgroundColor: snapshot.isDraggingOver
-                ? 'rgb(235,235,235)'
-                : undefined,
-            }}
-            component={TaskListLink(id)}
-            button
-          >
-            <ListItemText primary={title} />
-            <ListItemSecondaryAction>
-              <IconButton
-                edge="end"
-                className="SidebarTaskListItem-action"
-                aria-label="List actions"
-                onClick={e => handleActionsClick(e, { id, title })}
-              >
-                <MoreIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        </div>
-      )}
-    </Droppable>
+        )}
+      </Droppable>
+    </ErrorBoundary>
   )
 }

@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import { ContactLink, TermsLink, WelcomeLink } from '../../components/Link'
 import { Divider } from '../../components/Divider'
 
-function FooterItem({ label, link, target = '_self' }) {
+function FooterItem({ label, link, target = '_self', ...other }) {
   const theme = useTheme()
   const LinkComponent = isObject(link) ? link : 'a'
   return (
@@ -24,6 +24,7 @@ function FooterItem({ label, link, target = '_self' }) {
           color: theme.palette.primary.main,
           textDecoration: 'none',
         }}
+        {...other}
       >
         {label}
       </LinkComponent>
@@ -58,6 +59,7 @@ export default function({ children, index, ...other }) {
               label="©2019 madox2"
               link="https://madox2.poriadne.sk"
               target="_blank"
+              rel="noopener noreferrer"
             />
           </span>
         </Typography>

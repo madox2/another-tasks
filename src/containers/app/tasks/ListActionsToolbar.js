@@ -48,9 +48,8 @@ export default function ListActionsToolbar({ listId, onTaskAdd }) {
                     variables: { id: listId },
                     data,
                   })
+                  onTaskAdd()
                 },
-              }).then(() => {
-                onTaskAdd()
               })
             }}
           >

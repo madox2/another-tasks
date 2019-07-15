@@ -70,7 +70,9 @@ function TasksPage({ match: { params } }) {
                   <ListActionsToolbar
                     listId={params.listId}
                     onTaskAdd={() => {
-                      firstTaskText.current.focus()
+                      setTimeout(() => {
+                        firstTaskText.current.focus()
+                      }, 500)
                     }}
                   />
                   <DraggableList

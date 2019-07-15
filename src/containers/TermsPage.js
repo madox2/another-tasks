@@ -46,6 +46,8 @@ export default () => (
           <a href="https://policies.google.com/privacy">
             Google Tasks (Google)
           </a>
+        </li>
+        <li>
           <a href="https://marketingplatform.google.com/about/analytics/terms/us/">
             Google Analytics
           </a>

@@ -17,7 +17,7 @@ export default () => (
         justifyContent: 'center',
       }}
     >
-      <Typography variant="h2">Another tasks (BETA)</Typography>
+      <Typography variant="h3">Another tasks (BETA)</Typography>
       <Divider size={20} />
       <Typography paragraph>Web interface for Google Tasks</Typography>
       <Divider size={10} />

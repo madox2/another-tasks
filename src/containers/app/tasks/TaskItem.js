@@ -69,6 +69,7 @@ function TaskItem({ task, inputRef, listId, updateTask }) {
       />
       <ListItemSecondaryAction>
         <IconButton
+          tabIndex="-1"
           edge="end"
           aria-label="Task detail"
           component={isOptimistic ? undefined : TaskDetailLink(listId, id)}

@@ -60,7 +60,7 @@ export default function DraggableList(props) {
                           alignItems: 'center',
                         }}
                       >
-                        <span {...provided.dragHandleProps}>
+                        <span {...provided.dragHandleProps} tabIndex="-1">
                           <DragIcon className={classes.icon} />
                         </span>
                       </div>

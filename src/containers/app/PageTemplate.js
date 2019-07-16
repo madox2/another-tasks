@@ -1,12 +1,19 @@
 import { isObject } from 'lodash'
 import { useTheme } from '@material-ui/core/styles'
 import BackIcon from '@material-ui/icons/ArrowBack'
+import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
 
-import { ContactLink, TermsLink, WelcomeLink } from '../../components/Link'
+import {
+  ContactLink,
+  LoginLink,
+  TermsLink,
+  WelcomeLink,
+} from '../../components/Link'
 import { Divider } from '../../components/Divider'
+import logo from '../../resources/logo.png'
 
 function FooterItem({ label, link, target = '_self', ...other }) {
   const theme = useTheme()
@@ -41,6 +48,19 @@ export default function({ children, index, ...other }) {
         flexDirection: 'column',
       }}
     >
+      <div
+        style={{
+          padding: 20,
+          paddingBottom: 0,
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <img src={logo} style={{ height: 35 }} alt="logo" />
+        <Button color="primary" component={LoginLink}>
+          Sign in
+        </Button>
+      </div>
       <div style={{ flex: 1, padding: 20 }}>
         {!index && (
           <IconButton component={WelcomeLink}>

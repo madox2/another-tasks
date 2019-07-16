@@ -8,6 +8,7 @@ import { LoadingContextProvider } from './containers/app/common/LoadingContext'
 import ContactPage from './containers/ContactPage'
 import CustomApolloProvider from './containers/app/providers/CustomApolloProvider'
 import IndexPage from './containers/IndexPage'
+import LoginPage from './containers/LoginPage'
 import NotFoundPage from './containers/NotFoundPage'
 import TaskDetailPage from './containers/TaskDetailPage'
 import TasksPage from './containers/TasksPage'
@@ -22,6 +23,7 @@ function App() {
             <Router>
               <Switch>
                 <Route path="/" exact component={IndexPage} />
+                <Route path="/login" exact component={LoginPage} />
                 <Route path="/contact" exact component={ContactPage} />
                 <Route path="/privacy" exact component={TermsPage} />
                 <Route path="/app/" exact component={TasksPage} />

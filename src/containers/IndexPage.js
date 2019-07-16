@@ -2,14 +2,23 @@ import React from 'react'
 import Typography from '@material-ui/core/Typography'
 
 import { Divider } from '../components/Divider'
-import LoginForm from './app/login/LoginForm'
+import { Paragraph, SubHeader } from '../components/Typo'
 import PageTemplate from './app/PageTemplate'
+
+const Section = props => (
+  <div>
+    <SubHeader>{props.title}</SubHeader>
+    <Divider size={10} />
+    <Paragraph>{props.children}</Paragraph>
+    <Divider size={10} />
+  </div>
+)
 
 export default () => (
   <PageTemplate index>
     <div
       style={{
-        height: '70vh',
+        minHeight: '70vh',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -17,11 +26,45 @@ export default () => (
         justifyContent: 'center',
       }}
     >
-      <Typography variant="h3">Another tasks (BETA)</Typography>
-      <Divider size={20} />
-      <Typography paragraph>Web interface for Google Tasks</Typography>
-      <Divider size={10} />
-      <LoginForm />
+      <div style={{ maxWidth: 800, textAlign: 'center' }}>
+        <Typography variant="h3">Another Tasks (BETA)</Typography>
+        <Divider size={40} />
+
+        <Section title="Web interface for Google Tasks">
+          Another Tasks is a simple TODO list application that uses Google Tasks
+          API to store the data. You can create and manage the tasks here and
+          they will be available in all google services like calendar, etc.
+        </Section>
+
+        <Section title="Motivation">
+          As the Google shut down Canvas interface for Google Tasks in early
+          2019, it didn't provide any full-screen alternative for desktop users.
+          Therefore I have decided to create this web app for the users that are
+          missing the Canvas and don't feel confortable with it's replacement
+          (GMail task addon).
+        </Section>
+
+        <Section title="What's on the roadmap?">
+          Application is currently in BETA version but the development is still
+          in progress. Some features are currently missing but planned to be
+          added:
+          <p>
+            <ul
+              style={{
+                textAlign: 'left',
+                display: 'inline-block',
+                margin: 0,
+                padding: 0,
+              }}
+            >
+              <li>Keyboard shortcuts + documentation</li>
+              <li>Sorting tasks</li>
+              <li>Subtasks support</li>
+              <li>PWA</li>
+            </ul>
+          </p>
+        </Section>
+      </div>
     </div>
   </PageTemplate>
 )

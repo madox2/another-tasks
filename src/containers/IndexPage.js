@@ -27,7 +27,7 @@ export default () => (
       }}
     >
       <div style={{ maxWidth: 800, textAlign: 'center' }}>
-        <Typography variant="h3">Another Tasks (BETA)</Typography>
+        <Typography variant="h3">Another Tasks</Typography>
         <Divider size={40} />
 
         <Section title="Web interface for Google Tasks">
@@ -45,9 +45,7 @@ export default () => (
         </Section>
 
         <Section title="What's on the roadmap?">
-          Application is currently in BETA version but the development is still
-          in progress. Some features are currently missing but planned to be
-          added:
+          Some features are currently missing but planned to be added:
           <p>
             <ul
               style={{

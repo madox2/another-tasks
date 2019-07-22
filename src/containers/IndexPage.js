@@ -3,6 +3,8 @@ import Typography from '@material-ui/core/Typography'
 
 import { Divider } from '../components/Divider'
 import { Paragraph, SubHeader } from '../components/Typo'
+import { isTasksHost } from '../app/routes'
+import LoginRedirect from './app/login/LoginRedirect'
 import PageTemplate from './app/PageTemplate'
 
 const Section = props => (
@@ -16,6 +18,7 @@ const Section = props => (
 
 export default () => (
   <PageTemplate index>
+    <LoginRedirect shouldRedirect={isTasksHost} />
     <div
       style={{
         minHeight: '70vh',

@@ -1,11 +1,9 @@
-import { Mutation, Query } from 'react-apollo'
-import { Redirect } from 'react-router-dom'
+import { Mutation } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import Button from '@material-ui/core/Button'
 import React from 'react'
 
-import { CURRENT_USER } from '../../../queries/loginQueries'
-import DefaultError from '../../../components/DefaultError'
+import LoginRedirect from './LoginRedirect'
 import googleIcon from '../../../resources/icon_google.svg'
 
 const iconStyle = {
@@ -50,14 +48,10 @@ const LoginButton = () => (
 
 function LoginForm() {
   return (
-    <Query query={CURRENT_USER}>
-      {({ loading, error, data }) => {
-        if (loading) return null
-        if (error) return <DefaultError />
-        const isSignedIn = data.currentUser && data.currentUser.isSignedIn
-        return isSignedIn ? <Redirect to="/app/" /> : <LoginButton />
-      }}
-    </Query>
+    <>
+      <LoginRedirect />
+      <LoginButton />
+    </>
   )
 }
 

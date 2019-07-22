@@ -43,8 +43,7 @@ function TasksPage({ match: { params } }) {
     if (params.listId) {
       saveToLocalStorage(LAST_LIST_STORAGE_KEY, params.listId)
     }
-    // eslint-disable-next-line
-  }, [])
+  }, [params.listId])
 
   if (!params.listId) {
     return <NoListSelected />

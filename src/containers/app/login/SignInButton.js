@@ -11,9 +11,16 @@ function SignInButton() {
       {({ loading, error, data }) => {
         if (loading || error) return null
         const isSignedIn = data.currentUser && data.currentUser.isSignedIn
+        if (isSignedIn) {
+          return (
+            <Button color="primary" component={LoginLink}>
+              Open tasks
+            </Button>
+          )
+        }
         return (
           <Button color="primary" component={LoginLink}>
-            {isSignedIn ? 'Open tasks' : 'Sign in'}
+            Sign in
           </Button>
         )
       }}

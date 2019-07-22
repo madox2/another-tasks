@@ -5,17 +5,17 @@ import { Divider } from '../components/Divider'
 
 export const Header = ({ children }) => (
   <>
-    <Typography variant="h4" style={{ textAlign: 'center' }}>
+    <Typography variant="h1" style={{ textAlign: 'center' }}>
       {children}
     </Typography>
-    <Divider size={40} />
+    <Divider size={50} />
   </>
 )
 
 export const SubHeader = ({ children }) => (
   <>
-    <Typography variant="h6">{children}</Typography>
-    <Divider size={10} />
+    <Typography variant="h2">{children}</Typography>
+    <Divider size={20} />
   </>
 )
 

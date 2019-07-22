@@ -1,10 +1,10 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
 
+import { Header } from '../components/Typo'
 import PageTemplate from './app/PageTemplate'
 
 export default () => (
   <PageTemplate>
-    <Typography variant="h4">Page not found</Typography>
+    <Header>Page not found</Header>
   </PageTemplate>
 )

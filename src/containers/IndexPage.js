@@ -1,8 +1,7 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
 
 import { Divider } from '../components/Divider'
-import { Paragraph, SubHeader } from '../components/Typo'
+import { Header, Paragraph, SubHeader } from '../components/Typo'
 import { isTasksHost } from '../app/routes'
 import LoginRedirect from './app/login/LoginRedirect'
 import PageTemplate from './app/PageTemplate'
@@ -30,8 +29,7 @@ export default () => (
       }}
     >
       <div style={{ maxWidth: 800, textAlign: 'center' }}>
-        <Typography variant="h3">Another Tasks</Typography>
-        <Divider size={40} />
+        <Header>Another Tasks</Header>
 
         <Section title="Web interface for Google Tasks">
           Another Tasks is a simple TODO list application that uses Google Tasks

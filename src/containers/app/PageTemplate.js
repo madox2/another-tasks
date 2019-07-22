@@ -51,7 +51,9 @@ export default function({ children, index, ...other }) {
           justifyContent: 'space-between',
         }}
       >
-        <img src={logo} style={{ height: 35 }} alt="logo" />
+        <a href="https://anothertasks.com" alt="home" className="nooutline">
+          <img src={logo} style={{ height: 35 }} alt="logo" />
+        </a>
         <SignInButton />
       </div>
       <div style={{ flex: 1, padding: 20 }}>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { isRootHost } from '../app/routes'
 
@@ -11,12 +11,11 @@ export function link(to) {
 }
 
 function externalLink(url) {
-  return () => {
-    useEffect(() => {
-      window.location.href = url
-    }, [])
-    return null
-  }
+  const ExternalLink = React.forwardRef((props, ref) => (
+    /* eslint-disable-next-line */
+    <a href={url} {...props} ref={ref} />
+  ))
+  return ExternalLink
 }
 
 function absoluteLink(url) {

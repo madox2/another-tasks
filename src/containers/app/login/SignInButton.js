@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button'
 import React from 'react'
 
 import { CURRENT_USER } from '../../../queries/loginQueries'
-import { LoginLink } from '../../../components/Link'
+import { LoginLink, TasksAppLink } from '../../../components/Link'
 
 function SignInButton() {
   return (
@@ -13,7 +13,7 @@ function SignInButton() {
         const isSignedIn = data.currentUser && data.currentUser.isSignedIn
         if (isSignedIn) {
           return (
-            <Button color="primary" component={LoginLink}>
+            <Button color="primary" component={TasksAppLink}>
               Open tasks
             </Button>
           )

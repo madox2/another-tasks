@@ -56,6 +56,7 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
         label="Add details"
         multiline
         rows="4"
+        rowsMax="15"
         className={classes.textField}
         margin="normal"
         value={notes}

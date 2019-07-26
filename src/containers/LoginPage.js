@@ -8,8 +8,7 @@ export default () => (
   <PageTemplate style={{ textAlign: 'center' }}>
     <Header>Sign in</Header>
     <Paragraph>
-      In order to use Another Tasks, you need to authorize the applicatio with
-      Google.
+      In order to use Another Tasks, you need to authorize it with Google:
     </Paragraph>
 
     <LoginForm />

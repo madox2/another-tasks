@@ -1,5 +1,5 @@
 import { Query } from 'react-apollo'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import {
   LAST_LIST_STORAGE_KEY,
@@ -44,24 +44,36 @@ function TasksPage({ match: { params } }) {
       saveToLocalStorage(LAST_LIST_STORAGE_KEY, params.listId)
     }
   }, [params.listId])
+  const [refetching, setRefetching] = useState(false)
 
   if (!params.listId) {
     return <NoListSelected />
   }
   return (
     <Query variables={{ id: params.listId }} query={TASK_LIST}>
-      {({ loading, error, data, client }) => {
+      {({ loading, error, data, client, refetch }) => {
         const taskList = data && data.taskList
-        const loaded = !loading && !error
+        const loaded = !!(data && data.taskList)
 
         return (
           <DropTaskContainer data={data} listId={params.listId}>
-            {loading && <GlobalLoadingIndicator />}
             <Template
               toolbar={loaded && taskList.title}
-              right={loaded && <ListContextMenu list={taskList} />}
+              right={
+                loaded && (
+                  <ListContextMenu
+                    list={taskList}
+                    onRefresh={() => {
+                      setRefetching(true)
+                      refetch({ id: params.listId })
+                        .then(() => setRefetching(false))
+                        .catch(() => setRefetching(false))
+                    }}
+                  />
+                )
+              }
             >
-              {loading && <GlobalLoadingIndicator />}
+              {(loading || refetching) && <GlobalLoadingIndicator />}
               {error && <DefaultError />}
               {loaded && (
                 <>

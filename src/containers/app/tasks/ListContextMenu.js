@@ -3,11 +3,13 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import React from 'react'
+import RefreshIcon from '@material-ui/icons/Refresh'
 
+import { Divider } from '../../../components/Divider'
 import DeleteListDialog from '../taskLists/DeleteListDialog'
 import RenameListDialog from '../taskLists/RenameListDialog'
 
-export default function ListContextMenu({ list }) {
+export default function ListContextMenu({ list, onRefresh }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [renameOpen, setRenameOpen] = React.useState(false)
   const [deleteOpen, setDeleteOpen] = React.useState(false)
@@ -19,6 +21,15 @@ export default function ListContextMenu({ list }) {
   }
   return (
     <>
+      <IconButton
+        color="inherit"
+        aria-label="Refresh"
+        edge="start"
+        onClick={onRefresh}
+      >
+        <RefreshIcon />
+      </IconButton>
+      <Divider size={18} horizontal />
       <IconButton
         color="inherit"
         aria-label="List actions"

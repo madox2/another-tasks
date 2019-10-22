@@ -37,6 +37,16 @@ const NoListSelected = ({ children, ...other }) => (
   </DropTaskContainer>
 )
 
+// hack to end refreshing (refetch(...).then(...) does not work)
+function SetRefreshingToFalse({ setRefreshing, refreshing, loading }) {
+  useEffect(() => {
+    if (!loading && refreshing) {
+      setRefreshing(false)
+    }
+  }, [loading, refreshing]) // eslint-disable-line
+  return null
+}
+
 function TasksPage({ match: { params } }) {
   const firstTaskText = useRef()
   useEffect(() => {
@@ -44,16 +54,22 @@ function TasksPage({ match: { params } }) {
       saveToLocalStorage(LAST_LIST_STORAGE_KEY, params.listId)
     }
   }, [params.listId])
-  const [refetching, setRefetching] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
 
   if (!params.listId) {
     return <NoListSelected />
   }
   return (
-    <Query variables={{ id: params.listId }} query={TASK_LIST}>
+    <Query
+      variables={{ id: params.listId }}
+      fetchPolicy="cache-and-network"
+      query={TASK_LIST}
+    >
       {({ loading, error, data, client, refetch }) => {
         const taskList = data && data.taskList
         const loaded = !!(data && data.taskList)
+
+        const initialLoading = loading && !data
 
         return (
           <DropTaskContainer data={data} listId={params.listId}>
@@ -64,16 +80,19 @@ function TasksPage({ match: { params } }) {
                   <ListContextMenu
                     list={taskList}
                     onRefresh={() => {
-                      setRefetching(true)
+                      setRefreshing(true)
                       refetch({ id: params.listId })
-                        .then(() => setRefetching(false))
-                        .catch(() => setRefetching(false))
                     }}
                   />
                 )
               }
             >
-              {(loading || refetching) && <GlobalLoadingIndicator />}
+              <SetRefreshingToFalse
+                setRefreshing={setRefreshing}
+                refreshing={refreshing}
+                loading={loading}
+              />
+              {(initialLoading || refreshing) && <GlobalLoadingIndicator />}
               {error && <DefaultError />}
               {loaded && (
                 <>

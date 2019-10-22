@@ -1,11 +1,10 @@
+import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import React from 'react'
-import RefreshIcon from '@material-ui/icons/Refresh'
 
-import { Divider } from '../../../components/Divider'
 import DeleteListDialog from '../taskLists/DeleteListDialog'
 import RenameListDialog from '../taskLists/RenameListDialog'
 
@@ -21,15 +20,6 @@ export default function ListContextMenu({ list, onRefresh }) {
   }
   return (
     <>
-      <IconButton
-        color="inherit"
-        aria-label="Refresh"
-        edge="start"
-        onClick={onRefresh}
-      >
-        <RefreshIcon />
-      </IconButton>
-      <Divider size={18} horizontal />
       <IconButton
         color="inherit"
         aria-label="List actions"
@@ -65,6 +55,15 @@ export default function ListContextMenu({ list, onRefresh }) {
           }}
         >
           Delete list
+        </MenuItem>
+        <Divider />
+        <MenuItem
+          onClick={() => {
+            onRefresh()
+            handleActionsClose()
+          }}
+        >
+          Refresh
         </MenuItem>
       </Menu>
       <RenameListDialog

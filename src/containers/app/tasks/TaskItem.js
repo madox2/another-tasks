@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 const shortenNotes = shortenText(100)
 
 function TaskItem({ task, inputRef, listId, updateTask }) {
-  const [title, setTitle] = useState(task.title || '')
+  const [title, setTitle] = useState(task.title)
   const [status, setStatus] = useState(task.status)
   useEffect(() => {
     // re-initialize state after manual refresh
@@ -35,11 +35,11 @@ function TaskItem({ task, inputRef, listId, updateTask }) {
     if (title !== task.title) {
       setTitle(task.title)
     }
-  }, [task.status, task.title]) // eslint-disable-line
+  }, [task.status, task.title || '']) // eslint-disable-line
   useUpdateTaskEffect(updateTask, {
     ...task,
     listId,
-    title: title || null,
+    title,
     status,
   })
   const { notes, id } = task
@@ -59,7 +59,7 @@ function TaskItem({ task, inputRef, listId, updateTask }) {
       <ListItemText
         primary={
           <TextField
-            value={title}
+            value={title || ''}
             onChange={e => {
               setTitle(e.target.value)
             }}

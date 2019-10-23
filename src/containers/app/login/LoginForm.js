@@ -3,7 +3,6 @@ import { gql } from 'apollo-boost'
 import Button from '@material-ui/core/Button'
 import React from 'react'
 
-import LoginRedirect from './LoginRedirect'
 import googleIcon from '../../../resources/icon_google.svg'
 
 const iconStyle = {
@@ -49,9 +48,7 @@ const LoginButton = () => (
 function LoginForm() {
   return (
     <>
-      <LoginRedirect>
-        <LoginButton />
-      </LoginRedirect>
+      <LoginButton />
     </>
   )
 }

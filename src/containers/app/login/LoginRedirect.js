@@ -3,25 +3,18 @@ import { Redirect } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 
 import { CURRENT_USER } from '../../../queries/loginQueries'
-import logo from '../../../resources/logo.png'
 
-const Indicator = () => {
+const Postponed = ({ children, delay }) => {
   const [show, setShow] = useState(false)
   useEffect(() => {
     const timeout = setTimeout(() => {
       setShow(true)
-    }, 1500)
+    }, delay)
     return () => {
       clearTimeout(timeout)
     }
-  })
-  return (
-    show && (
-      <div className="AppLoading">
-        <img src={logo} style={{ height: 35 }} alt="logo" />
-      </div>
-    )
-  )
+  }, []) // eslint-disable-line
+  return show && children
 }
 
 export default function LoginRedirect({ shouldRedirect = true, children }) {
@@ -31,7 +24,7 @@ export default function LoginRedirect({ shouldRedirect = true, children }) {
         if (!shouldRedirect || error) {
           return children
         }
-        if (loading) return <Indicator />
+        if (loading) return <Postponed delay={1500}>{children}</Postponed>
         const isSignedIn = data.currentUser && data.currentUser.isSignedIn
         if (!isSignedIn) {
           return children

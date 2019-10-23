@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 function TaskForm({ data, listId, updateTask, moveToList, history }) {
   const [title, setTitle] = useState(data.task.title)
-  const [notes, setNotes] = useState(data.task.notes || '')
+  const [notes, setNotes] = useState(data.task.notes)
   const [due, setDue] = useState(data.task.due || '')
   const [list, setList] = useState(listId)
   const [status, setStatus] = useState(data.task.status)
@@ -38,7 +38,7 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
   useUpdateTaskEffect(updateTask, {
     ...data.task,
     title,
-    notes: notes || null,
+    notes: notes,
     due: due || null,
     listId,
     status,
@@ -49,7 +49,7 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
         label="Enter title"
         className={classes.textField}
         margin="normal"
-        value={title}
+        value={title || ''}
         onChange={e => setTitle(e.target.value)}
       />
       <TextField
@@ -59,7 +59,7 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
         rowsMax="15"
         className={classes.textField}
         margin="normal"
-        value={notes}
+        value={notes || ''}
         onChange={e => setNotes(e.target.value)}
       />
       <FormControlLabel

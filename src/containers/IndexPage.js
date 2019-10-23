@@ -7,6 +7,7 @@ import { Header, Paragraph, SubHeader } from '../components/Typo'
 import { isTasksHost } from '../app/routes'
 import LoginRedirect from './app/login/LoginRedirect'
 import PageTemplate from './app/PageTemplate'
+import demo from '../resources/demo-min.png'
 
 const Section = props => (
   <div>
@@ -41,6 +42,15 @@ export default () => {
             here and they will be available in all google services like
             calendar, etc.
           </Section>
+
+          <div
+            style={{
+              margin: '50px 0',
+              border: '1px solid rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <img src={demo} alt="tasks demo" style={{ width: '100%' }} />
+          </div>
 
           <Section title="Motivation">
             As the Google shut down Canvas interface for Google Tasks in early

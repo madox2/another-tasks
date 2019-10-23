@@ -49,8 +49,9 @@ const LoginButton = () => (
 function LoginForm() {
   return (
     <>
-      <LoginRedirect />
-      <LoginButton />
+      <LoginRedirect>
+        <LoginButton />
+      </LoginRedirect>
     </>
   )
 }

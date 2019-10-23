@@ -5,3 +5,9 @@ body {
 a.nooutline:focus {
   outline: 0;
 }
+.AppLoading {
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -111,7 +111,7 @@ export const EDIT_LIST = gql`
   }
 `
 
-export function useAddTask({ listId, onTaskAdd }) {
+export function useAddTask({ listId }) {
   const [addTask] = useMutation(ADD_TASK, {
     variables: { listId },
   })
@@ -143,7 +143,6 @@ export function useAddTask({ listId, onTaskAdd }) {
           variables: { id: listId },
           data,
         })
-        onTaskAdd()
       },
     })
   }

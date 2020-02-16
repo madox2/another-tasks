@@ -48,7 +48,6 @@ function SetRefreshingToFalse({ setRefreshing, refreshing, loading }) {
 }
 
 function TasksPage({ match: { params } }) {
-  const firstTaskText = useRef()
   useEffect(() => {
     if (params.listId) {
       saveToLocalStorage(LAST_LIST_STORAGE_KEY, params.listId)
@@ -58,11 +57,6 @@ function TasksPage({ match: { params } }) {
 
   if (!params.listId) {
     return <NoListSelected />
-  }
-  function onTaskAdd() {
-    setTimeout(() => {
-      firstTaskText.current.focus()
-    }, 1)
   }
   return (
     <Query
@@ -102,10 +96,7 @@ function TasksPage({ match: { params } }) {
               {loaded && (
                 <>
                   <UpdateStore list={taskList} client={client} />
-                  <ListActionsToolbar
-                    listId={params.listId}
-                    onTaskAdd={onTaskAdd}
-                  />
+                  <ListActionsToolbar listId={params.listId} />
                   <DraggableList
                     onDragEnd={() => 0}
                     items={taskList.tasks.map((task, idx) => {
@@ -116,10 +107,9 @@ function TasksPage({ match: { params } }) {
                         key,
                         children: (
                           <TaskItem
-                            onTaskAdd={onTaskAdd}
                             key={key}
                             task={task}
-                            inputRef={idx === 0 ? firstTaskText : undefined}
+                            autoFocus={idx === 0}
                             listId={params.listId}
                           />
                         ),

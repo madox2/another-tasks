@@ -5,8 +5,8 @@ import React from 'react'
 import { useAddTask, useClearCompleted } from '../../../queries/taskMutations'
 import FabButton from '../../../components/FabButton'
 
-export default function ListActionsToolbar({ listId, onTaskAdd }) {
-  const [addTask] = useAddTask({ listId, onTaskAdd })
+export default function ListActionsToolbar({ listId }) {
+  const [addTask] = useAddTask({ listId })
   const [clearCompleted] = useClearCompleted({ listId })
   return (
     <div>

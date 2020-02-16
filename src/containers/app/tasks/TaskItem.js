@@ -4,7 +4,7 @@ import IconButton from '@material-ui/core/IconButton'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 import grey from '@material-ui/core/colors/grey'
 
@@ -27,10 +27,11 @@ const useStyles = makeStyles(theme => ({
 
 const shortenNotes = shortenText(100)
 
-function TaskItem({ task, inputRef, listId, updateTask, onTaskAdd }) {
+function TaskItem({ task, autoFocus, listId, updateTask }) {
   const [title, setTitle] = useState(task.title)
   const [status, setStatus] = useState(task.status)
-  const [addTask] = useAddTask({ listId, onTaskAdd })
+  const [addTask] = useAddTask({ listId })
+  const inputRef = useRef()
   useEffect(() => {
     // re-initialize state after manual refresh
     if (status !== task.status) {
@@ -40,6 +41,11 @@ function TaskItem({ task, inputRef, listId, updateTask, onTaskAdd }) {
       setTitle(task.title)
     }
   }, [task.status, task.title || '']) // eslint-disable-line
+  useEffect(() => {
+    if (autoFocus && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [])
   useUpdateTaskEffect(updateTask, {
     ...task,
     listId,

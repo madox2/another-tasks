@@ -1,10 +1,10 @@
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { makeStyles } from '@material-ui/core'
-import { compose } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import React, { useState } from 'react'
 import TextField from '@material-ui/core/TextField'
+import { compose } from 'recompose'
 
 import {
   mutateMoveToList,

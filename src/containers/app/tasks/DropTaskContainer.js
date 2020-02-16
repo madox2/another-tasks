@@ -1,6 +1,6 @@
 import { DragDropContext } from 'react-beautiful-dnd'
-import { compose } from 'react-apollo'
 import React from 'react'
+import { compose } from 'recompose'
 
 import { TASK_LIST } from '../../../queries/taskListsQueries'
 import { isTaskOptimistic } from '../../../app/optimisticCache'

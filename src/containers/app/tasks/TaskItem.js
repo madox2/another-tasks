@@ -11,8 +11,11 @@ import grey from '@material-ui/core/colors/grey'
 import { TaskDetailLink } from '../../../components/Link'
 import { isTaskOptimistic } from '../../../app/optimisticCache'
 import { shortenText } from '../../../app/utils/textUtils'
+import {
+  useAddTask,
+  withUpdateTaskMutation,
+} from '../../../queries/taskMutations'
 import { useUpdateTaskEffect } from '../../../queries/taskHelpers'
-import { withUpdateTaskMutation } from '../../../queries/taskMutations'
 import CompletedCheckbox from '../../../components/CompletedCheckbox'
 
 const useStyles = makeStyles(theme => ({
@@ -24,9 +27,10 @@ const useStyles = makeStyles(theme => ({
 
 const shortenNotes = shortenText(100)
 
-function TaskItem({ task, inputRef, listId, updateTask }) {
+function TaskItem({ task, inputRef, listId, updateTask, onTaskAdd }) {
   const [title, setTitle] = useState(task.title)
   const [status, setStatus] = useState(task.status)
+  const [addTask] = useAddTask({ listId, onTaskAdd })
   useEffect(() => {
     // re-initialize state after manual refresh
     if (status !== task.status) {
@@ -59,6 +63,11 @@ function TaskItem({ task, inputRef, listId, updateTask }) {
       <ListItemText
         primary={
           <TextField
+            onKeyPress={ev => {
+              if (ev.key === 'Enter') {
+                addTask()
+              }
+            }}
             value={title || ''}
             onChange={e => {
               setTitle(e.target.value)

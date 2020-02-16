@@ -1,8 +1,14 @@
-import { Mutation } from 'react-apollo'
+import { Mutation, useMutation } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import React from 'react'
 
 import { LoadableMutation } from '../containers/app/common/LoadableMutation'
+import { TASK_LIST } from './taskListsQueries'
+import {
+  isTaskOptimistic,
+  makeTaskOptimisticId,
+  storeTaskOptimisticId,
+} from '../app/optimisticCache'
 
 export const withMoveToListMutation = Component => props => (
   <LoadableMutation
@@ -104,3 +110,63 @@ export const EDIT_LIST = gql`
     }
   }
 `
+
+export function useAddTask({ listId, onTaskAdd }) {
+  const [addTask] = useMutation(ADD_TASK, {
+    variables: { listId },
+  })
+  const customAddTask = () => {
+    const optimisticId = makeTaskOptimisticId()
+    addTask({
+      optimisticResponse: {
+        __typename: 'Mutation',
+        addTask: {
+          id: optimisticId,
+          title: null,
+          notes: null,
+          due: null,
+          status: 'needsAction',
+          __typename: 'Task',
+        },
+      },
+      update: (proxy, { data: { addTask } }) => {
+        const data = proxy.readQuery({
+          query: TASK_LIST,
+          variables: { id: listId },
+        })
+        if (!isTaskOptimistic(addTask.id)) {
+          storeTaskOptimisticId(addTask.id, optimisticId)
+        }
+        data.taskList.tasks.unshift(addTask)
+        proxy.writeQuery({
+          query: TASK_LIST,
+          variables: { id: listId },
+          data,
+        })
+        onTaskAdd()
+      },
+    })
+  }
+  return [customAddTask]
+}
+
+export function useClearCompleted({ listId }) {
+  return useMutation(CLEAR_COMPLETED, {
+    variables: { listId },
+    optimisticResponse: { __typename: 'Mutation', clearCompleted: true },
+    update: (proxy, { data: { clearCompleted } }) => {
+      const data = proxy.readQuery({
+        query: TASK_LIST,
+        variables: { id: listId },
+      })
+      data.taskList.tasks = data.taskList.tasks.filter(
+        t => t.status !== 'completed'
+      )
+      proxy.writeQuery({
+        query: TASK_LIST,
+        variables: { id: listId },
+        data,
+      })
+    },
+  })
+}

@@ -59,6 +59,11 @@ function TasksPage({ match: { params } }) {
   if (!params.listId) {
     return <NoListSelected />
   }
+  function onTaskAdd() {
+    setTimeout(() => {
+      firstTaskText.current.focus()
+    }, 1)
+  }
   return (
     <Query
       variables={{ id: params.listId }}
@@ -99,11 +104,7 @@ function TasksPage({ match: { params } }) {
                   <UpdateStore list={taskList} client={client} />
                   <ListActionsToolbar
                     listId={params.listId}
-                    onTaskAdd={() => {
-                      setTimeout(() => {
-                        firstTaskText.current.focus()
-                      }, 500)
-                    }}
+                    onTaskAdd={onTaskAdd}
                   />
                   <DraggableList
                     onDragEnd={() => 0}
@@ -115,6 +116,7 @@ function TasksPage({ match: { params } }) {
                         key,
                         children: (
                           <TaskItem
+                            onTaskAdd={onTaskAdd}
                             key={key}
                             task={task}
                             inputRef={idx === 0 ? firstTaskText : undefined}

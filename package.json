@@ -12,10 +12,10 @@
     "graphql-tools": "^5.0.0",
     "lodash": "^4.17.11",
     "notistack": "^0.9.11",
-    "react": "^16.13.1",
+    "react": "^0.0.0-experimental-e5d06e34b",
     "react-apollo": "^3.1.5",
     "react-beautiful-dnd": "^13.0.0",
-    "react-dom": "^16.13.1",
+    "react-dom": "^0.0.0-experimental-e5d06e34b",
     "react-router-dom": "^5.0.0",
     "recompose": "^0.30.0"
   },

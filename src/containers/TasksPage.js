@@ -7,6 +7,7 @@ import {
 } from '../app/utils/storageUtils'
 import { TASK } from '../queries/taskQueries'
 import { TASK_LIST } from '../queries/taskListsQueries'
+import { useAddTask } from '../queries/taskMutations'
 import { getTaskKey, isTaskOptimistic } from '../app/optimisticCache'
 import DefaultError from '../components/DefaultError'
 import DraggableList from '../components/DraggableList'
@@ -47,6 +48,17 @@ function SetRefreshingToFalse({ setRefreshing, refreshing, loading }) {
   return null
 }
 
+function AutoAddTask({ taskList, listId }) {
+  const [addTask] = useAddTask({ listId })
+  useEffect(() => {
+    if (taskList.tasks.length === 0) {
+      addTask()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listId, taskList.tasks.length])
+  return null
+}
+
 function TasksPage({ match: { params } }) {
   useEffect(() => {
     if (params.listId) {
@@ -72,6 +84,9 @@ function TasksPage({ match: { params } }) {
 
         return (
           <DropTaskContainer data={data} listId={params.listId}>
+            {loaded && (
+              <AutoAddTask taskList={taskList} listId={params.listId} />
+            )}
             <Template
               toolbar={loaded && taskList.title}
               right={

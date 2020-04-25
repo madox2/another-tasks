@@ -1,5 +1,5 @@
 import { Query } from 'react-apollo'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   LAST_LIST_STORAGE_KEY,
@@ -19,7 +19,7 @@ import Template from './app/Template'
 
 function UpdateStore({ list, client }) {
   useEffect(() => {
-    list.tasks.forEach(task => {
+    list.tasks.forEach((task) => {
       client.writeQuery({
         query: TASK,
         variables: { id: task.id, listId: list.id },

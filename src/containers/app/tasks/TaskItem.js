@@ -18,7 +18,7 @@ import {
 import { useUpdateTaskEffect } from '../../../queries/taskHelpers'
 import CompletedCheckbox from '../../../components/CompletedCheckbox'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   completedInput: {
     textDecoration: 'line-through',
     color: grey[400],
@@ -45,7 +45,7 @@ function TaskItem({ task, autoFocus, listId, updateTask }) {
     if (autoFocus && inputRef.current) {
       inputRef.current.focus()
     }
-  }, [])
+  }, [autoFocus])
   useUpdateTaskEffect(updateTask, {
     ...task,
     listId,
@@ -69,13 +69,13 @@ function TaskItem({ task, autoFocus, listId, updateTask }) {
       <ListItemText
         primary={
           <TextField
-            onKeyPress={ev => {
+            onKeyPress={(ev) => {
               if (ev.key === 'Enter') {
                 addTask()
               }
             }}
             value={title || ''}
-            onChange={e => {
+            onChange={(e) => {
               setTitle(e.target.value)
             }}
             margin="none"

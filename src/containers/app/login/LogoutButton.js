@@ -15,9 +15,16 @@ export const LogoutButton = () => (
       }
     `}
   >
-    {(logout, { data }) => {
+    {(logout, { data, client }) => {
       return (
-        <IconButton color="inherit" aria-label="Logout" onClick={logout}>
+        <IconButton
+          color="inherit"
+          aria-label="Logout"
+          onClick={async () => {
+            await logout()
+            client.clearStore()
+          }}
+        >
           <LogoutIcon />
         </IconButton>
       )

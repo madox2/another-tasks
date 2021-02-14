@@ -16,7 +16,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   }),
 })
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   icon: {
     color: grey[500],
     marginTop: 3,
@@ -45,7 +45,7 @@ export default function DraggableList(props) {
                       {...provided.draggableProps}
                       style={getItemStyle(
                         snapshot.isDragging,
-                        provided.draggableProps.style
+                        provided.draggableProps.style,
                       )}
                     >
                       <div

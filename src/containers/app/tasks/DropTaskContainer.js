@@ -25,7 +25,7 @@ const DropTaskContainer = ({
   ...other
 }) => (
   <DragDropContext
-    onDragEnd={result => {
+    onDragEnd={(result) => {
       if (!result.destination) {
         // outside of container
         return
@@ -40,9 +40,9 @@ const DropTaskContainer = ({
         const tasks = reorder(
           [...data.taskList.tasks],
           result.source.index,
-          result.destination.index
+          result.destination.index,
         )
-        const prevIndex = tasks.findIndex(t => t.id === id) - 1
+        const prevIndex = tasks.findIndex((t) => t.id === id) - 1
         const previousId = tasks[prevIndex] && tasks[prevIndex].id
         moveTask({
           variables: { listId, id, previousId },
@@ -83,5 +83,5 @@ const DropTaskContainer = ({
 
 export default compose(
   withMoveTaskMutation,
-  withMoveToListMutation
+  withMoveToListMutation,
 )(DropTaskContainer)

@@ -10,7 +10,7 @@ import {
   storeTaskOptimisticId,
 } from '../app/optimisticCache'
 
-export const withMoveToListMutation = Component => props => (
+export const withMoveToListMutation = (Component) => (props) => (
   <LoadableMutation
     mutation={gql`
       mutation MoveToList(
@@ -52,7 +52,7 @@ const UPDATE_TASK = gql`
   }
 `
 
-export const withUpdateTaskMutation = Component => props => (
+export const withUpdateTaskMutation = (Component) => (props) => (
   <Mutation mutation={UPDATE_TASK}>
     {(updateTask, { data }) => <Component {...props} updateTask={updateTask} />}
   </Mutation>
@@ -84,7 +84,7 @@ export const CLEAR_COMPLETED = gql`
   }
 `
 
-export const withMoveTaskMutation = Component => props => (
+export const withMoveTaskMutation = (Component) => (props) => (
   <Mutation
     mutation={gql`
       mutation MoveTask($id: String!, $previousId: String, $listId: String!) {
@@ -159,7 +159,7 @@ export function useClearCompleted({ listId }) {
         variables: { id: listId },
       })
       data.taskList.tasks = data.taskList.tasks.filter(
-        t => t.status !== 'completed'
+        (t) => t.status !== 'completed',
       )
       proxy.writeQuery({
         query: TASK_LIST,

@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core'
 import Fab from '@material-ui/core/Fab'
 import React from 'react'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   fab: {
     margin: theme.spacing(1),
   },

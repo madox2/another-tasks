@@ -47,7 +47,7 @@ export default function SidebarTaskListItem({
                   edge="end"
                   className="SidebarTaskListItem-action"
                   aria-label="List actions"
-                  onClick={e => handleActionsClick(e, { id, title })}
+                  onClick={(e) => handleActionsClick(e, { id, title })}
                 >
                   <MoreIcon />
                 </IconButton>

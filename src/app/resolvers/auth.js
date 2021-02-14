@@ -11,7 +11,7 @@ export const loadPromise = new Promise((resolve, reject) =>
       })
       .then(resolve)
       .catch(reject)
-  })
+  }),
 )
 
 const SIGNED_IN_USER = { isSignedIn: true, id: 'current' }

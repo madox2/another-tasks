@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import React from 'react'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   button: {
     color: 'white',
   },

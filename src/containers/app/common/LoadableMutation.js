@@ -11,11 +11,11 @@ export function LoadableMutation(props) {
         const enhanced = (...args) => {
           putLoading()
           return mutate(...args)
-            .then(result => {
+            .then((result) => {
               clearLoading()
               return result
             })
-            .catch(err => {
+            .catch((err) => {
               clearLoading()
               throw err
             })

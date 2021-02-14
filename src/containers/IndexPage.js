@@ -18,7 +18,7 @@ const Section = (props) => (
   </div>
 )
 
-export default () => {
+export default function IndexPage() {
   const theme = useTheme()
   return (
     <LoginRedirect shouldRedirect={isTasksHost}>

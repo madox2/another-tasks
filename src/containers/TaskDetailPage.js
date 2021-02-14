@@ -27,7 +27,7 @@ export default function TaskDetailPage({
         }
         right={
           <Mutation mutation={DELETE_TASK} variables={{ listId, id: taskId }}>
-            {deleteTask => (
+            {(deleteTask) => (
               <ToolbarButton
                 onClick={() => {
                   deleteTask({
@@ -44,7 +44,7 @@ export default function TaskDetailPage({
                         variables: { id: listId },
                       })
                       data.taskList.tasks = data.taskList.tasks.filter(
-                        t => t.id !== taskId
+                        (t) => t.id !== taskId,
                       )
                       proxy.writeQuery({
                         query: TASK_LIST,

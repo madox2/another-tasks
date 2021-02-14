@@ -21,7 +21,7 @@ const isSelected = (match, id) =>
 
 function initialListPath(taskLists) {
   const lastListId = loadFromLocalStorage(LAST_LIST_STORAGE_KEY)
-  const list = taskLists.find(l => l.id === lastListId)
+  const list = taskLists.find((l) => l.id === lastListId)
   if (list) {
     return `/app/list/${lastListId}`
   }
@@ -43,12 +43,12 @@ function Sidebar({ match }) {
       {({ data, client }) => {
         const taskLists = get(data, 'taskLists', [])
         // unknown or undefined
-        const isUnknown = !taskLists.find(l => l.id === match.params.listId)
+        const isUnknown = !taskLists.find((l) => l.id === match.params.listId)
         if (taskLists[0] && isUnknown) {
           return <Redirect to={initialListPath(taskLists)} />
         }
         if (!prefetched) {
-          taskLists.forEach(list => {
+          taskLists.forEach((list) => {
             client.query({
               query: TASK_LIST,
               variables: { id: list.id },

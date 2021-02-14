@@ -24,7 +24,7 @@ function absoluteLink(url) {
 
 export const TaskDetailLink = (listId, id) =>
   link(`/app/list/${listId}/task/${id}`)
-export const TaskListLink = id => link(`/app/list/${id}`)
+export const TaskListLink = (id) => link(`/app/list/${id}`)
 export const WelcomeLink = link('/')
 export const ContactLink = link('/contact')
 export const TermsLink = link('/privacy')

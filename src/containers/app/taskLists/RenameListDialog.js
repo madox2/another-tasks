@@ -30,7 +30,7 @@ function RenameListDialog({ list, open, onClose }) {
                 type="text"
                 fullWidth
                 value={title}
-                onChange={e => setTitle(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </DialogContent>
             <DialogActions>

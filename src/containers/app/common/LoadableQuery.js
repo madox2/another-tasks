@@ -7,7 +7,7 @@ import GlobalLoadingIndicator from './GlobalLoadingIndicator'
 export function LoadableQuery(props) {
   return (
     <Query {...props}>
-      {result => {
+      {(result) => {
         if (result.loading) {
           return <GlobalLoadingIndicator />
         }

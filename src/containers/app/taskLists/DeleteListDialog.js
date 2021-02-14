@@ -39,7 +39,7 @@ function DeleteListDialog({ list, open, onClose }) {
                         query: MINIMAL_TASK_LISTS,
                       })
                       data.taskLists = data.taskLists.filter(
-                        t => t.id !== list.id
+                        (t) => t.id !== list.id,
                       )
                       proxy.writeQuery({
                         query: MINIMAL_TASK_LISTS,

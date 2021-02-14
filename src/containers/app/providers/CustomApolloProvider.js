@@ -11,7 +11,7 @@ function CustomApolloProvider({ enqueueSnackbar, closeSnackbar, ...props }) {
     const showError = () =>
       enqueueSnackbar('Oops something went wrong try again', {
         variant: 'error',
-        action: key => (
+        action: (key) => (
           <Button onClick={() => closeSnackbar(key)}>DISMISS</Button>
         ),
       })

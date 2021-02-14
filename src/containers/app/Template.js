@@ -23,7 +23,7 @@ import logo from '../../resources/logo.png'
 
 const drawerWidth = 280
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
@@ -148,7 +148,7 @@ function Template(props) {
   )
 }
 
-const withAuthRedirect = Component => props => (
+const withAuthRedirect = (Component) => (props) => (
   <Query query={CURRENT_USER}>
     {({ loading, error, data }) => {
       if (loading) return <GlobalLoadingIndicator />

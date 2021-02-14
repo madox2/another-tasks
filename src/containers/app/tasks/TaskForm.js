@@ -18,7 +18,7 @@ import CompletedCheckbox from '../../../components/CompletedCheckbox'
 import DateTimePicker from '../../../components/DateTimePicker'
 import TaskListSelect from '../taskLists/TaskListSelect'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   textField: {
     width: '100%',
   },
@@ -50,7 +50,7 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
         className={classes.textField}
         margin="normal"
         value={title || ''}
-        onChange={e => setTitle(e.target.value)}
+        onChange={(e) => setTitle(e.target.value)}
       />
       <TextField
         label="Add details"
@@ -60,7 +60,7 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
         className={classes.textField}
         margin="normal"
         value={notes || ''}
-        onChange={e => setNotes(e.target.value)}
+        onChange={(e) => setNotes(e.target.value)}
       />
       <FormControlLabel
         control={
@@ -80,7 +80,7 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
         <TaskListSelect
           className={classes.shortInput}
           value={list}
-          onChange={e => {
+          onChange={(e) => {
             const targetListId = e.target.value
             setList(targetListId)
             if (list !== targetListId) {
@@ -109,5 +109,5 @@ function TaskForm({ data, listId, updateTask, moveToList, history }) {
 export default compose(
   withRouter,
   withUpdateTaskMutation,
-  withMoveToListMutation
+  withMoveToListMutation,
 )(TaskForm)

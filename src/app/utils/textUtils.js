@@ -1,4 +1,4 @@
-export const shortenText = maxLetters => text => {
+export const shortenText = (maxLetters) => (text) => {
   if (!text) {
     return text
   }

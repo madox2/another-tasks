@@ -42,17 +42,17 @@ async function fetchItems(path) {
   return (result && result.items) || []
 }
 
-const getTasks = async id => {
+const getTasks = async (id) => {
   const tasks = await fetchItems(
-    `https://www.googleapis.com/tasks/v1/lists/${id}/tasks`
+    `https://www.googleapis.com/tasks/v1/lists/${id}/tasks`,
   )
   tasks.sort((a, b) => a.position.localeCompare(b.position))
   return tasks
 }
 
-const getList = async id => {
+const getList = async (id) => {
   const result = await fetchResult(
-    `https://www.googleapis.com/tasks/v1/users/@me/lists/${id}`
+    `https://www.googleapis.com/tasks/v1/users/@me/lists/${id}`,
   )
   return {
     ...result,
@@ -72,16 +72,16 @@ const createTask = (listId, task) =>
 const deleteTask = (id, listId) =>
   doDelete(`https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}`)
 
-const updateTask = async task =>
+const updateTask = async (task) =>
   await updatePromises(
     updateTaskPromises,
     doPut(
       `https://www.googleapis.com/tasks/v1/lists/${task.listId}/tasks/${task.id}`,
-      task
-    )
+      task,
+    ),
   )
 
-const addList = title =>
+const addList = (title) =>
   doPost('https://www.googleapis.com/tasks/v1/users/@me/lists', { title })
 
 const updateList = (listId, title) =>
@@ -90,10 +90,10 @@ const updateList = (listId, title) =>
     id: listId,
   })
 
-const deleteList = listId =>
+const deleteList = (listId) =>
   doDelete(`https://www.googleapis.com/tasks/v1/users/@me/lists/${listId}`)
 
-const clearCompleted = async listId => {
+const clearCompleted = async (listId) => {
   await Promise.all(updateTaskPromises)
   await doPost(`https://www.googleapis.com/tasks/v1/lists/${listId}/clear`)
   return true
@@ -102,11 +102,11 @@ const clearCompleted = async listId => {
 const moveTask = async (id, previousId, listId) => {
   if (previousId) {
     await doPost(
-      `https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}/move?previous=${previousId}`
+      `https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}/move?previous=${previousId}`,
     )
   } else {
     await doPost(
-      `https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}/move`
+      `https://www.googleapis.com/tasks/v1/lists/${listId}/tasks/${id}/move`,
     )
   }
   return true

@@ -4,8 +4,9 @@ export const LoadingConext = React.createContext()
 
 export class LoadingContextProvider extends React.Component {
   state = { loading: 0 }
-  putLoading = () => this.setState(state => ({ loading: state.loading + 1 }))
-  clearLoading = () => this.setState(state => ({ loading: state.loading - 1 }))
+  putLoading = () => this.setState((state) => ({ loading: state.loading + 1 }))
+  clearLoading = () =>
+    this.setState((state) => ({ loading: state.loading - 1 }))
   render() {
     return (
       <LoadingConext.Provider

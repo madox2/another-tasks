@@ -58,7 +58,7 @@ export const mutateMoveToList = (moveToList, { listId, id, targetListId }) =>
         query: TASK_LIST,
         variables: { id: listId },
       })
-      data.taskList.tasks = data.taskList.tasks.filter(t => t.id !== id)
+      data.taskList.tasks = data.taskList.tasks.filter((t) => t.id !== id)
       proxy.writeQuery({
         query: TASK_LIST,
         variables: { id: listId },

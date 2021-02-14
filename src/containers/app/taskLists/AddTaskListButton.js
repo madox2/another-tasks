@@ -37,11 +37,11 @@ function AddTaskListButton({ history }) {
             awaitRefetchQueries: true,
             refetchQueries: [{ query: MINIMAL_TASK_LISTS }],
           })
-            .then(result => {
+            .then((result) => {
               setOpen(false)
               history.push(`/app/list/${result.data.addList.id}`)
             })
-            .catch(err => {
+            .catch((err) => {
               setOpen(false)
               throw err
             })
@@ -69,7 +69,7 @@ function AddTaskListButton({ history }) {
                   type="text"
                   fullWidth
                   value={title}
-                  onChange={e => setTitle(e.target.value)}
+                  onChange={(e) => setTitle(e.target.value)}
                   disabled={loading}
                 />
               </DialogContent>

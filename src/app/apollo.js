@@ -8,17 +8,17 @@ import { onError } from 'apollo-link-error'
 import { schema } from './schema'
 
 const makeErrorLink = ({ showError }) =>
-  onError(error => {
+  onError((error) => {
     const { graphQLErrors, networkError } = error
-    const handleError = msg => {
+    const handleError = (msg) => {
       console.error(msg)
       showError(msg)
     }
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>
         handleError(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-        )
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+        ),
       )
 
     if (networkError) handleError(`[Network error]: ${networkError}`)

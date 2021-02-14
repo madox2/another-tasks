@@ -36,7 +36,7 @@ function FooterItem({ label, link, target = '_self', ...other }) {
   )
 }
 
-export default function({ children, index, ...other }) {
+export default function PageTemplate({ children, index, ...other }) {
   const theme = useTheme()
   theme.typography.h1.fontSize = '3.75rem'
   theme.typography.h2.fontSize = '2.125rem'

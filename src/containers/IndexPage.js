@@ -9,7 +9,7 @@ import LoginRedirect from './app/login/LoginRedirect'
 import PageTemplate from './app/PageTemplate'
 import demo from '../resources/demo-min.png'
 
-const Section = props => (
+const Section = (props) => (
   <div>
     <SubHeader>{props.title}</SubHeader>
     <Divider size={10} />
@@ -38,7 +38,7 @@ export default () => {
 
             <Section title="Web interface for Google Tasks">
               Another Tasks is a simple TODO list application that uses Google
-              Tasks API to store the data. You can create and manage the tasks
+              Tasks API to store the data. You can create and manage your tasks
               here and they will be available in all google services like
               calendar, etc.
             </Section>
@@ -54,7 +54,7 @@ export default () => {
 
             <Section title="Motivation">
               As the Google shut down Canvas interface for Google Tasks in early
-              2019, it didn't provide any full-screen alternative for desktop
+              2019, they didn't provide any full-screen alternative for desktop
               users. Therefore I have decided to create this web app for the
               users that are missing the Canvas and don't feel confortable with
               it's replacement (GMail task addon).

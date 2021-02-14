@@ -71,11 +71,7 @@ function TasksPage({ match: { params } }) {
     return <NoListSelected />
   }
   return (
-    <Query
-      variables={{ id: params.listId }}
-      fetchPolicy="cache-and-network"
-      query={TASK_LIST}
-    >
+    <Query variables={{ id: params.listId }} query={TASK_LIST}>
       {({ loading, error, data, client, refetch }) => {
         const taskList = data && data.taskList
         const loaded = !!(data && data.taskList)

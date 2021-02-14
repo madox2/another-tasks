@@ -9,7 +9,12 @@ export function LoadableQuery(props) {
     <Query {...props}>
       {(result) => {
         if (result.loading) {
-          return <GlobalLoadingIndicator />
+          return (
+            <>
+              <GlobalLoadingIndicator />
+              {props.children(result)}
+            </>
+          )
         }
         if (result.error) {
           return <DefaultError />

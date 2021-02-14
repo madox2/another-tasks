@@ -32,17 +32,11 @@ function TaskItem({ task, autoFocus, listId, updateTask }) {
   const [status, setStatus] = useState(task.status)
   const [addTask] = useAddTask({ listId })
   const inputRef = useRef()
-  /* What was this block of code good for?
   useEffect(() => {
     // re-initialize state after manual refresh
-    if (status !== task.status) {
-      setStatus(task.status)
-    }
-    if (title !== task.title) {
-      setTitle(task.title)
-    }
+    setStatus(task.status)
+    setTitle(task.title)
   }, [task.status, task.title || '']) // eslint-disable-line
-  */
   useEffect(() => {
     if (autoFocus && inputRef.current) {
       inputRef.current.focus()

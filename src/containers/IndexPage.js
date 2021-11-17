@@ -4,7 +4,6 @@ import React from 'react'
 import { ContactLink } from '../components/Link'
 import { Divider } from '../components/Divider'
 import { Header, Paragraph, SubHeader } from '../components/Typo'
-import { isTasksHost } from '../app/routes'
 import LoginRedirect from './app/login/LoginRedirect'
 import PageTemplate from './app/PageTemplate'
 import demo from '../resources/demo-min.png'
@@ -21,7 +20,7 @@ const Section = (props) => (
 export default function IndexPage() {
   const theme = useTheme()
   return (
-    <LoginRedirect shouldRedirect={isTasksHost}>
+    <LoginRedirect shouldRedirect={true}>
       <PageTemplate index>
         <div
           style={{

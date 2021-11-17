@@ -2,4 +2,4 @@ User-Agent: *
 
 Disallow: /app/
 
-Sitemap: https://anothertasks.com/sitemap.xml
+Sitemap: https://madox2.github.io/another-tasks/sitemap.xml

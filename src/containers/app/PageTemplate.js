@@ -59,7 +59,11 @@ export default function PageTemplate({ children, index, ...other }) {
             justifyContent: 'space-between',
           }}
         >
-          <a href="https://anothertasks.com" alt="home" className="nooutline">
+          <a
+            href="https://madox2.github.io/another-tasks/"
+            alt="home"
+            className="nooutline"
+          >
             <img src={logo} style={{ height: 35 }} alt="logo" />
           </a>
           <SignInButton />

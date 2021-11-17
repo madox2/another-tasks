@@ -20,7 +20,7 @@ function App() {
       <SnackbarProvider>
         <CustomApolloProvider>
           <LoadingContextProvider>
-            <Router>
+            <Router basename="/another-tasks">
               <Switch>
                 <Route path="/" exact component={IndexPage} />
                 <Route path="/login" exact component={LoginPage} />

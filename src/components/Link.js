@@ -8,14 +8,6 @@ export function link(to) {
   return RouteLink
 }
 
-function externalLink(url) {
-  const ExternalLink = React.forwardRef((props, ref) => (
-    /* eslint-disable-next-line */
-    <a href={url} {...props} ref={ref} />
-  ))
-  return ExternalLink
-}
-
 export const TaskDetailLink = (listId, id) =>
   link(`/app/list/${listId}/task/${id}`)
 export const TaskListLink = (id) => link(`/app/list/${id}`)

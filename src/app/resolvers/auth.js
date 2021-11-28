@@ -1,12 +1,12 @@
 import { gapi } from '../gclient'
+import config from '../config'
 
 export const loadPromise = new Promise((resolve, reject) =>
   gapi.load('client', () => {
     gapi.client
       .init({
-        apiKey: 'AIzaSyBunpwtoigyK4etSYXKcYFpshlEQMVTICQ',
-        clientId:
-          '333742812720-jt7v5s1asqfhuc8a9ulbiv5mp70eq66c.apps.googleusercontent.com',
+        apiKey: config.gapiKey,
+        clientId: config.gapiClientId,
         scope: 'https://www.googleapis.com/auth/tasks',
       })
       .then(resolve)

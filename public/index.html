@@ -26,13 +26,13 @@
     <title>Another tasks | Google Tasks alternative</title>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-143775009-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=%REACT_APP_ANALYTICS_GTAG_ID%"></script>
     <script>
       if (window.location.hostname !== 'localhost') {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'UA-143775009-1');
+            gtag('config', '%REACT_APP_ANALYTICS_GTAG_ID%');
       }
     </script>
 

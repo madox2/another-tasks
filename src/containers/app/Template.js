@@ -148,15 +148,16 @@ function Template(props) {
   )
 }
 
-const withAuthRedirect = (Component) => (props) => (
-  <Query query={CURRENT_USER}>
-    {({ loading, error, data }) => {
-      if (loading) return <GlobalLoadingIndicator />
-      if (error) return <Redirect to="/" />
-      const isSignedIn = data.currentUser && data.currentUser.isSignedIn
-      return isSignedIn ? <Component {...props} /> : <Redirect to="/" />
-    }}
-  </Query>
-)
+const withAuthRedirect = (Component) => (props) =>
+  (
+    <Query query={CURRENT_USER}>
+      {({ loading, error, data }) => {
+        if (loading) return <GlobalLoadingIndicator />
+        if (error) return <Redirect to="/" />
+        const isSignedIn = data.currentUser && data.currentUser.isSignedIn
+        return isSignedIn ? <Component {...props} /> : <Redirect to="/" />
+      }}
+    </Query>
+  )
 
 export default withAuthRedirect(Template)

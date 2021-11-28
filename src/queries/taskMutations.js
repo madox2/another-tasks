@@ -10,21 +10,24 @@ import {
   storeTaskOptimisticId,
 } from '../app/optimisticCache'
 
-export const withMoveToListMutation = (Component) => (props) => (
-  <LoadableMutation
-    mutation={gql`
-      mutation MoveToList(
-        $id: String!
-        $listId: String!
-        $targetListId: String!
-      ) {
-        moveToList(id: $id, listId: $listId, targetListId: $targetListId)
-      }
-    `}
-  >
-    {(moveToList, { data }) => <Component {...props} moveToList={moveToList} />}
-  </LoadableMutation>
-)
+export const withMoveToListMutation = (Component) => (props) =>
+  (
+    <LoadableMutation
+      mutation={gql`
+        mutation MoveToList(
+          $id: String!
+          $listId: String!
+          $targetListId: String!
+        ) {
+          moveToList(id: $id, listId: $listId, targetListId: $targetListId)
+        }
+      `}
+    >
+      {(moveToList, { data }) => (
+        <Component {...props} moveToList={moveToList} />
+      )}
+    </LoadableMutation>
+  )
 
 const UPDATE_TASK = gql`
   mutation UpdateTask(
@@ -52,11 +55,14 @@ const UPDATE_TASK = gql`
   }
 `
 
-export const withUpdateTaskMutation = (Component) => (props) => (
-  <Mutation mutation={UPDATE_TASK}>
-    {(updateTask, { data }) => <Component {...props} updateTask={updateTask} />}
-  </Mutation>
-)
+export const withUpdateTaskMutation = (Component) => (props) =>
+  (
+    <Mutation mutation={UPDATE_TASK}>
+      {(updateTask, { data }) => (
+        <Component {...props} updateTask={updateTask} />
+      )}
+    </Mutation>
+  )
 
 export const ADD_TASK = gql`
   mutation AddTask($listId: String!) {
@@ -84,17 +90,18 @@ export const CLEAR_COMPLETED = gql`
   }
 `
 
-export const withMoveTaskMutation = (Component) => (props) => (
-  <Mutation
-    mutation={gql`
-      mutation MoveTask($id: String!, $previousId: String, $listId: String!) {
-        moveTask(id: $id, previousId: $previousId, listId: $listId)
-      }
-    `}
-  >
-    {(moveTask, { data }) => <Component {...props} moveTask={moveTask} />}
-  </Mutation>
-)
+export const withMoveTaskMutation = (Component) => (props) =>
+  (
+    <Mutation
+      mutation={gql`
+        mutation MoveTask($id: String!, $previousId: String, $listId: String!) {
+          moveTask(id: $id, previousId: $previousId, listId: $listId)
+        }
+      `}
+    >
+      {(moveTask, { data }) => <Component {...props} moveTask={moveTask} />}
+    </Mutation>
+  )
 
 export const DELETE_LIST = gql`
   mutation DeleteList($listId: String!) {

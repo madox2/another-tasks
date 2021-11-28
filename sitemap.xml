@@ -7,19 +7,15 @@
 
 
 <url>
-  <loc>https://anothertasks.com</loc>
+  <loc>https://madox2.github.io/another-tasks</loc>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://tasks.anothertasks.com/login</loc>
-  <priority>0.60</priority>
-</url>
-<url>
-  <loc>https://anothertasks.com/contact</loc>
+  <loc>https://madox2.github.io/another-tasks/contact</loc>
   <priority>0.40</priority>
 </url>
 <url>
-  <loc>https://anothertasks.com/privacy</loc>
+  <loc>https://madox2.github.io/another-tasks/privacy</loc>
   <priority>0.40</priority>
 </url>
 

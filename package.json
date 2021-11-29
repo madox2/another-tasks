@@ -1,6 +1,11 @@
 {
   "name": "another-tasks",
   "version": "0.1.0",
+  "author": "madox2",
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/madox2/another-tasks/blob/master/LICENSE"
+  },
   "homepage": "https://madox2.github.io/another-tasks",
   "dependencies": {
     "@material-ui/core": "^4.11.3",

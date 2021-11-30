@@ -10,7 +10,6 @@ jobs:
   Build-And-Deploy:
     name: Build-And-Deploy
     runs-on: ubuntu-latest
-    environment: github-pages
     steps:
       - uses: actions/checkout@master
         with:
@@ -23,6 +22,10 @@ jobs:
         uses: borales/actions-yarn@v2.3.0
         with:
           cmd: build # will run `yarn build` command
+        env:
+          REACT_APP_GAPI_KEY: ${{ secrets.REACT_APP_GAPI_KEY }}
+          REACT_APP_REACT_APP_GAPI_CLINET_ID: ${{ secrets.REACT_APP_REACT_APP_GAPI_CLINET_ID }}
+          REACT_APP_ANALYTICS_GTAG_ID: ${{ secrets.REACT_APP_ANALYTICS_GTAG_ID }}
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:

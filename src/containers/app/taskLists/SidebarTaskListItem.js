@@ -1,5 +1,6 @@
 import './SidebarTaskListItem.css'
 
+import { useTheme } from '@material-ui/core/styles'
 import { Droppable } from 'react-beautiful-dnd'
 import IconButton from '@material-ui/core/IconButton'
 import ListItem from '@material-ui/core/ListItem'
@@ -13,12 +14,18 @@ import ErrorBoundary from '../../../components/ErrorBoundary'
 
 let hackToPreventIdCollisions = 1
 
+const draggingOverStyle = (theme) => ({
+  backgroundColor: 'rgb(235,235,235)',
+  color: theme.palette.primary.main,
+})
+
 export default function SidebarTaskListItem({
   id,
   title,
   handleActionsClick,
   selected,
 }) {
+  const theme = useTheme()
   return (
     <ErrorBoundary>
       <Droppable
@@ -34,9 +41,8 @@ export default function SidebarTaskListItem({
               selected={selected}
               style={{
                 cursor: 'pointer',
-                backgroundColor: snapshot.isDraggingOver
-                  ? 'rgb(235,235,235)'
-                  : undefined,
+                boxSizing: 'border-box',
+                ...(snapshot.isDraggingOver && draggingOverStyle(theme)),
               }}
               component={TaskListLink(id)}
               button

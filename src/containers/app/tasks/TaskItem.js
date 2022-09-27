@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 const shortenNotes = shortenText(100)
 
-function TaskItem({ task, autoFocus, listId, updateTask }) {
+function TaskItem({ task, autoFocus, listId, updateTask, isDragging }) {
   const [title, setTitle] = useState(task.title)
   const [status, setStatus] = useState(task.status)
   const [addTask] = useAddTask({ listId })
@@ -53,15 +53,17 @@ function TaskItem({ task, autoFocus, listId, updateTask }) {
   const isOptimistic = isTaskOptimistic(id)
   return (
     <>
-      <ListItemIcon>
-        <CompletedCheckbox
-          edge="start"
-          status={status}
-          setStatus={isOptimistic ? () => 0 : setStatus}
-          tabIndex={-1}
-          disableRipple
-        />
-      </ListItemIcon>
+      {!isDragging && (
+        <ListItemIcon>
+          <CompletedCheckbox
+            edge="start"
+            status={status}
+            setStatus={isOptimistic ? () => 0 : setStatus}
+            tabIndex={-1}
+            disableRipple
+          />
+        </ListItemIcon>
+      )}
       <ListItemText
         primary={
           <TextField
@@ -87,16 +89,18 @@ function TaskItem({ task, autoFocus, listId, updateTask }) {
         }
         secondary={shortenNotes(notes)}
       />
-      <ListItemSecondaryAction>
-        <IconButton
-          tabIndex="-1"
-          edge="end"
-          aria-label="Task detail"
-          component={isOptimistic ? undefined : TaskDetailLink(listId, id)}
-        >
-          <DetailIcon />
-        </IconButton>
-      </ListItemSecondaryAction>
+      {!isDragging && (
+        <ListItemSecondaryAction>
+          <IconButton
+            tabIndex="-1"
+            edge="end"
+            aria-label="Task detail"
+            component={isOptimistic ? undefined : TaskDetailLink(listId, id)}
+          >
+            <DetailIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      )}
     </>
   )
 }

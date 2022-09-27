@@ -55,7 +55,7 @@ export default function DraggableList(props) {
                           top: 0,
                           bottom: 0,
                           left: 4,
-                          width: 300,
+                          width: 180,
                           display: 'flex',
                           alignItems: 'center',
                         }}
@@ -65,7 +65,7 @@ export default function DraggableList(props) {
                         </span>
                       </div>
                       <div style={{ display: 'inline-block', width: 23 }} />
-                      {item.children}
+                      {item.children({ isDragging: snapshot.isDragging })}
                     </ListItem>
                   </div>
                 )}

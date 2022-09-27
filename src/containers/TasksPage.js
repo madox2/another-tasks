@@ -116,12 +116,13 @@ function TasksPage({ match: { params } }) {
                         id: task.id,
                         dragDisabled: isTaskOptimistic(task.id),
                         key,
-                        children: (
+                        children: ({ isDragging }) => (
                           <TaskItem
                             key={key}
                             task={task}
                             autoFocus={idx === 0}
                             listId={params.listId}
+                            isDragging={isDragging}
                           />
                         ),
                       }

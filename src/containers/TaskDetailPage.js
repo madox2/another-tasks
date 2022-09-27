@@ -63,7 +63,11 @@ export default function TaskDetailPage({
           </Mutation>
         }
       >
-        <LoadableQuery query={TASK} variables={{ id: taskId, listId: listId }}>
+        <LoadableQuery
+          query={TASK}
+          variables={{ id: taskId, listId: listId }}
+          loadingDataGuard
+        >
           {({ data }) => {
             return <TaskForm data={data} listId={listId} />
           }}

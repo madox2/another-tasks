@@ -4,7 +4,7 @@ import React from 'react'
 import DefaultError from '../../../components/DefaultError'
 import GlobalLoadingIndicator from './GlobalLoadingIndicator'
 
-export function LoadableQuery(props) {
+export function LoadableQuery({ loadingDataGuard = false, ...props }) {
   return (
     <Query {...props}>
       {(result) => {
@@ -12,7 +12,7 @@ export function LoadableQuery(props) {
           return (
             <>
               <GlobalLoadingIndicator />
-              {props.children(result)}
+              {!loadingDataGuard && props.children(result)}
             </>
           )
         }

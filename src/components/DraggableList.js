@@ -43,6 +43,7 @@ export default function DraggableList(props) {
                   <div style={{ position: 'relative' }}>
                     <ListItem
                       {...provided.draggableProps}
+                      className="appearable-container"
                       style={getItemStyle(
                         snapshot.isDragging,
                         provided.draggableProps.style,
@@ -54,17 +55,22 @@ export default function DraggableList(props) {
                           position: 'absolute',
                           top: 0,
                           bottom: 0,
-                          left: 4,
+                          left: 0,
                           width: 180,
                           display: 'flex',
                           alignItems: 'center',
                         }}
                       >
-                        <span {...provided.dragHandleProps} tabIndex="-1">
+                        <span
+                          {...provided.dragHandleProps}
+                          tabIndex="-1"
+                          className="appearable-item"
+                          style={{ zIndex: 10 }}
+                        >
                           <DragIcon className={classes.icon} />
                         </span>
                       </div>
-                      <div style={{ display: 'inline-block', width: 23 }} />
+                      <div style={{ display: 'inline-block', width: 12 }} />
                       {item.children({ isDragging: snapshot.isDragging })}
                     </ListItem>
                   </div>

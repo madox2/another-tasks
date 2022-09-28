@@ -5,3 +5,10 @@ body {
 a.nooutline:focus {
   outline: 0;
 }
+
+.appearable-item {
+  display: none !important;
+}
+.appearable-container:hover .appearable-item {
+  display: block !important;
+}

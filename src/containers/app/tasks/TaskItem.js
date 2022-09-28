@@ -54,7 +54,7 @@ function TaskItem({ task, autoFocus, listId, updateTask, isDragging }) {
   return (
     <>
       {!isDragging && (
-        <ListItemIcon>
+        <ListItemIcon style={{ minWidth: 36 }}>
           <CompletedCheckbox
             edge="start"
             status={status}
@@ -96,6 +96,7 @@ function TaskItem({ task, autoFocus, listId, updateTask, isDragging }) {
             edge="end"
             aria-label="Task detail"
             component={isOptimistic ? undefined : TaskDetailLink(listId, id)}
+            className="appearable-item"
           >
             <DetailIcon />
           </IconButton>

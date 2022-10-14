@@ -1,45 +1,25 @@
-import './App.css'
-
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import { SnackbarProvider } from 'notistack'
-import React from 'react'
-
-import { LoadingContextProvider } from './containers/app/common/LoadingContext'
-import ContactPage from './containers/ContactPage'
-import CustomApolloProvider from './containers/app/providers/CustomApolloProvider'
-import IndexPage from './containers/IndexPage'
-import LoginPage from './containers/LoginPage'
-import NotFoundPage from './containers/NotFoundPage'
-import TaskDetailPage from './containers/TaskDetailPage'
-import TasksPage from './containers/TasksPage'
-import TermsPage from './containers/TermsPage'
+import logo from './logo.svg';
+import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <SnackbarProvider>
-        <CustomApolloProvider>
-          <LoadingContextProvider>
-            <Router basename="/another-tasks">
-              <Switch>
-                <Route path="/" exact component={IndexPage} />
-                <Route path="/login" exact component={LoginPage} />
-                <Route path="/contact" exact component={ContactPage} />
-                <Route path="/privacy" exact component={TermsPage} />
-                <Route path="/app/" exact component={TasksPage} />
-                <Route
-                  path="/app/list/:listId/task/:taskId"
-                  component={TaskDetailPage}
-                />
-                <Route path="/app/list/:listId" component={TasksPage} />
-                <Route component={NotFoundPage} />
-              </Switch>
-            </Router>
-          </LoadingContextProvider>
-        </CustomApolloProvider>
-      </SnackbarProvider>
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

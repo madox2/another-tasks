@@ -1,6 +1,0 @@
-.SidebarTaskListItem .SidebarTaskListItem-action {
-  visibility: hidden;
-}
-.SidebarTaskListItem:hover .SidebarTaskListItem-action {
-  visibility: visible;
-}

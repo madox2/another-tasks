@@ -4,7 +4,6 @@ import {
   List,
   ListItem,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
 } from '@mui/material'
 import { DragHandle } from '@mui/icons-material'
@@ -37,18 +36,27 @@ function TaskListDroppable({ children, highlighted }) {
 
 function TaskListItem({ list, listItemProps, dragHandleProps }) {
   const [provided] = useDraggable()
+  const [dragType] = useGlobalState('dragType')
   return (
     <ListItem
       disablePadding
+      secondaryAction={
+        <IconButton {...provided.dragHandleProps}>
+          <DragHandle />
+        </IconButton>
+      }
+      sx={{
+        '.MuiListItemSecondaryAction-root': {
+          visibility: dragType === DragType.LIST ? 'inherit' : 'hidden',
+        },
+        '&:hover .MuiListItemSecondaryAction-root': {
+          visibility: dragType === DragType.TASK ? 'hidden' : 'inherit',
+        },
+      }}
       ref={provided.innerRef}
       {...provided.draggableProps}
     >
-      <ListItemButton dense>
-        <ListItemIcon>
-          <IconButton {...provided.dragHandleProps}>
-            <DragHandle />
-          </IconButton>
-        </ListItemIcon>
+      <ListItemButton>
         <ListItemText primary={list.title} />
       </ListItemButton>
     </ListItem>

@@ -8,7 +8,7 @@ import {
   ListItemText,
 } from '@mui/material'
 
-import { DragType } from '../state'
+import { DragType, useGlobalState } from '../state'
 import {
   DraggableProvider,
   DroppableProvider,
@@ -19,9 +19,18 @@ import { useTaskList } from '../app/api'
 
 function TaskItem({ task }) {
   const [provided] = useDraggable()
+  const [dragType] = useGlobalState('dragType')
   return (
     <ListItem
       disablePadding
+      sx={{
+        '.MuiListItemIcon-root': {
+          visibility: dragType === DragType.TASK ? 'inherit' : 'hidden',
+        },
+        '&:hover .MuiListItemIcon-root': {
+          visibility: dragType === DragType.LIST ? 'hidden' : 'inherit',
+        },
+      }}
       ref={provided.innerRef}
       {...provided.draggableProps}
     >

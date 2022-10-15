@@ -14,7 +14,6 @@
     "react-dom": "^18.2.0",
     "react-hooks-global-state": "^2.0.0",
     "react-router-dom": "^6.4.2",
-    "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
@@ -27,14 +26,14 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "@vitejs/plugin-react": "^2.0.1",
+    "vite": "^3.0.7"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
     "lint": "eslint src",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "vite build"
   },
   "eslintConfig": {
     "extends": [

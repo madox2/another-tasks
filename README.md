@@ -11,7 +11,7 @@ As the Google shut down Canvas interface for Google Tasks in early 2019, they di
 
 ## Development
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Vite](https://github.com/vitejs/vite).
 
 ## License
 

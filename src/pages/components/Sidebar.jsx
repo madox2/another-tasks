@@ -1,5 +1,4 @@
 import { DragHandle } from '@mui/icons-material'
-import { Draggable, Droppable } from 'react-beautiful-dnd'
 import {
   IconButton,
   List,
@@ -10,33 +9,41 @@ import {
 } from '@mui/material'
 
 import { DragType, useGlobalState } from '../../state'
+import {
+  DraggableProvider,
+  DroppableProvider,
+  useDraggable,
+  useDroppable,
+} from './DNDContext'
 import { useTaskLists } from '../../app/api'
 
-function TaskListItemDroppable({ id, children, type }) {
+function TaskListDroppable({ children }) {
+  const [provided, snapshot] = useDroppable()
   return (
-    <Droppable droppableId={`droppable-tasklist-${id}`} type={type}>
-      {(provided, snapshot) => (
-        <div
-          ref={provided.innerRef}
-          style={{
-            backgroundColor: snapshot.isDraggingOver ? 'blue' : 'grey',
-          }}
-          {...provided.droppableProps}
-        >
-          {children}
-          <div style={{ display: 'none' }}>{provided.placeholder}</div>
-        </div>
-      )}
-    </Droppable>
+    <div
+      ref={provided.innerRef}
+      style={{
+        backgroundColor: snapshot.isDraggingOver ? 'blue' : 'grey',
+      }}
+      {...provided.droppableProps}
+    >
+      {children}
+      <div style={{ display: 'none' }}>{provided.placeholder}</div>
+    </div>
   )
 }
 
 function TaskListItem({ list, listItemProps, dragHandleProps }) {
+  const [provided] = useDraggable()
   return (
-    <ListItem disablePadding {...listItemProps}>
+    <ListItem
+      disablePadding
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+    >
       <ListItemButton>
         <ListItemIcon>
-          <IconButton {...dragHandleProps}>
+          <IconButton {...provided.dragHandleProps}>
             <DragHandle />
           </IconButton>
         </ListItemIcon>
@@ -60,39 +67,37 @@ export function Sidebar() {
       <VisibilityGuard visible={isDraggingTask}>
         <List>
           {lists?.map(list => (
-            <TaskListItemDroppable
-              id={list.id}
-              key={list.id}
+            <DroppableProvider
+              droppableId={`droppable-tasklist-${list.id}`}
               type={DragType.TASK}
+              key={list.id}
             >
-              <TaskListItem list={list} />
-            </TaskListItemDroppable>
+              <TaskListDroppable>
+                <TaskListItem list={list} />
+              </TaskListDroppable>
+            </DroppableProvider>
           ))}
         </List>
       </VisibilityGuard>
       <VisibilityGuard visible={!isDraggingTask}>
-        <TaskListItemDroppable id="listdrop" type={DragType.LIST}>
-          <List>
-            {lists?.map((list, index) => (
-              <Draggable
-                draggableId={`draggable-tasklist-${list.id}`}
-                index={index}
-                key={list.id}
-              >
-                {(provided, snapshot) => (
-                  <TaskListItem
-                    list={list}
-                    listItemProps={{
-                      ref: provided.innerRef,
-                      ...provided.draggableProps,
-                    }}
-                    dragHandleProps={provided.dragHandleProps}
-                  />
-                )}
-              </Draggable>
-            ))}
-          </List>
-        </TaskListItemDroppable>
+        <DroppableProvider
+          droppableId={`droppable-tasklist-listdrop`}
+          type={DragType.LIST}
+        >
+          <TaskListDroppable>
+            <List>
+              {lists?.map((list, index) => (
+                <DraggableProvider
+                  draggableId={`draggable-tasklist-${list.id}`}
+                  index={index}
+                  key={list.id}
+                >
+                  <TaskListItem list={list} />
+                </DraggableProvider>
+              ))}
+            </List>
+          </TaskListDroppable>
+        </DroppableProvider>
       </VisibilityGuard>
     </>
   )

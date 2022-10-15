@@ -9,6 +9,7 @@ import {
   TextField,
 } from '@mui/material'
 import { DragIndicator } from '@mui/icons-material'
+import { useRef } from 'react'
 
 import { DragType, useGlobalState } from '../state'
 import {
@@ -22,6 +23,7 @@ import { useTaskList } from '../app/api'
 function TaskItem({ task }) {
   const [provided] = useDraggable()
   const [dragType] = useGlobalState('dragType')
+  const textFieldRef = useRef()
   return (
     <ListItem
       disablePadding
@@ -41,14 +43,20 @@ function TaskItem({ task }) {
         sx={{
           '&.Mui-focusVisible': { bgcolor: 'transparent' },
         }}
+        onClick={() => textFieldRef.current?.focus()}
       >
         <ListItemIcon sx={{ ml: -2, mr: -2 }}>
-          <IconButton {...provided.dragHandleProps} disableRipple>
+          <IconButton
+            {...provided.dragHandleProps}
+            disableRipple
+            onClick={e => e.preventDefault()}
+          >
             <DragIndicator />
           </IconButton>
         </ListItemIcon>
         <Checkbox />
         <TextField
+          inputRef={textFieldRef}
           variant="standard"
           defaultValue={task.title}
           sx={{

@@ -25,7 +25,7 @@ function TaskListDroppable({ children, highlighted }) {
       ref={provided.innerRef}
       sx={{
         backgroundColor:
-          highlighted && snapshot.isDraggingOver && 'primary.main',
+          highlighted && snapshot.isDraggingOver && 'primary.light',
       }}
       {...provided.droppableProps}
     >

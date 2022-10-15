@@ -1,12 +1,14 @@
-import { DragHandle } from '@mui/icons-material'
 import {
+  Checkbox,
   IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  TextField,
 } from '@mui/material'
+import { DragIndicator } from '@mui/icons-material'
 
 import { DragType, useGlobalState } from '../state'
 import {
@@ -34,13 +36,27 @@ function TaskItem({ task }) {
       ref={provided.innerRef}
       {...provided.draggableProps}
     >
-      <ListItemButton dense>
-        <ListItemIcon>
-          <IconButton {...provided.dragHandleProps}>
-            <DragHandle />
+      <ListItemButton
+        disableRipple
+        sx={{
+          '&.Mui-focusVisible': { bgcolor: 'transparent' },
+        }}
+      >
+        <ListItemIcon sx={{ ml: -2, mr: -2 }}>
+          <IconButton {...provided.dragHandleProps} disableRipple>
+            <DragIndicator />
           </IconButton>
         </ListItemIcon>
-        <ListItemText primary={task.title} />
+        <Checkbox />
+        <TextField
+          variant="standard"
+          defaultValue={task.title}
+          sx={{
+            width: '100%',
+            ml: 2,
+            '.MuiInputBase-root::before': { borderBottom: 'none !important' },
+          }}
+        />
       </ListItemButton>
     </ListItem>
   )

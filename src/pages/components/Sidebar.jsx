@@ -4,9 +4,10 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import { DragHandle } from '@mui/icons-material'
+import { DragIndicator, MoreVert } from '@mui/icons-material'
 
 import { DragType, useGlobalState } from '../../state'
 import {
@@ -42,21 +43,32 @@ function TaskListItem({ list, listItemProps, dragHandleProps }) {
       disablePadding
       secondaryAction={
         <IconButton {...provided.dragHandleProps}>
-          <DragHandle />
+          <MoreVert />
         </IconButton>
       }
       sx={{
-        '.MuiListItemSecondaryAction-root': {
+        '.MuiListItemIcon-root': {
           visibility: dragType === DragType.LIST ? 'inherit' : 'hidden',
         },
-        '&:hover .MuiListItemSecondaryAction-root': {
+        '.MuiListItemSecondaryAction-root': {
+          visibility: 'hidden',
+        },
+        '&:hover .MuiListItemIcon-root': {
           visibility: dragType === DragType.TASK ? 'hidden' : 'inherit',
+        },
+        '&:hover .MuiListItemSecondaryAction-root': {
+          visibility: dragType ? 'hidden' : 'inherit',
         },
       }}
       ref={provided.innerRef}
       {...provided.draggableProps}
     >
       <ListItemButton>
+        <ListItemIcon sx={{ ml: -2.5, mr: -2.5 }}>
+          <IconButton {...provided.dragHandleProps} disableRipple>
+            <DragIndicator />
+          </IconButton>
+        </ListItemIcon>
         <ListItemText primary={list.title} />
       </ListItemButton>
     </ListItem>

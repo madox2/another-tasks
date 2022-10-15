@@ -1,74 +1,15 @@
-import {
-  Checkbox,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  TextField,
-} from '@mui/material'
-import { DragIndicator } from '@mui/icons-material'
-import { useRef } from 'react'
+import { Box, List } from '@mui/material'
+import { useDetectClickOutside } from 'react-detect-click-outside'
+import { useState } from 'react'
 
-import { DragType, useGlobalState } from '../state'
+import { DragType } from '../state'
 import {
   DraggableProvider,
   DroppableProvider,
-  useDraggable,
   useDroppable,
 } from './components/DNDContext'
+import { TaskItem } from './components/TaskItem'
 import { useTaskList } from '../app/api'
-
-function TaskItem({ task }) {
-  const [provided] = useDraggable()
-  const [dragType] = useGlobalState('dragType')
-  const textFieldRef = useRef()
-  return (
-    <ListItem
-      disablePadding
-      sx={{
-        '.MuiListItemIcon-root': {
-          visibility: dragType === DragType.TASK ? 'inherit' : 'hidden',
-        },
-        '&:hover .MuiListItemIcon-root': {
-          visibility: dragType === DragType.LIST ? 'hidden' : 'inherit',
-        },
-      }}
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-    >
-      <ListItemButton
-        disableRipple
-        sx={{
-          '&.Mui-focusVisible': { bgcolor: 'transparent' },
-        }}
-        onClick={() => textFieldRef.current?.focus()}
-      >
-        <ListItemIcon sx={{ ml: -2, mr: -2 }}>
-          <IconButton
-            {...provided.dragHandleProps}
-            disableRipple
-            onClick={e => e.preventDefault()}
-          >
-            <DragIndicator />
-          </IconButton>
-        </ListItemIcon>
-        <Checkbox />
-        <TextField
-          inputRef={textFieldRef}
-          variant="standard"
-          defaultValue={task.title}
-          sx={{
-            width: '100%',
-            ml: 2,
-            '.MuiInputBase-root::before': { borderBottom: 'none !important' },
-          }}
-        />
-      </ListItemButton>
-    </ListItem>
-  )
-}
 
 function TaskItemList({ children }) {
   const [provided] = useDroppable()
@@ -82,19 +23,43 @@ function TaskItemList({ children }) {
 
 export function TasksPage() {
   const [tasks] = useTaskList('TODO')
+  const [detailedTask, setDetailedTask] = useState(false)
+  const [focusedTask, setFocusedTask] = useState(false)
+  const taskDetailRef = useDetectClickOutside({
+    onTriggered: () => !focusedTask && setDetailedTask(null),
+  })
   return (
-    <DroppableProvider droppableId={`droppable-task`} type={DragType.TASK}>
-      <TaskItemList>
-        {tasks?.map((task, index) => (
-          <DraggableProvider
-            draggableId={`draggable-task-${task.id}`}
-            index={index}
-            key={task.id}
-          >
-            <TaskItem task={task} />
-          </DraggableProvider>
-        ))}
-      </TaskItemList>
-    </DroppableProvider>
+    <Box display="flex" flexDirection="row">
+      <Box flex={1}>
+        <DroppableProvider droppableId={`droppable-task`} type={DragType.TASK}>
+          <TaskItemList>
+            {tasks?.map((task, index) => (
+              <DraggableProvider
+                draggableId={`draggable-task-${task.id}`}
+                index={index}
+                key={task.id}
+              >
+                <TaskItem
+                  task={task}
+                  onFocus={() => {
+                    setDetailedTask(task)
+                    setFocusedTask(task)
+                  }}
+                  onBlur={() => {
+                    setFocusedTask(null)
+                  }}
+                  highlighted={task.id === detailedTask?.id}
+                />
+              </DraggableProvider>
+            ))}
+          </TaskItemList>
+        </DroppableProvider>
+      </Box>
+      {detailedTask && (
+        <Box borderLeft={1} borderColor="grey.300" flex={1} ref={taskDetailRef}>
+          {detailedTask.title}
+        </Box>
+      )}
+    </Box>
   )
 }

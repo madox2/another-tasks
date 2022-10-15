@@ -8,15 +8,13 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import { range } from 'lodash-es'
 
 import { DragType, useGlobalState } from '../../state'
+import { useTaskLists } from '../../app/api'
 
-const items = range(20, 30)
-
-function DroppableWrapper({ value, children, type }) {
+function TaskListItemDroppable({ id, children, type }) {
   return (
-    <Droppable droppableId={`droppable-tasklist-${value}`} type={type}>
+    <Droppable droppableId={`droppable-tasklist-${id}`} type={type}>
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
@@ -33,16 +31,16 @@ function DroppableWrapper({ value, children, type }) {
   )
 }
 
-function Item({ value, listItemProps, dragHandleProps }) {
+function TaskListItem({ list, listItemProps, dragHandleProps }) {
   return (
-    <ListItem disablePadding key={value} {...listItemProps}>
+    <ListItem disablePadding {...listItemProps}>
       <ListItemButton>
         <ListItemIcon>
           <IconButton {...dragHandleProps}>
             <DragHandle />
           </IconButton>
         </ListItemIcon>
-        <ListItemText primary={`Item ${value}`} />
+        <ListItemText primary={list.title} />
       </ListItemButton>
     </ListItem>
   )
@@ -55,30 +53,35 @@ function VisibilityGuard({ visible, children }) {
 
 export function Sidebar() {
   const [dragType] = useGlobalState('dragType')
+  const [lists] = useTaskLists()
   const isDraggingTask = dragType === DragType.TASK
   return (
     <>
       <VisibilityGuard visible={isDraggingTask}>
         <List>
-          {items.map(value => (
-            <DroppableWrapper value={value} key={value} type="TASK">
-              <Item value={value} />
-            </DroppableWrapper>
+          {lists?.map(list => (
+            <TaskListItemDroppable
+              id={list.id}
+              key={list.id}
+              type={DragType.TASK}
+            >
+              <TaskListItem list={list} />
+            </TaskListItemDroppable>
           ))}
         </List>
       </VisibilityGuard>
       <VisibilityGuard visible={!isDraggingTask}>
-        <DroppableWrapper value="droppable-tasklist-x" type="LIST">
+        <TaskListItemDroppable id="listdrop" type={DragType.LIST}>
           <List>
-            {items.map((value, index) => (
+            {lists?.map((list, index) => (
               <Draggable
-                draggableId={`draggable-tasklist-${value}`}
+                draggableId={`draggable-tasklist-${list.id}`}
                 index={index}
-                key={value}
+                key={list.id}
               >
                 {(provided, snapshot) => (
-                  <Item
-                    value={value}
+                  <TaskListItem
+                    list={list}
                     listItemProps={{
                       ref: provided.innerRef,
                       ...provided.draggableProps,
@@ -89,7 +92,7 @@ export function Sidebar() {
               </Draggable>
             ))}
           </List>
-        </DroppableWrapper>
+        </TaskListItemDroppable>
       </VisibilityGuard>
     </>
   )

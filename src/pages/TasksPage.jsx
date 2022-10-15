@@ -8,41 +8,44 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import { range } from 'lodash-es'
 
-const items = range(1, 10)
+import { DragType } from '../state'
+import { useTaskList } from '../app/api'
 
-function Item({ value, index }) {
+function TaskItem({ task, dragHandleProps, listItemProps }) {
   return (
-    <Draggable draggableId={`draggable-task-${value}`} index={index}>
-      {(provided, snapshot) => (
-        <div ref={provided.innerRef} {...provided.draggableProps}>
-          <ListItem
-            secondaryAction={
-              <IconButton edge="end">
-                <ReadMore />
-              </IconButton>
-            }
-            disablePadding
-          >
-            <ListItemButton dense>
-              <ListItemIcon>
-                <IconButton {...provided.dragHandleProps}>
-                  <DragHandle />
-                </IconButton>
-              </ListItemIcon>
-              <ListItemText primary={`Line item ${value + 1}`} />
-            </ListItemButton>
-          </ListItem>
-        </div>
-      )}
+    <ListItem
+      secondaryAction={
+        <IconButton edge="end">
+          <ReadMore />
+        </IconButton>
+      }
+      disablePadding
+      {...listItemProps}
+    >
+      <ListItemButton dense>
+        <ListItemIcon>
+          <IconButton {...dragHandleProps}>
+            <DragHandle />
+          </IconButton>
+        </ListItemIcon>
+        <ListItemText primary={task.title} />
+      </ListItemButton>
+    </ListItem>
+  )
+}
+
+function TaskItemDraggable({ id, index, children }) {
+  return (
+    <Draggable draggableId={`draggable-task-${id}`} index={index}>
+      {(provided, snapshot) => children(provided, snapshot)}
     </Draggable>
   )
 }
 
-export function TasksPage() {
+function TaskItemDroppable({ children }) {
   return (
-    <Droppable droppableId={`droppable-task`} type="TASK">
+    <Droppable droppableId={`droppable-task`} type={DragType.TASK}>
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
@@ -51,14 +54,34 @@ export function TasksPage() {
           }}
           {...provided.droppableProps}
         >
-          <List>
-            {items.map((value, index) => (
-              <Item value={value} index={index} key={value} />
-            ))}
-          </List>
+          {children}
           {provided.placeholder}
         </div>
       )}
     </Droppable>
+  )
+}
+
+export function TasksPage() {
+  const [tasks] = useTaskList('TODO')
+  return (
+    <TaskItemDroppable>
+      <List>
+        {tasks?.map((task, index) => (
+          <TaskItemDraggable id={task.id} index={index} key={task.id}>
+            {(provided, snapshot) => (
+              <TaskItem
+                task={task}
+                dragHandleProps={provided.dragHandleProps}
+                listItemProps={{
+                  ref: provided.innerRef,
+                  ...provided.draggableProps,
+                }}
+              />
+            )}
+          </TaskItemDraggable>
+        ))}
+      </List>
+    </TaskItemDroppable>
   )
 }

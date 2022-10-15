@@ -1,5 +1,5 @@
-import { DragHandle } from '@mui/icons-material'
 import {
+  Box,
   IconButton,
   List,
   ListItem,
@@ -7,6 +7,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
+import { DragHandle } from '@mui/icons-material'
 
 import { DragType, useGlobalState } from '../../state'
 import {
@@ -17,19 +18,20 @@ import {
 } from './DNDContext'
 import { useTaskLists } from '../../app/api'
 
-function TaskListDroppable({ children }) {
+function TaskListDroppable({ children, highlighted }) {
   const [provided, snapshot] = useDroppable()
   return (
-    <div
+    <Box
       ref={provided.innerRef}
-      style={{
-        backgroundColor: snapshot.isDraggingOver ? 'blue' : 'grey',
+      sx={{
+        backgroundColor:
+          highlighted && snapshot.isDraggingOver && 'primary.main',
       }}
       {...provided.droppableProps}
     >
       {children}
       <div style={{ display: 'none' }}>{provided.placeholder}</div>
-    </div>
+    </Box>
   )
 }
 
@@ -41,7 +43,7 @@ function TaskListItem({ list, listItemProps, dragHandleProps }) {
       ref={provided.innerRef}
       {...provided.draggableProps}
     >
-      <ListItemButton>
+      <ListItemButton dense>
         <ListItemIcon>
           <IconButton {...provided.dragHandleProps}>
             <DragHandle />
@@ -72,7 +74,7 @@ export function Sidebar() {
               type={DragType.TASK}
               key={list.id}
             >
-              <TaskListDroppable>
+              <TaskListDroppable highlighted>
                 <TaskListItem list={list} />
               </TaskListDroppable>
             </DroppableProvider>

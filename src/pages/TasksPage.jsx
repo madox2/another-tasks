@@ -1,4 +1,4 @@
-import { DragHandle, ReadMore } from '@mui/icons-material'
+import { DragHandle } from '@mui/icons-material'
 import {
   IconButton,
   List,
@@ -21,11 +21,6 @@ function TaskItem({ task }) {
   const [provided] = useDraggable()
   return (
     <ListItem
-      secondaryAction={
-        <IconButton edge="end">
-          <ReadMore />
-        </IconButton>
-      }
       disablePadding
       ref={provided.innerRef}
       {...provided.draggableProps}
@@ -43,15 +38,9 @@ function TaskItem({ task }) {
 }
 
 function TaskItemList({ children }) {
-  const [provided, snapshot] = useDroppable()
+  const [provided] = useDroppable()
   return (
-    <List
-      ref={provided.innerRef}
-      style={{
-        backgroundColor: snapshot.isDraggingOver ? 'blue' : 'grey',
-      }}
-      {...provided.droppableProps}
-    >
+    <List ref={provided.innerRef} {...provided.droppableProps}>
       {children}
       {provided.placeholder}
     </List>

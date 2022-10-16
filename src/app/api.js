@@ -4,7 +4,7 @@ import { range } from 'lodash-es'
 
 const dummyTasksRange = range(1, 20)
 
-const dummyList = range(1, 10).map((listIdx, i) => ({
+const dummyList = range(1, 20).map((listIdx, i) => ({
   id: v4(),
   title: `List ${listIdx}`,
   tasks: dummyTasksRange.map(taskIdx => ({

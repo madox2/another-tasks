@@ -8,6 +8,7 @@ import {
 } from './DNDContext'
 import { TaskListItem } from './TaskListItem'
 import { useTaskLists } from '../../app/api'
+import { useThemeUtils } from '../../utils/themeUtils'
 
 function TaskListDroppable({ children, highlighted }) {
   const [provided, snapshot] = useDroppable()
@@ -34,9 +35,10 @@ function VisibilityGuard({ visible, children }) {
 export function Sidebar() {
   const [dragType] = useGlobalState('dragType')
   const [lists] = useTaskLists()
+  const { mainContentHeight } = useThemeUtils()
   const isDraggingTask = dragType === DragType.TASK
   return (
-    <>
+    <Box height={mainContentHeight} overflow="scroll">
       <VisibilityGuard visible={isDraggingTask}>
         <List>
           {lists?.map(list => (
@@ -72,6 +74,6 @@ export function Sidebar() {
           </TaskListDroppable>
         </DroppableProvider>
       </VisibilityGuard>
-    </>
+    </Box>
   )
 }

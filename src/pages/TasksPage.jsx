@@ -1,16 +1,18 @@
-import { Box } from '@mui/material'
+import { Box, TextField } from '@mui/material'
 import { useDetectClickOutside } from 'react-detect-click-outside'
+import { useParams } from 'react-router-dom'
 import { useState } from 'react'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 import { TaskList } from './components/TaskList'
 import { useTaskList } from '../app/api'
-import { useParams } from 'react-router-dom'
 
 export function TasksPage() {
   const { listId } = useParams()
   const [list] = useTaskList(listId)
   const [selectedTask, setSelectedTask] = useState(false)
   const [focusedTask, setFocusedTask] = useState(false)
+  const [dueDate, setDueDate] = useState(null)
   const taskDetailRef = useDetectClickOutside({
     onTriggered: () => !focusedTask && setSelectedTask(null),
   })
@@ -36,7 +38,38 @@ export function TasksPage() {
       </Box>
       {selectedTask && (
         <Box borderLeft={1} borderColor="grey.300" flex={1} ref={taskDetailRef}>
-          {selectedTask.title}
+          <TextField
+            defaultValue={selectedTask.title}
+            variant="standard"
+            fullWidth
+            margin="normal"
+            placeholder="title"
+          />
+          <DatePicker
+            label="Due date"
+            value={dueDate}
+            onChange={newDueDate => {
+              setDueDate(newDueDate)
+            }}
+            renderInput={params => (
+              <TextField variant="standard" margin="normal" {...params} />
+            )}
+            PaperProps={{
+              onClick: e => {
+                // stop propagation to prevent triggering click-outside
+                e.stopPropagation()
+              },
+            }}
+          />
+          <TextField
+            defaultValue={selectedTask.notes}
+            variant="standard"
+            multiline
+            label="Notes"
+            fullWidth
+            margin="normal"
+            rows={5}
+          />
         </Box>
       )}
     </Box>

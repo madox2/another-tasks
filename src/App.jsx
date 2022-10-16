@@ -3,35 +3,39 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 
 import { AppTemplate } from './pages/components/AppTemplate'
 import { ContactPage } from './pages/ContactPage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PageTemplate } from './pages/components/PageTemplate'
-import { TasksPage } from './pages/TasksPage'
 import { PrivacyPage } from './pages/PrivacyPage'
+import { TasksPage } from './pages/TasksPage'
 import { WelcomePage } from './pages/WelcomePage'
 import { routes } from './app/routes'
 
 function App() {
   return (
-    <BrowserRouter basename={routes.basename}>
-      <Routes>
-        <Route path={routes.index} element={<PageTemplate />}>
-          <Route index element={<WelcomePage />} />
-          <Route path={routes.login} element={<LoginPage />} />
-          <Route path={routes.contact} element={<ContactPage />} />
-          <Route path={routes.privacy} element={<PrivacyPage />} />
-        </Route>
-        <Route path={routes.app} element={<AppTemplate />}>
-          <Route path={routes.app} element={<TasksPage />} />
-          <Route path={routes.taskList} element={<TasksPage />} />
-        </Route>
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <BrowserRouter basename={routes.basename}>
+        <Routes>
+          <Route path={routes.index} element={<PageTemplate />}>
+            <Route index element={<WelcomePage />} />
+            <Route path={routes.login} element={<LoginPage />} />
+            <Route path={routes.contact} element={<ContactPage />} />
+            <Route path={routes.privacy} element={<PrivacyPage />} />
+          </Route>
+          <Route path={routes.app} element={<AppTemplate />}>
+            <Route path={routes.app} element={<TasksPage />} />
+            <Route path={routes.taskList} element={<TasksPage />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+    </LocalizationProvider>
   )
 }
 

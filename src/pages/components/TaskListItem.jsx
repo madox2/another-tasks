@@ -13,7 +13,12 @@ import { DragType, useGlobalState } from '../../state'
 import { taskListPath } from '../../app/routes'
 import { useDraggable } from './DNDContext'
 
-export function TaskListItem({ list, listItemProps, dragHandleProps }) {
+export function TaskListItem({
+  list,
+  listItemProps,
+  dragHandleProps,
+  selected,
+}) {
   const [provided] = useDraggable()
   const [dragType] = useGlobalState('dragType')
   const navigate = useNavigate()
@@ -40,6 +45,7 @@ export function TaskListItem({ list, listItemProps, dragHandleProps }) {
         },
       }}
       ref={provided.innerRef}
+      selected={selected}
       {...provided.draggableProps}
     >
       <ListItemButton onClick={() => navigate(taskListPath(list.id))}>

@@ -1,4 +1,5 @@
 import { Box, List } from '@mui/material'
+import { useParams } from 'react-router-dom'
 
 import { DragType, useGlobalState } from '../../state'
 import {
@@ -33,6 +34,7 @@ function VisibilityGuard({ visible, children }) {
 }
 
 export function Sidebar() {
+  const { listId } = useParams()
   const [dragType] = useGlobalState('dragType')
   const [lists] = useTaskLists()
   const { mainContentHeight } = useThemeUtils()
@@ -48,7 +50,7 @@ export function Sidebar() {
               key={list.id}
             >
               <TaskListDroppable highlighted>
-                <TaskListItem list={list} />
+                <TaskListItem list={list} selected={list.id === listId} />
               </TaskListDroppable>
             </DroppableProvider>
           ))}
@@ -67,7 +69,7 @@ export function Sidebar() {
                   index={index}
                   key={list.id}
                 >
-                  <TaskListItem list={list} />
+                  <TaskListItem list={list} selected={list.id === listId} />
                 </DraggableProvider>
               ))}
             </List>

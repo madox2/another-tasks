@@ -10,7 +10,6 @@ import { ContactPage } from './pages/ContactPage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PageTemplate } from './pages/components/PageTemplate'
-import { TaskDetailPage } from './pages/TaskDetailPage'
 import { TasksPage } from './pages/TasksPage'
 import { PrivacyPage } from './pages/PrivacyPage'
 import { WelcomePage } from './pages/WelcomePage'
@@ -29,7 +28,6 @@ function App() {
         <Route path={routes.app} element={<AppTemplate />}>
           <Route path={routes.app} element={<TasksPage />} />
           <Route path={routes.taskList} element={<TasksPage />} />
-          <Route path={routes.taskDetail} element={<TaskDetailPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

@@ -1,21 +1,12 @@
-import {
-  Box,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material'
-import { DragIndicator, MoreVert } from '@mui/icons-material'
+import { Box, List } from '@mui/material'
 
 import { DragType, useGlobalState } from '../../state'
 import {
   DraggableProvider,
   DroppableProvider,
-  useDraggable,
   useDroppable,
 } from './DNDContext'
+import { TaskListItem } from './TaskListItem'
 import { useTaskLists } from '../../app/api'
 
 function TaskListDroppable({ children, highlighted }) {
@@ -32,46 +23,6 @@ function TaskListDroppable({ children, highlighted }) {
       {children}
       <div style={{ display: 'none' }}>{provided.placeholder}</div>
     </Box>
-  )
-}
-
-function TaskListItem({ list, listItemProps, dragHandleProps }) {
-  const [provided] = useDraggable()
-  const [dragType] = useGlobalState('dragType')
-  return (
-    <ListItem
-      disablePadding
-      secondaryAction={
-        <IconButton {...provided.dragHandleProps}>
-          <MoreVert />
-        </IconButton>
-      }
-      sx={{
-        '.MuiListItemIcon-root': {
-          visibility: dragType === DragType.LIST ? 'inherit' : 'hidden',
-        },
-        '.MuiListItemSecondaryAction-root': {
-          visibility: 'hidden',
-        },
-        '&:hover .MuiListItemIcon-root': {
-          visibility: dragType === DragType.TASK ? 'hidden' : 'inherit',
-        },
-        '&:hover .MuiListItemSecondaryAction-root': {
-          visibility: dragType ? 'hidden' : 'inherit',
-        },
-      }}
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-    >
-      <ListItemButton>
-        <ListItemIcon sx={{ ml: -2.5, mr: -2.5 }}>
-          <IconButton {...provided.dragHandleProps} disableRipple>
-            <DragIndicator />
-          </IconButton>
-        </ListItemIcon>
-        <ListItemText primary={list.title} />
-      </ListItemButton>
-    </ListItem>
   )
 }
 

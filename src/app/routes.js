@@ -1,3 +1,5 @@
+import { generatePath } from 'react-router-dom'
+
 export const routes = {
   basename: 'another-tasks',
   index: '/',
@@ -6,5 +8,6 @@ export const routes = {
   privacy: '/privacy',
   app: '/app',
   taskList: '/app/list/:listId',
-  taskDetail: '/app/list/:listId/task/:taskId',
 }
+
+export const taskListPath = listId => generatePath(routes.taskList, { listId })

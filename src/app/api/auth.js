@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { gapi } from '../gclient'
-import { useHandleError } from '../errors'
 import config from '../config'
 
 export const loadPromise = new Promise((resolve, reject) =>
@@ -51,23 +50,16 @@ async function getCurrentUser() {
 
 export function useLoginMutation() {
   const queryClient = useQueryClient()
-  const onError = useHandleError()
   return useMutation(login, {
     onSuccess: () => queryClient.invalidateQueries('currentUser'),
-    onError,
   })
 }
 
 export function useLogoutMutation() {
   const queryClient = useQueryClient()
-  const onError = useHandleError()
   return useMutation(logout, {
     onSuccess: () => queryClient.invalidateQueries('currentUser'),
-    onError,
   })
 }
 
-export const useCurrentUser = () => {
-  const onError = useHandleError()
-  return useQuery(['currentUser'], getCurrentUser, { onError })
-}
+export const useCurrentUser = () => useQuery(['currentUser'], getCurrentUser)

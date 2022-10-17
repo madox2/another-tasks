@@ -6,8 +6,14 @@ import '@fontsource/roboto/700.css'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { LocalizationProvider } from '@mui/x-date-pickers'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {
+  QueryClient,
+  QueryClientProvider,
+  QueryCache,
+  MutationCache,
+} from '@tanstack/react-query'
 import { SnackbarProvider } from 'notistack'
+import { useRef } from 'react'
 
 import { AppTemplate } from './pages/components/AppTemplate'
 import { ContactPage } from './pages/ContactPage'
@@ -17,13 +23,33 @@ import { PrivacyPage } from './pages/PrivacyPage'
 import { TasksPage } from './pages/TasksPage'
 import { WelcomePage } from './pages/WelcomePage'
 import { routes } from './app/routes'
+import { useHandleError } from './utils/errors'
 
-const queryClient = new QueryClient()
+function HookedQueryClientProvider({ children }) {
+  const onError = useHandleError()
+  const client = useRef(
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: 1000 * 60, // 1m, TODO: find best value for the user
+        },
+      },
+      queryCache: new QueryCache({ onError }),
+      mutationCache: new MutationCache({ onError }),
+    })
+  )
+
+  return (
+    <QueryClientProvider client={client.current}>
+      {children}
+    </QueryClientProvider>
+  )
+}
 
 function App() {
   return (
     <SnackbarProvider maxSnack={3} autoHideDuration={4000}>
-      <QueryClientProvider client={queryClient}>
+      <HookedQueryClientProvider>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <BrowserRouter basename={routes.basename}>
             <Routes>
@@ -40,7 +66,7 @@ function App() {
             </Routes>
           </BrowserRouter>
         </LocalizationProvider>
-      </QueryClientProvider>
+      </HookedQueryClientProvider>
     </SnackbarProvider>
   )
 }

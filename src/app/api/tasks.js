@@ -4,7 +4,6 @@ import { pick } from 'lodash'
 
 import { gapi } from '../gclient'
 import { loadPromise } from './auth'
-import { useHandleError } from '../errors'
 
 let updateTaskPromises = []
 function updatePromises(promises, promise) {
@@ -107,50 +106,37 @@ const moveToList = async (id, listId, targetListId) => {
   await deleteTask(id, listId)
 }
 
-function useSimpleMutation(fn) {
-  const onError = useHandleError()
-  return useMutation(fn, { onError })
-}
+export const useTaskLists = () => useQuery(['lists'], getLists)
 
-export function useTaskLists() {
-  const onError = useHandleError()
-  return useQuery(['lists'], getLists, { onError })
-}
-
-export function useTaskList(id) {
-  const onError = useHandleError()
-  return useQuery(['lists', id], () => getList(id), { onError })
-}
+export const useTaskList = id => useQuery(['lists', id], () => getList(id))
 
 export const useAddListMutation = () =>
-  useSimpleMutation(({ title }) => addList(title))
+  useMutation(({ title }) => addList(title))
 
 export const useDeleteListMutation = () =>
-  useSimpleMutation(({ listId }) => deleteList(listId))
+  useMutation(({ listId }) => deleteList(listId))
 
 export const useEditListMutation = () =>
-  useSimpleMutation(({ listId, title }) => updateList(listId, title))
+  useMutation(({ listId, title }) => updateList(listId, title))
 
 export const useUpdateTaskMutation = () =>
-  useSimpleMutation(({ title, notes, status, due, id, listId }) =>
+  useMutation(({ title, notes, status, due, id, listId }) =>
     updateTask({ title, notes, status, due, id, listId })
   )
 
 export const useAddTaskMutation = () =>
-  useSimpleMutation(({ listId }) => createTask(listId))
+  useMutation(({ listId }) => createTask(listId))
 
 export const useDeleteTaskMutation = () =>
-  useSimpleMutation(({ listId, id }) => deleteTask(id, listId))
+  useMutation(({ listId, id }) => deleteTask(id, listId))
 
 export const useClearCompletedMutation = () =>
-  useSimpleMutation(({ listId }) => clearCompleted(listId))
+  useMutation(({ listId }) => clearCompleted(listId))
 
 export const useMoveTaskMutation = () =>
-  useSimpleMutation(({ listId, id, previousId }) =>
-    moveTask(id, previousId, listId)
-  )
+  useMutation(({ listId, id, previousId }) => moveTask(id, previousId, listId))
 
 export const useMoveToListMutation = () =>
-  useSimpleMutation(({ listId, id, targetListId }) =>
+  useMutation(({ listId, id, targetListId }) =>
     moveToList(id, listId, targetListId)
   )

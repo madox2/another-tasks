@@ -36,7 +36,7 @@ function VisibilityGuard({ visible, children }) {
 export function Sidebar() {
   const { listId } = useParams()
   const [dragType] = useGlobalState('dragType')
-  const [lists] = useTaskLists()
+  const { data: lists } = useTaskLists()
   const { mainContentHeight } = useThemeUtils()
   const isDraggingTask = dragType === DragType.TASK
   return (

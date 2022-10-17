@@ -10,7 +10,7 @@ import { useThemeUtils } from '../utils/themeUtils'
 
 export function TasksPage() {
   const { listId } = useParams()
-  const [list] = useTaskList(listId)
+  const { data: list } = useTaskList(listId)
   const [selectedTask, setSelectedTask] = useState(false)
   const [focusedTask, setFocusedTask] = useState(false)
   const [dueDate, setDueDate] = useState(null)

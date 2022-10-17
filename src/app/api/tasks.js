@@ -1,27 +1,156 @@
-import { v4 } from 'uuid'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { range } from 'lodash-es'
+import { pick } from 'lodash'
 
-const dummyTasksRange = range(1, 20)
+import { gapi } from '../gclient'
+import { loadPromise } from './auth'
+import { useHandleError } from '../errors'
 
-const dummyList = range(1, 20).map((listIdx, i) => ({
-  id: v4(),
-  title: `List ${listIdx}`,
-  tasks: dummyTasksRange.map(taskIdx => ({
-    id: v4(),
-    title: `Task ${dummyTasksRange.length * i + taskIdx}`,
-    notes: 'some notes',
-    due: null,
-    status: null,
-  })),
-}))
+let updateTaskPromises = []
+function updatePromises(promises, promise) {
+  promises.push(promise)
+  return promise
+}
+
+const log = (...args) => console.debug(...args)
+
+const TASKS_API_URL = 'https://www.googleapis.com/tasks/v1'
+
+async function fetchResult(path, { method = 'GET', body } = {}) {
+  try {
+    await loadPromise
+    path = TASKS_API_URL + path
+    const payload = { path, method }
+    if (body) payload.body = body
+    log(`${method}: request:`, payload)
+    const response = await gapi.client.request(payload)
+    log(`${method}: response:`, response)
+    return response.result
+  } catch (e) {
+    log(`${method}: error fetching data ${path}`, e)
+    throw e
+  }
+}
+
+async function doPut(path, body) {
+  return fetchResult(path, { body, method: 'PUT' })
+}
+
+async function doPost(path, body) {
+  return fetchResult(path, { body, method: 'POST' })
+}
+
+async function doDelete(path) {
+  return fetchResult(path, { method: 'DELETE' })
+}
+
+async function fetchItems(path) {
+  const result = await fetchResult(path)
+  return (result && result.items) || []
+}
+
+const getTasks = async id => {
+  const tasks = await fetchItems(`/lists/${id}/tasks`)
+  tasks.sort((a, b) => a.position.localeCompare(b.position))
+  return tasks
+}
+
+const getList = async id => {
+  const result = await fetchResult(`/users/@me/lists/${id}`)
+  return {
+    ...result,
+    tasks: await getTasks(id),
+  }
+}
+
+const getLists = () => fetchItems('/users/@me/lists')
+
+const getTask = (id, listId) => fetchResult(`/lists/${listId}/tasks/${id}`)
+
+const createTask = (listId, task) => doPost(`/lists/${listId}/tasks`, task)
+
+const deleteTask = (id, listId) => doDelete(`/lists/${listId}/tasks/${id}`)
+
+const updateTask = async task =>
+  await updatePromises(
+    updateTaskPromises,
+    doPut(`/lists/${task.listId}/tasks/${task.id}`, task)
+  )
+
+const addList = title => doPost('/users/@me/lists', { title })
+
+const updateList = (listId, title) =>
+  doPut(`/users/@me/lists/${listId}`, {
+    title,
+    id: listId,
+  })
+
+const deleteList = listId => doDelete(`/users/@me/lists/${listId}`)
+
+const clearCompleted = async listId => {
+  await Promise.all(updateTaskPromises)
+  await doPost(`/lists/${listId}/clear`)
+}
+
+const moveTask = async (id, previousId, listId) => {
+  if (previousId) {
+    await doPost(`/lists/${listId}/tasks/${id}/move?previous=${previousId}`)
+  } else {
+    await doPost(`/lists/${listId}/tasks/${id}/move`)
+  }
+}
+
+const moveToList = async (id, listId, targetListId) => {
+  const task = await getTask(id, listId)
+  const movedTask = pick(task, ['title', 'notes', 'due', 'status'])
+  await createTask(targetListId, movedTask)
+  await deleteTask(id, listId)
+}
+
+function useSimpleMutation(fn) {
+  const onError = useHandleError()
+  return useMutation(fn, { onError })
+}
 
 export function useTaskLists() {
-  const data = dummyList.map(l => ({ ...l, tasks: null }))
-  return [data, { loading: false, error: false }]
+  const onError = useHandleError()
+  return useQuery(['lists'], getLists, { onError })
 }
 
 export function useTaskList(id) {
-  const data = dummyList.find(l => l.id === id)
-  return [data, { loading: false, error: false }]
+  const onError = useHandleError()
+  return useQuery(['lists', id], () => getList(id), { onError })
 }
+
+export const useAddListMutation = () =>
+  useSimpleMutation(({ title }) => addList(title))
+
+export const useDeleteListMutation = () =>
+  useSimpleMutation(({ listId }) => deleteList(listId))
+
+export const useEditListMutation = () =>
+  useSimpleMutation(({ listId, title }) => updateList(listId, title))
+
+export const useUpdateTaskMutation = () =>
+  useSimpleMutation(({ title, notes, status, due, id, listId }) =>
+    updateTask({ title, notes, status, due, id, listId })
+  )
+
+export const useAddTaskMutation = () =>
+  useSimpleMutation(({ listId }) => createTask(listId))
+
+export const useDeleteTaskMutation = () =>
+  useSimpleMutation(({ listId, id }) => deleteTask(id, listId))
+
+export const useClearCompletedMutation = () =>
+  useSimpleMutation(({ listId }) => clearCompleted(listId))
+
+export const useMoveTaskMutation = () =>
+  useSimpleMutation(({ listId, id, previousId }) =>
+    moveTask(id, previousId, listId)
+  )
+
+export const useMoveToListMutation = () =>
+  useSimpleMutation(({ listId, id, targetListId }) =>
+    moveToList(id, listId, targetListId)
+  )

@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useState } from 'react'
 
 import { TaskList } from './components/TaskList'
-import { useTaskList } from '../app/api'
+import { useTaskList } from '../app/api/tasks'
 import { useThemeUtils } from '../utils/themeUtils'
 
 export function TasksPage() {

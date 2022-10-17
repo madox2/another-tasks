@@ -1,21 +1,34 @@
 import {
   AppBar,
   Box,
+  Button,
   Divider,
   Drawer,
   Toolbar,
   Typography,
 } from '@mui/material'
 import { DragDropContext } from 'react-beautiful-dnd'
-import { Outlet } from 'react-router-dom'
+import { Outlet, Navigate } from 'react-router-dom'
 
 import { DragType, useGlobalState } from '../../state'
 import { Sidebar } from './Sidebar'
+import { routes } from '../../app/routes'
+import { useCurrentUser, useLogoutMutation } from '../../app/api/auth'
 
 const drawerWidth = 250
 
 export function AppTemplate({ children }) {
   const [, setDragType] = useGlobalState('dragType')
+  const currentUserQuery = useCurrentUser()
+  const logout = useLogoutMutation()
+
+  if (currentUserQuery.isLoading) {
+    return null
+  }
+  if (!currentUserQuery.data?.isSignedIn) {
+    return <Navigate to={routes.index} />
+  }
+
   return (
     <DragDropContext
       onBeforeDragStart={({ draggableId }) => {
@@ -45,7 +58,12 @@ export function AppTemplate({ children }) {
         </Drawer>
         <Box display="flex" ml={`${drawerWidth}px`}>
           <AppBar component="nav">
-            <Toolbar />
+            <Toolbar>
+              <Box flexGrow={1} />
+              <Button color="inherit" onClick={logout.mutate}>
+                Logout
+              </Button>
+            </Toolbar>
           </AppBar>
           <Box component="main" flexGrow={1}>
             <Toolbar />

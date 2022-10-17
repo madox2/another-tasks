@@ -1,9 +1,26 @@
 import { AppBar, Box, Button, Link, Toolbar, Typography } from '@mui/material'
-import { Outlet, Link as RouterLink } from 'react-router-dom'
+import {
+  useNavigate,
+  Navigate,
+  Outlet,
+  Link as RouterLink,
+} from 'react-router-dom'
 
 import { routes } from '../../app/routes'
+import { useCurrentUser, useLoginMutation } from '../../app/api/auth'
 
 export function PageTemplate() {
+  const navigate = useNavigate()
+  const login = useLoginMutation()
+  const currentUserQuery = useCurrentUser()
+
+  if (currentUserQuery.isLoading) {
+    return null
+  }
+  if (currentUserQuery.data?.isSignedIn) {
+    return <Navigate to={routes.app} />
+  }
+
   return (
     <Box display="flex">
       <AppBar component="nav">
@@ -11,7 +28,14 @@ export function PageTemplate() {
           <Typography variant="h6" component="div" flexGrow={1}>
             Tasks
           </Typography>
-          <Button color="inherit" component={RouterLink} to={routes.login}>
+          <Button
+            color="inherit"
+            component={RouterLink}
+            onClick={async () => {
+              await login.mutateAsync()
+              navigate(routes.app)
+            }}
+          >
             Login
           </Button>
         </Toolbar>

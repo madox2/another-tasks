@@ -8,7 +8,7 @@ import {
   useDroppable,
 } from './DNDContext'
 import { TaskListItem } from './TaskListItem'
-import { useTaskLists } from '../../app/api'
+import { useTaskLists } from '../../app/api/tasks'
 import { useThemeUtils } from '../../utils/themeUtils'
 
 function TaskListDroppable({ children, highlighted }) {

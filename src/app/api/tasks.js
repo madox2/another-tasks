@@ -55,10 +55,13 @@ const getTasks = async id => {
 }
 
 const getList = async id => {
-  const result = await fetchResult(`/users/@me/lists/${id}`)
+  const [result, tasks] = await Promise.all([
+    fetchResult(`/users/@me/lists/${id}`),
+    getTasks(id),
+  ])
   return {
     ...result,
-    tasks: await getTasks(id),
+    tasks,
   }
 }
 
@@ -108,7 +111,8 @@ const moveToList = async (id, listId, targetListId) => {
 
 export const useTaskLists = () => useQuery(['lists'], getLists)
 
-export const useTaskList = id => useQuery(['lists', id], () => getList(id))
+export const useTaskList = id =>
+  useQuery(['lists', id], () => getList(id), { enabled: !!id })
 
 export const useAddListMutation = () =>
   useMutation(({ title }) => addList(title))

@@ -10,7 +10,7 @@ import { useThemeUtils } from '../utils/themeUtils'
 
 export function TasksPage() {
   const { listId } = useParams()
-  const { data: list } = useTaskList(listId)
+  const { data: list, isLoading } = useTaskList(listId)
   const [selectedTask, setSelectedTask] = useState(false)
   const [focusedTask, setFocusedTask] = useState(false)
   const [dueDate, setDueDate] = useState(null)
@@ -20,6 +20,9 @@ export function TasksPage() {
   })
   if (!listId) {
     return 'No list selected'
+  }
+  if (isLoading) {
+    return null
   }
   if (!list) {
     return 'List not found'
@@ -74,7 +77,7 @@ export function TasksPage() {
             defaultValue={selectedTask.notes}
             variant="standard"
             multiline
-            label="Notes"
+            placeholder="Notes"
             fullWidth
             margin="normal"
             rows={5}

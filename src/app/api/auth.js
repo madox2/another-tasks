@@ -58,7 +58,7 @@ export function useLoginMutation() {
 export function useLogoutMutation() {
   const queryClient = useQueryClient()
   return useMutation(logout, {
-    onSuccess: () => queryClient.invalidateQueries('currentUser'),
+    onSuccess: () => queryClient.clear(),
   })
 }
 

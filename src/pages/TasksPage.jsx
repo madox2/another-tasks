@@ -1,10 +1,12 @@
-import { Box, TextField } from '@mui/material'
+import { Add, Visibility, VisibilityOff } from '@mui/icons-material'
+import { Box, Button, TextField } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useDetectClickOutside } from 'react-detect-click-outside'
 import { useParams } from 'react-router-dom'
 import { useState } from 'react'
 
 import { TaskList } from './components/TaskList'
+import { Toolbox } from './components/Toolbox'
 import { useTaskList } from '../app/api/tasks'
 import { useThemeUtils } from '../utils/themeUtils'
 
@@ -13,8 +15,9 @@ export function TasksPage() {
   const { data: list, isLoading } = useTaskList(listId)
   const [selectedTask, setSelectedTask] = useState(false)
   const [focusedTask, setFocusedTask] = useState(false)
+  const [showCompleted, setShowCompleted] = useState(false)
   const [dueDate, setDueDate] = useState(null)
-  const { mainContentHeight } = useThemeUtils()
+  const { scrollContentHeight } = useThemeUtils()
   const taskDetailRef = useDetectClickOutside({
     onTriggered: () => !focusedTask && setSelectedTask(null),
   })
@@ -29,18 +32,32 @@ export function TasksPage() {
   }
   return (
     <Box display="flex" flexDirection="row">
-      <Box flex={1} height={mainContentHeight} overflow="scroll">
-        <TaskList
-          tasks={list.tasks}
-          selectedTask={selectedTask}
-          onTaskFocus={task => {
-            setSelectedTask(task)
-            setFocusedTask(task)
-          }}
-          onTaskBlur={task => {
-            setFocusedTask(null)
-          }}
-        />
+      <Box flex={1}>
+        <Toolbox>
+          <Button variant="outlined" startIcon={<Add />}>
+            Task
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => setShowCompleted(c => !c)}
+            startIcon={showCompleted ? <Visibility /> : <VisibilityOff />}
+          >
+            Completed
+          </Button>
+        </Toolbox>
+        <Box height={scrollContentHeight} overflow="scroll">
+          <TaskList
+            tasks={list.tasks}
+            selectedTask={selectedTask}
+            onTaskFocus={task => {
+              setSelectedTask(task)
+              setFocusedTask(task)
+            }}
+            onTaskBlur={task => {
+              setFocusedTask(null)
+            }}
+          />
+        </Box>
       </Box>
       {selectedTask && (
         <Box

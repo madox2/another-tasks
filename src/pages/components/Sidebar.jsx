@@ -1,4 +1,5 @@
-import { Box, List } from '@mui/material'
+import { Add } from '@mui/icons-material'
+import { Box, Button, List } from '@mui/material'
 import { useParams } from 'react-router-dom'
 
 import { DragType, useGlobalState } from '../../state'
@@ -8,6 +9,7 @@ import {
   useDroppable,
 } from './DNDContext'
 import { TaskListItem } from './TaskListItem'
+import { Toolbox } from './Toolbox'
 import { useTaskLists } from '../../app/api/tasks'
 import { useThemeUtils } from '../../utils/themeUtils'
 
@@ -37,45 +39,52 @@ export function Sidebar() {
   const { listId } = useParams()
   const [dragType] = useGlobalState('dragType')
   const { data: lists } = useTaskLists()
-  const { mainContentHeight } = useThemeUtils()
+  const { scrollContentHeight } = useThemeUtils()
   const isDraggingTask = dragType === DragType.TASK
   return (
-    <Box height={mainContentHeight} overflow="scroll">
-      <VisibilityGuard visible={isDraggingTask}>
-        <List>
-          {lists?.map(list => (
-            <DroppableProvider
-              droppableId={`droppable-tasklist-${list.id}`}
-              type={DragType.TASK}
-              key={list.id}
-            >
-              <TaskListDroppable highlighted>
-                <TaskListItem list={list} selected={list.id === listId} />
-              </TaskListDroppable>
-            </DroppableProvider>
-          ))}
-        </List>
-      </VisibilityGuard>
-      <VisibilityGuard visible={!isDraggingTask}>
-        <DroppableProvider
-          droppableId={`droppable-tasklist-listdrop`}
-          type={DragType.LIST}
-        >
-          <TaskListDroppable>
-            <List>
-              {lists?.map((list, index) => (
-                <DraggableProvider
-                  draggableId={`draggable-tasklist-${list.id}`}
-                  index={index}
-                  key={list.id}
-                >
+    <>
+      <Toolbox>
+        <Button variant="outlined" startIcon={<Add />}>
+          List
+        </Button>
+      </Toolbox>
+      <Box height={scrollContentHeight} overflow="scroll">
+        <VisibilityGuard visible={isDraggingTask}>
+          <List>
+            {lists?.map(list => (
+              <DroppableProvider
+                droppableId={`droppable-tasklist-${list.id}`}
+                type={DragType.TASK}
+                key={list.id}
+              >
+                <TaskListDroppable highlighted>
                   <TaskListItem list={list} selected={list.id === listId} />
-                </DraggableProvider>
-              ))}
-            </List>
-          </TaskListDroppable>
-        </DroppableProvider>
-      </VisibilityGuard>
-    </Box>
+                </TaskListDroppable>
+              </DroppableProvider>
+            ))}
+          </List>
+        </VisibilityGuard>
+        <VisibilityGuard visible={!isDraggingTask}>
+          <DroppableProvider
+            droppableId={`droppable-tasklist-listdrop`}
+            type={DragType.LIST}
+          >
+            <TaskListDroppable>
+              <List>
+                {lists?.map((list, index) => (
+                  <DraggableProvider
+                    draggableId={`draggable-tasklist-${list.id}`}
+                    index={index}
+                    key={list.id}
+                  >
+                    <TaskListItem list={list} selected={list.id === listId} />
+                  </DraggableProvider>
+                ))}
+              </List>
+            </TaskListDroppable>
+          </DroppableProvider>
+        </VisibilityGuard>
+      </Box>
+    </>
   )
 }

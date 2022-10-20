@@ -45,7 +45,7 @@ export function TaskItem({ task, onClick, onFocus, onBlur, highlighted }) {
             <DragIndicator />
           </IconButton>
         </ListItemIcon>
-        <Checkbox />
+        <Checkbox onClick={e => e.stopPropagation()} />
         <TextField
           inputRef={textFieldRef}
           InputProps={{

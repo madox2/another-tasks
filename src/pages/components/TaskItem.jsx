@@ -6,15 +6,17 @@ import {
   ListItemIcon,
   TextField,
 } from '@mui/material'
+import { useFormContext } from 'react-hook-form'
 import { DragIndicator } from '@mui/icons-material'
 import { useRef } from 'react'
 
 import { DragType, useGlobalState } from '../../state'
 import { useDraggable } from './DNDContext'
-export function TaskItem({ task, onClick, onFocus, onBlur, highlighted }) {
+export function TaskItem({ task, onClick, onFocus, onBlur, selected }) {
   const [provided] = useDraggable()
   const [dragType] = useGlobalState('dragType')
   const textFieldRef = useRef()
+  const { register } = useFormContext()
   return (
     <ListItem
       disablePadding
@@ -49,16 +51,16 @@ export function TaskItem({ task, onClick, onFocus, onBlur, highlighted }) {
         <TextField
           inputRef={textFieldRef}
           InputProps={{
+            ...register(`${task.id}.list.title`),
             onFocus: onFocus,
             onBlur: onBlur,
           }}
           variant="standard"
-          defaultValue={task.title}
           sx={{
             width: '100%',
             ml: 2,
             '.MuiInputBase-root::before': {
-              borderBottom: highlighted ? 'inherited' : 'none !important',
+              borderBottom: selected ? 'inherited' : 'none !important',
             },
           }}
         />

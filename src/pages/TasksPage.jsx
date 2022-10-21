@@ -1,14 +1,29 @@
 import { Add, Visibility, VisibilityOff } from '@mui/icons-material'
-import { Box, Button, TextField } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { get } from 'lodash-es'
+import { Box, Button } from '@mui/material'
 import { useDetectClickOutside } from 'react-detect-click-outside'
 import { useParams } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
+import { TaskDetailForm } from './components/TaskDetailForm'
 import { TaskList } from './components/TaskList'
 import { Toolbox } from './components/Toolbox'
 import { useTaskList } from '../app/api/tasks'
 import { useThemeUtils } from '../utils/themeUtils'
+import { useForm, FormProvider } from 'react-hook-form'
+
+const makeDefaultValues = tasks =>
+  tasks?.reduce((acc, task) => ({
+    ...acc,
+    [task.id]: {
+      detail: {
+        title: task.title,
+      },
+      list: {
+        title: task.title,
+      },
+    },
+  }))
 
 export function TasksPage() {
   const { listId } = useParams()
@@ -16,11 +31,31 @@ export function TasksPage() {
   const [selectedTask, setSelectedTask] = useState(false)
   const [focusedTask, setFocusedTask] = useState(false)
   const [showCompleted, setShowCompleted] = useState(false)
-  const [dueDate, setDueDate] = useState(null)
   const { scrollContentHeight } = useThemeUtils()
   const taskDetailRef = useDetectClickOutside({
     onTriggered: () => !focusedTask && setSelectedTask(null),
   })
+  const form = useForm({
+    defaultValues: makeDefaultValues(list?.tasks),
+  })
+  useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      const subforms = ['list', 'detail']
+      const newValue = get(value, name)
+      // sync title fields
+      subforms.forEach(subform => {
+        if (get(value, `${selectedTask.id}.${subform}.title`) !== newValue) {
+          form.setValue(`${selectedTask.id}.${subform}.title`, newValue)
+        }
+      })
+    })
+    return () => subscription.unsubscribe()
+  }, [form, selectedTask])
+
+  useEffect(() => {
+    form.reset(makeDefaultValues(list?.tasks))
+  }, [list?.tasks, form])
+
   if (!listId) {
     return 'No list selected'
   }
@@ -31,76 +66,47 @@ export function TasksPage() {
     return 'List not found'
   }
   return (
-    <Box display="flex" flexDirection="row">
-      <Box flex={1}>
-        <Toolbox>
-          <Button variant="outlined" startIcon={<Add />}>
-            Task
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => setShowCompleted(c => !c)}
-            startIcon={showCompleted ? <Visibility /> : <VisibilityOff />}
+    <FormProvider {...form}>
+      <Box display="flex" flexDirection="row">
+        <Box flex={1}>
+          <Toolbox>
+            <Button variant="outlined" startIcon={<Add />}>
+              Task
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setShowCompleted(c => !c)}
+              startIcon={showCompleted ? <Visibility /> : <VisibilityOff />}
+            >
+              Completed
+            </Button>
+          </Toolbox>
+          <Box height={scrollContentHeight} overflow="scroll">
+            <TaskList
+              tasks={list.tasks}
+              selectedTask={selectedTask}
+              onTaskFocus={task => {
+                setSelectedTask(task)
+                setFocusedTask(task)
+              }}
+              onTaskBlur={task => {
+                setFocusedTask(null)
+              }}
+            />
+          </Box>
+        </Box>
+        {selectedTask && (
+          <Box
+            borderLeft={1}
+            borderColor="grey.300"
+            flex={1}
+            ref={taskDetailRef}
+            p={2}
           >
-            Completed
-          </Button>
-        </Toolbox>
-        <Box height={scrollContentHeight} overflow="scroll">
-          <TaskList
-            tasks={list.tasks}
-            selectedTask={selectedTask}
-            onTaskFocus={task => {
-              setSelectedTask(task)
-              setFocusedTask(task)
-            }}
-            onTaskBlur={task => {
-              setFocusedTask(null)
-            }}
-          />
-        </Box>
+            <TaskDetailForm task={selectedTask} />
+          </Box>
+        )}
       </Box>
-      {selectedTask && (
-        <Box
-          borderLeft={1}
-          borderColor="grey.300"
-          flex={1}
-          ref={taskDetailRef}
-          p={2}
-        >
-          <TextField
-            defaultValue={selectedTask.title}
-            variant="standard"
-            fullWidth
-            margin="normal"
-            placeholder="title"
-          />
-          <DatePicker
-            label="Due date"
-            value={dueDate}
-            onChange={newDueDate => {
-              setDueDate(newDueDate)
-            }}
-            renderInput={params => (
-              <TextField variant="standard" margin="normal" {...params} />
-            )}
-            PaperProps={{
-              onClick: e => {
-                // stop propagation to prevent triggering click-outside
-                e.stopPropagation()
-              },
-            }}
-          />
-          <TextField
-            defaultValue={selectedTask.notes}
-            variant="standard"
-            multiline
-            placeholder="Notes"
-            fullWidth
-            margin="normal"
-            rows={5}
-          />
-        </Box>
-      )}
-    </Box>
+    </FormProvider>
   )
 }

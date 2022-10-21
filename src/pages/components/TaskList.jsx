@@ -32,7 +32,7 @@ export function TaskList({ tasks, onTaskBlur, onTaskFocus, selectedTask }) {
               task={task}
               onFocus={() => onTaskFocus(task)}
               onBlur={() => onTaskBlur(task)}
-              highlighted={task.id === selectedTask?.id}
+              selected={task.id === selectedTask?.id}
             />
           </DraggableProvider>
         ))}

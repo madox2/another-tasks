@@ -1,27 +1,25 @@
 import { Add, Visibility, VisibilityOff } from '@mui/icons-material'
-import { get } from 'lodash-es'
 import { Box, Button } from '@mui/material'
 import { useDetectClickOutside } from 'react-detect-click-outside'
+import { useForm, FormProvider } from 'react-hook-form'
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
 import { TaskDetailForm } from './components/TaskDetailForm'
 import { TaskList } from './components/TaskList'
+import { TaskStatus } from '../app/constants'
 import { Toolbox } from './components/Toolbox'
 import { useTaskList } from '../app/api/tasks'
 import { useThemeUtils } from '../utils/themeUtils'
-import { useForm, FormProvider } from 'react-hook-form'
 
 const makeDefaultValues = tasks =>
   tasks?.reduce((acc, task) => ({
     ...acc,
     [task.id]: {
-      detail: {
-        title: task.title,
-      },
-      list: {
-        title: task.title,
-      },
+      title: task.title,
+      completed: task.status === TaskStatus.completed,
+      due: task.due && new Date(task.due),
+      notes: task.notes,
     },
   }))
 
@@ -38,23 +36,18 @@ export function TasksPage() {
   const form = useForm({
     defaultValues: makeDefaultValues(list?.tasks),
   })
-  useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
-      const subforms = ['list', 'detail']
-      const newValue = get(value, name)
-      // sync title fields
-      subforms.forEach(subform => {
-        if (get(value, `${selectedTask.id}.${subform}.title`) !== newValue) {
-          form.setValue(`${selectedTask.id}.${subform}.title`, newValue)
-        }
-      })
-    })
-    return () => subscription.unsubscribe()
-  }, [form, selectedTask])
 
   useEffect(() => {
     form.reset(makeDefaultValues(list?.tasks))
   }, [list?.tasks, form])
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      const [taskId] = name.split('.') // changed task can be different to selected one, e.g. changing completed state
+      console.log('change', taskId, value[taskId])
+    })
+    return () => subscription.unsubscribe()
+  }, [form, selectedTask])
 
   if (!listId) {
     return 'No list selected'
@@ -103,7 +96,7 @@ export function TasksPage() {
             ref={taskDetailRef}
             p={2}
           >
-            <TaskDetailForm task={selectedTask} />
+            <TaskDetailForm task={selectedTask} key={selectedTask.id} />
           </Box>
         )}
       </Box>

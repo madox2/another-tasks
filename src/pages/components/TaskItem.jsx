@@ -47,11 +47,14 @@ export function TaskItem({ task, onClick, onFocus, onBlur, selected }) {
             <DragIndicator />
           </IconButton>
         </ListItemIcon>
-        <Checkbox onClick={e => e.stopPropagation()} />
+        <Checkbox
+          onClick={e => e.stopPropagation()}
+          {...register(`${task.id}.completed`)}
+        />
         <TextField
           inputRef={textFieldRef}
           InputProps={{
-            ...register(`${task.id}.list.title`),
+            ...register(`${task.id}.title`),
             onFocus: onFocus,
             onBlur: onBlur,
           }}

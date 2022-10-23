@@ -1,44 +1,39 @@
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { useFormContext } from 'react-hook-form'
 import { TextField } from '@mui/material'
-import { useState } from 'react'
+import { useFormContext, Controller } from 'react-hook-form'
 
 export function TaskDetailForm({ task }) {
-  const [dueDate, setDueDate] = useState(null)
-  const { register } = useFormContext()
+  const { register, control } = useFormContext()
   return (
     <>
       <TextField
-        variant="standard"
-        fullWidth
-        margin="normal"
-        placeholder="title"
-        InputProps={register(`${task.id}.detail.title`)}
-      />
-      <DatePicker
-        label="Due date"
-        value={dueDate}
-        onChange={newDueDate => {
-          setDueDate(newDueDate)
-        }}
-        renderInput={params => (
-          <TextField variant="standard" margin="normal" {...params} />
-        )}
-        PaperProps={{
-          onClick: e => {
-            // stop propagation to prevent triggering click-outside
-            e.stopPropagation()
-          },
-        }}
-      />
-      <TextField
-        defaultValue={task.notes}
         variant="standard"
         multiline
         placeholder="Notes"
         fullWidth
         margin="normal"
         rows={5}
+        InputProps={register(`${task.id}.notes`)}
+      />
+      <Controller
+        control={control}
+        name={`${task.id}.due`}
+        render={({ field: { onChange, value } }) => (
+          <DatePicker
+            label="Due date"
+            value={value || null}
+            onChange={onChange}
+            renderInput={params => (
+              <TextField variant="standard" margin="normal" {...params} />
+            )}
+            PaperProps={{
+              onClick: e => {
+                // stop propagation to prevent triggering click-outside
+                e.stopPropagation()
+              },
+            }}
+          />
+        )}
       />
     </>
   )

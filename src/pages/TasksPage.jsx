@@ -43,7 +43,10 @@ export function TasksPage() {
 
   useEffect(() => {
     const subscription = form.watch((value, { name, type }) => {
-      const [taskId] = name.split('.') // changed task can be different to selected one, e.g. changing completed state
+      if (!name) {
+        return
+      }
+      const [taskId] = name?.split('.') // changed task can be different to selected one, e.g. changing completed state
       console.log('change', taskId, value[taskId])
     })
     return () => subscription.unsubscribe()

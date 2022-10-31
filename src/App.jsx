@@ -13,6 +13,7 @@ import {
   MutationCache,
 } from '@tanstack/react-query'
 import { SnackbarProvider } from 'notistack'
+import { createTheme, responsiveFontSizes } from '@mui/material/styles'
 import { useRef } from 'react'
 
 import { AppTemplate } from './pages/components/AppTemplate'
@@ -24,6 +25,7 @@ import { TasksPage } from './pages/TasksPage'
 import { WelcomePage } from './pages/WelcomePage'
 import { routes } from './app/routes'
 import { useHandleError } from './utils/errors'
+import { ThemeProvider } from '@mui/material'
 
 function HookedQueryClientProvider({ children }) {
   const onError = useHandleError()
@@ -46,28 +48,33 @@ function HookedQueryClientProvider({ children }) {
   )
 }
 
+let theme = createTheme()
+theme = responsiveFontSizes(theme)
+
 function App() {
   return (
-    <SnackbarProvider maxSnack={3} autoHideDuration={4000}>
-      <HookedQueryClientProvider>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <BrowserRouter basename={routes.basename}>
-            <Routes>
-              <Route path={routes.index} element={<PageTemplate />}>
-                <Route index element={<WelcomePage />} />
-                <Route path={routes.contact} element={<ContactPage />} />
-                <Route path={routes.privacy} element={<PrivacyPage />} />
-              </Route>
-              <Route path={routes.app} element={<AppTemplate />}>
-                <Route path={routes.app} element={<TasksPage />} />
-                <Route path={routes.taskList} element={<TasksPage />} />
-              </Route>
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </BrowserRouter>
-        </LocalizationProvider>
-      </HookedQueryClientProvider>
-    </SnackbarProvider>
+    <ThemeProvider theme={theme}>
+      <SnackbarProvider maxSnack={3} autoHideDuration={4000}>
+        <HookedQueryClientProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <BrowserRouter basename={routes.basename}>
+              <Routes>
+                <Route path={routes.index} element={<PageTemplate />}>
+                  <Route index element={<WelcomePage />} />
+                  <Route path={routes.contact} element={<ContactPage />} />
+                  <Route path={routes.privacy} element={<PrivacyPage />} />
+                </Route>
+                <Route path={routes.app} element={<AppTemplate />}>
+                  <Route path={routes.app} element={<TasksPage />} />
+                  <Route path={routes.taskList} element={<TasksPage />} />
+                </Route>
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </BrowserRouter>
+          </LocalizationProvider>
+        </HookedQueryClientProvider>
+      </SnackbarProvider>
+    </ThemeProvider>
   )
 }
 

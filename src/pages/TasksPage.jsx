@@ -9,7 +9,7 @@ import { TaskDetailForm } from './components/TaskDetailForm'
 import { TaskList } from './components/TaskList'
 import { TaskStatus } from '../app/constants'
 import { Toolbox } from './components/Toolbox'
-import { useTaskList } from '../app/api/tasks'
+import { useTaskList, useUpdateTaskMutation } from '../app/api/tasks'
 import { useThemeUtils } from '../utils/themeUtils'
 
 const makeDefaultValues = tasks =>
@@ -30,6 +30,7 @@ export function TasksPage() {
   const [focusedTask, setFocusedTask] = useState(false)
   const [showCompleted, setShowCompleted] = useState(false)
   const { scrollContentHeight } = useThemeUtils()
+  const updateTask = useUpdateTaskMutation()
   const taskDetailRef = useDetectClickOutside({
     onTriggered: () => !focusedTask && setSelectedTask(null),
   })
@@ -46,11 +47,23 @@ export function TasksPage() {
       if (!name) {
         return
       }
-      const [taskId] = name?.split('.') // changed task can be different to selected one, e.g. changing completed state
-      console.log('change', taskId, value[taskId])
+      // changed task can be different to selected one, e.g. changing completed state
+      const [taskId] = name?.split('.')
+      const values = value[taskId]
+      updateTask.mutate({
+        id: taskId,
+        listId,
+        title: values.title,
+        notes: values.notes,
+        status: values.completed
+          ? TaskStatus.completed
+          : TaskStatus.needsAction,
+        due: values.due?.toISOString(),
+      })
+      console.log('change', taskId, values)
     })
     return () => subscription.unsubscribe()
-  }, [form, selectedTask])
+  }, [form, selectedTask, listId, updateTask])
 
   if (!listId) {
     return 'No list selected'

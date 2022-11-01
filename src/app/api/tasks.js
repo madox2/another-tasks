@@ -19,7 +19,9 @@ async function fetchResult(path, { method = 'GET', body } = {}) {
   try {
     await loadPromise
     path = TASKS_API_URL + path
-    const payload = { path, method }
+    // overriding If-None-Match header to prevent caching
+    const headers = { 'If-None-Match': 'test' }
+    const payload = { path, method, headers }
     if (body) payload.body = body
     log(`${method}: request:`, payload)
     const response = await gapi.client.request(payload)

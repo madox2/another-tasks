@@ -6,17 +6,18 @@ import {
   ListItemIcon,
   TextField,
 } from '@mui/material'
-import { useFormContext } from 'react-hook-form'
 import { DragIndicator } from '@mui/icons-material'
+import { useFormContext, Controller } from 'react-hook-form'
 import { useRef } from 'react'
 
 import { DragType, useGlobalState } from '../../state'
 import { useDraggable } from './DNDContext'
+
 export function TaskItem({ task, onClick, onFocus, onBlur, selected }) {
   const [provided] = useDraggable()
   const [dragType] = useGlobalState('dragType')
   const textFieldRef = useRef()
-  const { register } = useFormContext()
+  const { register, control } = useFormContext()
   return (
     <ListItem
       disablePadding
@@ -47,9 +48,16 @@ export function TaskItem({ task, onClick, onFocus, onBlur, selected }) {
             <DragIndicator />
           </IconButton>
         </ListItemIcon>
-        <Checkbox
-          onClick={e => e.stopPropagation()}
-          {...register(`${task.id}.completed`)}
+        <Controller
+          control={control}
+          name={`${task.id}.completed`}
+          render={({ field: props }) => (
+            <Checkbox
+              {...props}
+              onClick={e => e.stopPropagation()}
+              checked={props.value || false}
+            />
+          )}
         />
         <TextField
           inputRef={textFieldRef}

@@ -3,7 +3,7 @@ import { Box, Button } from '@mui/material'
 import { useDetectClickOutside } from 'react-detect-click-outside'
 import { useForm, FormProvider } from 'react-hook-form'
 import { useParams } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { TaskDetailForm } from './components/TaskDetailForm'
 import { TaskList } from './components/TaskList'
@@ -11,6 +11,30 @@ import { TaskStatus } from '../app/constants'
 import { Toolbox } from './components/Toolbox'
 import { useTaskList, useUpdateTaskMutation } from '../app/api/tasks'
 import { useThemeUtils } from '../utils/themeUtils'
+import { throttle } from 'lodash-es'
+
+const makeThrottledUpdateTask = updateTaskMutation => {
+  const updateTask = data => {
+    updateTaskMutation.mutate({
+      id: data.taskId,
+      listId: data.listId,
+      title: data.title,
+      notes: data.notes,
+      status: data.completed ? TaskStatus.completed : TaskStatus.needsAction,
+      due: data.due?.toISOString(),
+    })
+  }
+  let updateTaskThrottled
+  let lastTaskId
+  return data => {
+    if (lastTaskId !== data.taskId) {
+      // recrete throttled task to ensure last task is updated
+      updateTaskThrottled = throttle(updateTask, 500, { leading: false })
+      lastTaskId = data.taskId
+    }
+    updateTaskThrottled(data)
+  }
+}
 
 const makeDefaultValues = tasks =>
   tasks?.reduce((acc, task) => ({
@@ -30,7 +54,8 @@ export function TasksPage() {
   const [focusedTask, setFocusedTask] = useState(false)
   const [showCompleted, setShowCompleted] = useState(false)
   const { scrollContentHeight } = useThemeUtils()
-  const updateTask = useUpdateTaskMutation()
+  const updateTaskMutation = useUpdateTaskMutation()
+  const updateTask = useRef(makeThrottledUpdateTask(updateTaskMutation))
   const taskDetailRef = useDetectClickOutside({
     onTriggered: () => !focusedTask && setSelectedTask(null),
   })
@@ -49,21 +74,11 @@ export function TasksPage() {
       }
       // changed task can be different to selected one, e.g. changing completed state
       const [taskId] = name?.split('.')
-      const values = value[taskId]
-      updateTask.mutate({
-        id: taskId,
-        listId,
-        title: values.title,
-        notes: values.notes,
-        status: values.completed
-          ? TaskStatus.completed
-          : TaskStatus.needsAction,
-        due: values.due?.toISOString(),
-      })
-      console.log('change', taskId, values)
+      const data = { ...value[taskId], listId, taskId }
+      updateTask.current(data)
     })
     return () => subscription.unsubscribe()
-  }, [form, selectedTask, listId, updateTask])
+  }, [form, selectedTask, listId, updateTaskMutation])
 
   if (!listId) {
     return 'No list selected'

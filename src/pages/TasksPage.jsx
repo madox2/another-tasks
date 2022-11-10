@@ -37,15 +37,18 @@ const makeThrottledUpdateTask = updateTaskMutation => {
 }
 
 const makeDefaultValues = tasks =>
-  tasks?.reduce((acc, task) => ({
-    ...acc,
-    [task.id]: {
-      title: task.title,
-      completed: task.status === TaskStatus.completed,
-      due: task.due && new Date(task.due),
-      notes: task.notes,
-    },
-  }))
+  tasks?.reduce(
+    (acc, task) => ({
+      ...acc,
+      [task.id]: {
+        title: task.title,
+        completed: task.status === TaskStatus.completed,
+        due: task.due && new Date(task.due),
+        notes: task.notes,
+      },
+    }),
+    {}
+  )
 
 export function TasksPage() {
   const { listId } = useParams()

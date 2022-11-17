@@ -1,5 +1,6 @@
 import { Add, Visibility, VisibilityOff } from '@mui/icons-material'
 import { Box, Button } from '@mui/material'
+import { throttle } from 'lodash-es'
 import { useDetectClickOutside } from 'react-detect-click-outside'
 import { useForm, FormProvider } from 'react-hook-form'
 import { useParams } from 'react-router-dom'
@@ -9,9 +10,12 @@ import { TaskDetailForm } from './components/TaskDetailForm'
 import { TaskList } from './components/TaskList'
 import { TaskStatus } from '../app/constants'
 import { Toolbox } from './components/Toolbox'
-import { useTaskList, useUpdateTaskMutation } from '../app/api/tasks'
+import {
+  useAddTaskMutation,
+  useTaskList,
+  useUpdateTaskMutation,
+} from '../app/api/tasks'
 import { useThemeUtils } from '../utils/themeUtils'
-import { throttle } from 'lodash-es'
 
 const makeThrottledUpdateTask = updateTaskMutation => {
   const updateTask = data => {
@@ -56,6 +60,7 @@ function TasksForm({ list }) {
   const [focusedTask, setFocusedTask] = useState(false)
   const [showCompleted, setShowCompleted] = useState(false)
   const { scrollContentHeight } = useThemeUtils()
+  const addTaskMutation = useAddTaskMutation()
   const updateTaskMutation = useUpdateTaskMutation()
   const updateTask = useRef(makeThrottledUpdateTask(updateTaskMutation))
   const taskDetailRef = useDetectClickOutside({
@@ -64,6 +69,10 @@ function TasksForm({ list }) {
   const form = useForm({
     defaultValues: makeDefaultValues(list?.tasks),
   })
+
+  useEffect(() => {
+    form.reset(makeDefaultValues(list?.tasks))
+  }, [list?.tasks?.length])
 
   const formValues = form.getValues()
 
@@ -85,7 +94,12 @@ function TasksForm({ list }) {
       <Box display="flex" flexDirection="row">
         <Box flex={1}>
           <Toolbox>
-            <Button variant="outlined" startIcon={<Add />}>
+            <Button
+              variant="outlined"
+              startIcon={<Add />}
+              onClick={() => addTaskMutation.mutateAsync({ listId })}
+              disabled={addTaskMutation.isLoading}
+            >
               Task
             </Button>
             <Button
@@ -99,7 +113,7 @@ function TasksForm({ list }) {
           <Box height={scrollContentHeight} overflow="scroll">
             <TaskList
               tasks={list.tasks.filter(
-                t => showCompleted || !formValues[t.id].completed
+                t => showCompleted || !formValues[t.id]?.completed
               )}
               selectedTask={selectedTask}
               onTaskFocus={task => {

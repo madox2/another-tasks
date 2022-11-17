@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { pick } from 'lodash'
 
@@ -130,8 +130,17 @@ export const useUpdateTaskMutation = () =>
     updateTask({ title, notes, status, due, id, listId })
   )
 
-export const useAddTaskMutation = () =>
-  useMutation(({ listId }) => createTask(listId))
+export const useAddTaskMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation(({ listId }) => createTask(listId), {
+    onSettled: (newTask, __, { listId }) => {
+      queryClient.setQueryData(['lists', listId], list => ({
+        ...list,
+        tasks: [newTask, ...list?.tasks],
+      }))
+    },
+  })
+}
 
 export const useDeleteTaskMutation = () =>
   useMutation(({ listId, id }) => deleteTask(id, listId))

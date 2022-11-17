@@ -125,15 +125,31 @@ export const useDeleteListMutation = () =>
 export const useEditListMutation = () =>
   useMutation(({ listId, title }) => updateList(listId, title))
 
-export const useUpdateTaskMutation = () =>
-  useMutation(({ title, notes, status, due, id, listId }) =>
-    updateTask({ title, notes, status, due, id, listId })
+export const useUpdateTaskMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    ({ title, notes, status, due, id, listId }) =>
+      updateTask({ title, notes, status, due, id, listId }),
+    {
+      onSuccess: (updatedTask, { listId }) => {
+        queryClient.setQueryData(['lists', listId], list => ({
+          ...list,
+          tasks: list?.tasks.map(t => {
+            if (t.id === updatedTask.id) {
+              return updatedTask
+            }
+            return t
+          }),
+        }))
+      },
+    }
   )
+}
 
 export const useAddTaskMutation = () => {
   const queryClient = useQueryClient()
   return useMutation(({ listId }) => createTask(listId), {
-    onSettled: (newTask, __, { listId }) => {
+    onSuccess: (newTask, { listId }) => {
       queryClient.setQueryData(['lists', listId], list => ({
         ...list,
         tasks: [newTask, ...list?.tasks],

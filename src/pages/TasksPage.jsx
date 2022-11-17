@@ -71,7 +71,9 @@ function TasksForm({ list }) {
   })
 
   useEffect(() => {
+    // reset when tasks added/removed
     form.reset(makeDefaultValues(list?.tasks))
+    // eslint-disable-next-line
   }, [list?.tasks?.length])
 
   const formValues = form.getValues()

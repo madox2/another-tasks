@@ -50,9 +50,8 @@ const makeDefaultValues = tasks =>
     {}
   )
 
-export function TasksPage() {
-  const { listId } = useParams()
-  const { data: list, isLoading } = useTaskList(listId)
+function TasksForm({ list }) {
+  const listId = list.id
   const [selectedTask, setSelectedTask] = useState(false)
   const [focusedTask, setFocusedTask] = useState(false)
   const [showCompleted, setShowCompleted] = useState(false)
@@ -66,9 +65,7 @@ export function TasksPage() {
     defaultValues: makeDefaultValues(list?.tasks),
   })
 
-  useEffect(() => {
-    form.reset(makeDefaultValues(list?.tasks))
-  }, [list?.tasks, form])
+  const formValues = form.getValues()
 
   useEffect(() => {
     const subscription = form.watch((value, { name, type }) => {
@@ -81,17 +78,8 @@ export function TasksPage() {
       updateTask.current(data)
     })
     return () => subscription.unsubscribe()
-  }, [form, selectedTask, listId, updateTaskMutation])
+  }, [form, selectedTask, updateTaskMutation, listId])
 
-  if (!listId) {
-    return 'No list selected'
-  }
-  if (isLoading) {
-    return null
-  }
-  if (!list) {
-    return 'List not found'
-  }
   return (
     <FormProvider {...form}>
       <Box display="flex" flexDirection="row">
@@ -110,7 +98,9 @@ export function TasksPage() {
           </Toolbox>
           <Box height={scrollContentHeight} overflow="scroll">
             <TaskList
-              tasks={list.tasks}
+              tasks={list.tasks.filter(
+                t => showCompleted || !formValues[t.id].completed
+              )}
               selectedTask={selectedTask}
               onTaskFocus={task => {
                 setSelectedTask(task)
@@ -136,4 +126,19 @@ export function TasksPage() {
       </Box>
     </FormProvider>
   )
+}
+
+export function TasksPage() {
+  const { listId } = useParams()
+  const { data: list, isLoading } = useTaskList(listId)
+  if (!listId) {
+    return 'No list selected'
+  }
+  if (isLoading) {
+    return null
+  }
+  if (!list) {
+    return 'List not found'
+  }
+  return <TasksForm list={list} key={listId} />
 }

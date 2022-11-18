@@ -1,6 +1,9 @@
 import { createGlobalState } from 'react-hooks-global-state'
 
-const initialState = { dragType: null }
+const initialState = {
+  dragType: null,
+  showCompleted: false,
+}
 
 const { useGlobalState } = createGlobalState(initialState)
 

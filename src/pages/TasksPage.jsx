@@ -1,5 +1,4 @@
-import { Add, Visibility, VisibilityOff } from '@mui/icons-material'
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 import { throttle } from 'lodash-es'
 import { useDetectClickOutside } from 'react-detect-click-outside'
 import { useForm, FormProvider } from 'react-hook-form'
@@ -9,12 +8,9 @@ import { useState, useEffect, useRef } from 'react'
 import { TaskDetailForm } from './components/TaskDetailForm'
 import { TaskList } from './components/TaskList'
 import { TaskStatus } from '../app/constants'
-import { Toolbox } from './components/Toolbox'
-import {
-  useAddTaskMutation,
-  useTaskList,
-  useUpdateTaskMutation,
-} from '../app/api/tasks'
+import { TasksToolbox } from './components/TasksToolbox'
+import { useGlobalState } from '../state'
+import { useTaskList, useUpdateTaskMutation } from '../app/api/tasks'
 import { useThemeUtils } from '../utils/themeUtils'
 
 const makeThrottledUpdateTask = updateTaskMutation => {
@@ -58,9 +54,8 @@ function TasksForm({ list }) {
   const listId = list.id
   const [selectedTask, setSelectedTask] = useState(false)
   const [focusedTask, setFocusedTask] = useState(false)
-  const [showCompleted, setShowCompleted] = useState(false)
+  const [showCompleted] = useGlobalState('showCompleted')
   const { scrollContentHeight } = useThemeUtils()
-  const addTaskMutation = useAddTaskMutation()
   const updateTaskMutation = useUpdateTaskMutation()
   const updateTask = useRef(makeThrottledUpdateTask(updateTaskMutation))
   const taskDetailRef = useDetectClickOutside({
@@ -95,23 +90,7 @@ function TasksForm({ list }) {
     <FormProvider {...form}>
       <Box display="flex" flexDirection="row">
         <Box flex={1}>
-          <Toolbox>
-            <Button
-              variant="outlined"
-              startIcon={<Add />}
-              onClick={() => addTaskMutation.mutateAsync({ listId })}
-              disabled={addTaskMutation.isLoading}
-            >
-              Task
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => setShowCompleted(c => !c)}
-              startIcon={showCompleted ? <Visibility /> : <VisibilityOff />}
-            >
-              Completed
-            </Button>
-          </Toolbox>
+          <TasksToolbox listId={listId} />
           <Box height={scrollContentHeight} overflow="scroll">
             <TaskList
               tasks={list.tasks.filter(

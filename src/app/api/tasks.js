@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { pick } from 'lodash'
 
+import { TaskStatus } from '../constants'
 import { gapi } from '../gclient'
 import { loadPromise } from './auth'
 
@@ -161,8 +162,17 @@ export const useAddTaskMutation = () => {
 export const useDeleteTaskMutation = () =>
   useMutation(({ listId, id }) => deleteTask(id, listId))
 
-export const useClearCompletedMutation = () =>
-  useMutation(({ listId }) => clearCompleted(listId))
+export const useClearCompletedMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation(({ listId }) => clearCompleted(listId), {
+    onSuccess: (_, { listId }) => {
+      queryClient.setQueryData(['lists', listId], list => ({
+        ...list,
+        tasks: list?.tasks.filter(t => t.status !== TaskStatus.completed),
+      }))
+    },
+  })
+}
 
 export const useMoveTaskMutation = () =>
   useMutation(({ listId, id, previousId }) => moveTask(id, previousId, listId))

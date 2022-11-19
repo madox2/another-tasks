@@ -65,11 +65,12 @@ function TasksForm({ list }) {
     defaultValues: makeDefaultValues(list?.tasks),
   })
 
+  const tasksHash = list?.tasks?.map(t => t.id)?.join('-')
   useEffect(() => {
-    // reset when tasks added/removed
+    // reset when tasks added/removed/reordered
     form.reset(makeDefaultValues(list?.tasks))
     // eslint-disable-next-line
-  }, [list?.tasks?.length])
+  }, [tasksHash])
 
   const formValues = form.getValues()
 

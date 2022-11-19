@@ -7,18 +7,16 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
-import { DragDropContext } from 'react-beautiful-dnd'
 import { Outlet, Navigate } from 'react-router-dom'
 
-import { DragType, useGlobalState } from '../../state'
 import { Sidebar } from './Sidebar'
+import { TaskDragDropContext } from './TaskDragDropContext'
 import { routes } from '../../app/routes'
 import { useCurrentUser, useLogoutMutation } from '../../app/api/auth'
 
 const drawerWidth = 250
 
 export function AppTemplate({ children }) {
-  const [, setDragType] = useGlobalState('dragType')
   const currentUserQuery = useCurrentUser()
   const logout = useLogoutMutation()
 
@@ -30,18 +28,7 @@ export function AppTemplate({ children }) {
   }
 
   return (
-    <DragDropContext
-      onBeforeDragStart={({ draggableId }) => {
-        setDragType(
-          draggableId.startsWith('draggable-task-')
-            ? DragType.TASK
-            : DragType.LIST
-        )
-      }}
-      onDragEnd={(...args) => {
-        setDragType(null)
-      }}
-    >
+    <TaskDragDropContext>
       <Box>
         <Drawer
           variant="permanent"
@@ -71,6 +58,6 @@ export function AppTemplate({ children }) {
           </Box>
         </Box>
       </Box>
-    </DragDropContext>
+    </TaskDragDropContext>
   )
 }

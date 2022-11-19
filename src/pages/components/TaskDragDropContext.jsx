@@ -48,7 +48,11 @@ export function TaskDragDropContext({ children }) {
     })
   }
 
-  function handleDropToList({ sourceListId, sourceTaskId, destinationListId }) {
+  async function handleDropToList({
+    sourceListId,
+    sourceTaskId,
+    destinationListId,
+  }) {
     const { tasks } = queryClient.getQueryData(['lists', listId])
     const sourceTask = tasks.find(t => t.id === sourceTaskId)
 
@@ -61,11 +65,14 @@ export function TaskDragDropContext({ children }) {
       list => list && { ...list, tasks: [sourceTask, ...list.tasks] }
     )
 
-    moveToListMutation.mutate({
+    await moveToListMutation.mutateAsync({
       listId: sourceListId,
       id: sourceTaskId,
       targetListId: destinationListId,
     })
+
+    // invalidate as dropped task gets new id
+    await queryClient.refetchQueries({ queryKey: ['lists', destinationListId] })
   }
 
   return (

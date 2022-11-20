@@ -41,6 +41,7 @@
   "scripts": {
     "lint": "eslint src",
     "start": "vite",
+    "preview": "vite preview",
     "build": "vite build"
   },
   "eslintConfig": {

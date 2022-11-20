@@ -10,6 +10,7 @@ import {
 } from './DNDContext'
 import { TaskListItem } from './TaskListItem'
 import { Toolbox } from './Toolbox'
+import { useSortedLists } from '../hooks/useSortedLists'
 import { useTaskLists } from '../../app/api/tasks'
 import { useThemeUtils } from '../../utils/themeUtils'
 
@@ -38,7 +39,8 @@ function VisibilityGuard({ visible, children }) {
 export function Sidebar() {
   const { listId } = useParams()
   const [dragType] = useGlobalState('dragType')
-  const { data: lists } = useTaskLists()
+  const { data: rawLists } = useTaskLists()
+  const lists = useSortedLists(rawLists)
   const { scrollContentHeight } = useThemeUtils()
   const isDraggingTask = dragType === DragType.TASK
   return (

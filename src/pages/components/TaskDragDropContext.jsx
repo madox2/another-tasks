@@ -3,10 +3,11 @@ import { useParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 
 import { DragType, useGlobalState } from '../../state'
+import { orderLists } from '../hooks/useSortedLists'
 import { useMoveTaskMutation, useMoveToListMutation } from '../../app/api/tasks'
 
-const reorder = (tasks, startIndex, endIndex) => {
-  const result = [...tasks]
+const reorder = (items, startIndex, endIndex) => {
+  const result = [...items]
   const [removed] = result.splice(startIndex, 1)
   result.splice(endIndex, 0, removed)
   return result
@@ -19,6 +20,7 @@ export function TaskDragDropContext({ children }) {
   const moveTaskMutation = useMoveTaskMutation()
   const moveToListMutation = useMoveToListMutation()
   const queryClient = useQueryClient()
+  const [listOrder, setListOrder] = useGlobalState('listOrder')
 
   function handleReorderTask({ visibleSourceIndex, visibleDestinationIndex }) {
     const { tasks = [] } = queryClient.getQueryData(['lists', listId])
@@ -46,6 +48,15 @@ export function TaskDragDropContext({ children }) {
       listId,
       previousId: previousTask?.id,
     })
+  }
+
+  function handleReorderList({ sourceIndex, destinationIndex }) {
+    const lists = queryClient.getQueryData(['lists'])
+    const ordered = orderLists(lists, listOrder)
+
+    const reordered = reorder(ordered, sourceIndex, destinationIndex)
+
+    setListOrder(reordered.map(l => l.id))
   }
 
   async function handleDropToList({
@@ -104,6 +115,12 @@ export function TaskDragDropContext({ children }) {
             const sourceListId = listId
             handleDropToList({ sourceTaskId, sourceListId, destinationListId })
           }
+        }
+        if (dragType === DragType.LIST) {
+          handleReorderList({
+            sourceIndex: result.source.index,
+            destinationIndex: result.destination.index,
+          })
         }
         setDragType(null)
       }}

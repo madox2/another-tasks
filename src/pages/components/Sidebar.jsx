@@ -1,5 +1,4 @@
-import { Add } from '@mui/icons-material'
-import { Box, Button, List } from '@mui/material'
+import { Box, List } from '@mui/material'
 import { useParams } from 'react-router-dom'
 
 import { DragType, useGlobalState } from '../../state'
@@ -8,6 +7,7 @@ import {
   DroppableProvider,
   useDroppable,
 } from './DNDContext'
+import { TaskListAddButton } from './lists/TaskListAddButton'
 import { TaskListItem } from './TaskListItem'
 import { Toolbox } from './Toolbox'
 import { useSortedLists } from '../hooks/useSortedLists'
@@ -46,9 +46,7 @@ export function Sidebar() {
   return (
     <>
       <Toolbox>
-        <Button variant="outlined" startIcon={<Add />}>
-          List
-        </Button>
+        <TaskListAddButton />
       </Toolbox>
       <Box height={scrollContentHeight} overflow="scroll">
         <VisibilityGuard visible={isDraggingTask}>

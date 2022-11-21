@@ -117,8 +117,12 @@ export const useTaskLists = () => useQuery(['lists'], getLists)
 export const useTaskList = id =>
   useQuery(['lists', id], () => getList(id), { enabled: !!id })
 
-export const useAddListMutation = () =>
-  useMutation(({ title }) => addList(title))
+export const useAddListMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation(({ title }) => addList(title), {
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['lists'] }),
+  })
+}
 
 export const useDeleteListMutation = () =>
   useMutation(({ listId }) => deleteList(listId))

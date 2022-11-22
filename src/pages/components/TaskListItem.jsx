@@ -1,4 +1,4 @@
-import { DragIndicator, MoreVert } from '@mui/icons-material'
+import { DragIndicator } from '@mui/icons-material'
 import {
   IconButton,
   ListItem,
@@ -9,6 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 
 import { DragType, useGlobalState } from '../../state'
+import { TaskListsActionButton } from './lists/TaskListActionsButton'
 import { taskListPath } from '../../app/routes'
 import { useDraggable } from './DNDContext'
 
@@ -24,11 +25,7 @@ export function TaskListItem({
   return (
     <ListItem
       disablePadding
-      secondaryAction={
-        <IconButton {...provided.dragHandleProps}>
-          <MoreVert />
-        </IconButton>
-      }
+      secondaryAction={<TaskListsActionButton list={list} />}
       sx={{
         '.MuiListItemIcon-root': {
           visibility: dragType === DragType.LIST ? 'inherit' : 'hidden',

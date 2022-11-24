@@ -77,7 +77,11 @@ export function Sidebar() {
                     index={index}
                     key={list.id}
                   >
-                    <TaskListItem list={list} selected={list.id === listId} />
+                    <TaskListItem
+                      list={list}
+                      lists={lists}
+                      selected={list.id === listId}
+                    />
                   </DraggableProvider>
                 ))}
               </List>

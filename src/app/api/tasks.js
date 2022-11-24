@@ -125,8 +125,15 @@ export const useAddListMutation = () => {
   })
 }
 
-export const useDeleteListMutation = () =>
-  useMutation(({ listId }) => deleteList(listId))
+export const useDeleteListMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation(({ listId }) => deleteList(listId), {
+    onSuccess: (_, { listId }) =>
+      queryClient.setQueryData(['lists'], lists =>
+        lists.filter(({ id }) => id !== listId)
+      ),
+  })
+}
 
 export const useEditListMutation = () => {
   const queryClient = useQueryClient()

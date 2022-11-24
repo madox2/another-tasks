@@ -7,6 +7,6 @@ module.exports = {
   environments: ['browser'],
   namedExports: {
     react: ['useState', 'useEffect', 'useRef', 'useCallback', 'useContext'],
-    'react-router-dom': ['useNavigate'],
+    'react-router-dom': ['useNavigate', 'useParams'],
   },
 }

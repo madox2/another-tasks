@@ -1,15 +1,25 @@
 import { IconButton, MenuItem, Menu } from '@mui/material'
 import { MoreVert } from '@mui/icons-material'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useRef, useState } from 'react'
 
+import { TaskListDeleteDialog } from '../dialog/TaskListDeleteDialog'
 import { TaskListMutationDialog } from '../dialog/TaskListMuationDialog'
-import { useEditListMutation } from '../../../app/api/tasks'
+import { taskListPath } from '../../../app/routes'
+import {
+  useDeleteListMutation,
+  useEditListMutation,
+} from '../../../app/api/tasks'
 
-export function TaskListsActionButton({ list }) {
+export function TaskListsActionButton({ list, lists }) {
+  const { listId: currentListId } = useParams()
+  const navigate = useNavigate()
   const menuAnchor = useRef()
   const [open, setOpen] = useState(false)
   const editListMutation = useEditListMutation()
+  const deleteListMutation = useDeleteListMutation()
   const [renameDialogOpen, setRenameDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const closeMenu = () => setOpen(false)
   return (
     <>
@@ -34,7 +44,14 @@ export function TaskListsActionButton({ list }) {
         >
           Rename
         </MenuItem>
-        <MenuItem onClick={closeMenu}>Delete</MenuItem>
+        <MenuItem
+          onClick={() => {
+            closeMenu()
+            setDeleteDialogOpen(true)
+          }}
+        >
+          Delete
+        </MenuItem>
       </Menu>
       {renameDialogOpen && (
         <TaskListMutationDialog
@@ -46,6 +63,22 @@ export function TaskListsActionButton({ list }) {
           onAction={async title => {
             await editListMutation.mutateAsync({ title, listId: list.id })
             setRenameDialogOpen(false)
+          }}
+        />
+      )}
+      {deleteDialogOpen && (
+        <TaskListDeleteDialog
+          onClose={() => setDeleteDialogOpen(false)}
+          disabled={deleteListMutation.isLoading}
+          listTitle={list.title}
+          onDelete={async title => {
+            await deleteListMutation.mutateAsync({ listId: list.id })
+            setDeleteDialogOpen(false)
+            if (currentListId === list.id) {
+              // navigate elsewhere
+              const nextList = lists.find(({ id }) => id !== list.id)
+              navigate(taskListPath(nextList.id))
+            }
           }}
         />
       )}

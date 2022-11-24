@@ -15,6 +15,7 @@ import { useDraggable } from './DNDContext'
 
 export function TaskListItem({
   list,
+  lists,
   listItemProps,
   dragHandleProps,
   selected,
@@ -25,7 +26,7 @@ export function TaskListItem({
   return (
     <ListItem
       disablePadding
-      secondaryAction={<TaskListsActionButton list={list} />}
+      secondaryAction={<TaskListsActionButton list={list} lists={lists} />}
       sx={{
         '.MuiListItemIcon-root': {
           visibility: dragType === DragType.LIST ? 'inherit' : 'hidden',

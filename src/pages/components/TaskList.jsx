@@ -33,6 +33,7 @@ export function TaskList({ tasks, onTaskBlur, onTaskFocus, selectedTask }) {
               onFocus={() => onTaskFocus(task)}
               onBlur={() => onTaskBlur(task)}
               selected={task.id === selectedTask?.id}
+              autoFocus={index === 0 && !task.title}
             />
           </DraggableProvider>
         ))}

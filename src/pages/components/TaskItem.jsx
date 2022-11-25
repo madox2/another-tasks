@@ -13,7 +13,14 @@ import { useRef } from 'react'
 import { DragType, useGlobalState } from '../../state'
 import { useDraggable } from './DNDContext'
 
-export function TaskItem({ task, onClick, onFocus, onBlur, selected }) {
+export function TaskItem({
+  task,
+  onClick,
+  onFocus,
+  onBlur,
+  selected,
+  autoFocus,
+}) {
   const [provided] = useDraggable()
   const [dragType] = useGlobalState('dragType')
   const textFieldRef = useRef()
@@ -61,6 +68,7 @@ export function TaskItem({ task, onClick, onFocus, onBlur, selected }) {
         />
         <TextField
           inputRef={textFieldRef}
+          autoFocus={autoFocus}
           InputProps={{
             ...register(`${task.id}.title`),
             onFocus: onFocus,

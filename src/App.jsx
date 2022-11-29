@@ -48,7 +48,13 @@ function HookedQueryClientProvider({ children }) {
   )
 }
 
-let theme = createTheme()
+let theme = createTheme({
+  palette: {
+    primary: {
+      main: '#3f51b5',
+    },
+  },
+})
 theme = responsiveFontSizes(theme)
 
 function App() {

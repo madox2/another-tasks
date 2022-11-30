@@ -1,14 +1,7 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  Toolbar,
-  Typography,
-} from '@mui/material'
+import { AppBar, Box, Button, Divider, Drawer, Toolbar } from '@mui/material'
 import { Outlet, Navigate } from 'react-router-dom'
 
+import { Logo } from './Logo'
 import { Sidebar } from './Sidebar'
 import { TaskDragDropContext } from './TaskDragDropContext'
 import { routes } from '../../app/routes'
@@ -36,9 +29,8 @@ export function AppTemplate({ children }) {
           PaperProps={{ sx: { width: drawerWidth } }}
         >
           <Toolbar>
-            <Typography variant="h6" component="div" flexGrow={1}>
-              Tasks
-            </Typography>
+            <Logo />
+            <Box flexGrow={1} />
           </Toolbar>
           <Divider />
           <Sidebar />

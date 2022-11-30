@@ -6,6 +6,7 @@ import {
   Link as RouterLink,
 } from 'react-router-dom'
 
+import { Logo } from './Logo'
 import { routes } from '../../app/routes'
 import { useCurrentUser, useLoginMutation } from '../../app/api/auth'
 
@@ -23,14 +24,14 @@ export function PageTemplate() {
 
   return (
     <Box display="flex">
-      <AppBar component="nav">
+      <AppBar component="nav" style={{ backgroundColor: 'white' }}>
         <Toolbar>
-          <Typography variant="h6" component="div" flexGrow={1}>
-            Tasks
-          </Typography>
+          <Logo />
+          <Box flexGrow={1} />
           <Button
-            color="inherit"
+            color="primary"
             component={RouterLink}
+            variant="contained"
             onClick={async () => {
               await login.mutateAsync()
               navigate(routes.app)

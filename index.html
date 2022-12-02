@@ -7,11 +7,35 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
+      content="Tasks/TODO list application built on top of Google Tasks"
+    />
+    <meta name="keywords" content="tasks,google tasks,todo list,task canvas" />
+    <meta
+      name="description"
       content="Web site created using create-react-app"
     />
     <link rel="apple-touch-icon" href="/logo192.png" />
     <link rel="manifest" href="/manifest.json" />
     <script src="https://apis.google.com/js/api.js"></script>
+
+    <% if (!isDev) { %>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=<%= env.VITE_ANALYTICS_GTAG_ID %>"
+    ></script>
+    <script>
+      if (window.location.hostname !== 'localhost') {
+        window.dataLayer = window.dataLayer || []
+        function gtag() {
+          dataLayer.push(arguments)
+        }
+        gtag('js', new Date())
+        gtag('config', '<%= env.VITE_ANALYTICS_GTAG_ID %>')
+      }
+    </script>
+    <% } %>
+
     <title>Another Tasks | Google Tasks for Desktop</title>
   </head>
   <body>

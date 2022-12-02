@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Link, Toolbar, Typography } from '@mui/material'
+import { AppBar, Box, Button, Link, Toolbar } from '@mui/material'
 import {
   useNavigate,
   Navigate,
@@ -26,7 +26,9 @@ export function PageTemplate() {
     <Box display="flex">
       <AppBar component="nav" style={{ backgroundColor: 'white' }}>
         <Toolbar>
-          <Logo />
+          <RouterLink to="/" style={{ lineHeight: 0 }}>
+            <Logo />
+          </RouterLink>
           <Box flexGrow={1} />
           <Button
             color="primary"
@@ -52,7 +54,7 @@ export function PageTemplate() {
             Privacy Policy
           </Link>
           <Link href="https://madox2.poriadne.sk" target="_blank">
-            ©2019 madox2
+            ©2022 madox2
           </Link>
         </Box>
       </Box>

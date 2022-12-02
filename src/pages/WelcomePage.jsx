@@ -35,11 +35,11 @@ export function WelcomePage() {
         </Box>
 
         <Section title="Motivation">
-          As the Google shut down Canvas interface for Google Tasks in early
-          2019, they didn't provide any full-screen alternative for desktop
-          users. Therefore I have decided to create this web app for the users
-          that are missing the Canvas and don't feel confortable with it's
-          replacement (GMail task addon).
+          As Google shut down Canvas interface for Google Tasks in early 2019,
+          they didn't provide any full-screen alternative for desktop users.
+          Therefore I have decided to create this web app for the users that are
+          missing the Canvas and don't feel confortable with it's replacement
+          (GMail task addon).
         </Section>
 
         <Section title="What's on the roadmap?">
@@ -56,7 +56,6 @@ export function WelcomePage() {
               <li>Keyboard shortcuts + documentation</li>
               <li>Sorting tasks</li>
               <li>Subtasks support</li>
-              <li>PWA</li>
             </ul>
           </p>
           If you have experienced a bug or have any improvement ideas, don't

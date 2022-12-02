@@ -1,5 +1,3 @@
-User-Agent: *
-
-Disallow: /app/
-
-Sitemap: https://madox2.github.io/another-tasks/sitemap.xml
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow:

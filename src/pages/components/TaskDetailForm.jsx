@@ -12,7 +12,8 @@ export function TaskDetailForm({ task }) {
         placeholder="Notes"
         fullWidth
         margin="normal"
-        rows={5}
+        minRows={5}
+        maxRows={25}
         InputProps={register(`${task.id}.notes`)}
       />
       <Controller

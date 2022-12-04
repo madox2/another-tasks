@@ -47,7 +47,7 @@ async function doDelete(path) {
 }
 
 async function fetchItems(path) {
-  const result = await fetchResult(path)
+  const result = await fetchResult(path + '?maxResults=100')
   return (result && result.items) || []
 }
 

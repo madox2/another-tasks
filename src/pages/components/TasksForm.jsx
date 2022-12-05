@@ -55,6 +55,7 @@ export function TasksForm({ list }) {
   const [focusedTask, setFocusedTask] = useState(false)
   const [showCompleted] = useGlobalState('showCompleted')
   const { scrollContentHeight } = useThemeUtils()
+  const taskListContainerRef = useRef()
   const updateTaskMutation = useUpdateTaskMutation()
   const updateTask = useRef(makeThrottledUpdateTask(updateTaskMutation))
   const taskDetailRef = useDetectClickOutside({
@@ -90,8 +91,15 @@ export function TasksForm({ list }) {
     <FormProvider {...form}>
       <Box display="flex" flexDirection="row">
         <Box flex={1}>
-          <TasksToolbox listId={listId} />
-          <Box height={scrollContentHeight} overflow="scroll">
+          <TasksToolbox
+            listId={listId}
+            taskListContainerRef={taskListContainerRef}
+          />
+          <Box
+            height={scrollContentHeight}
+            overflow="scroll"
+            ref={taskListContainerRef}
+          >
             <TaskList
               tasks={list.tasks.filter(
                 t => showCompleted || !formValues[t.id]?.completed

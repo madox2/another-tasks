@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Add, Visibility, VisibilityOff } from '@mui/icons-material'
 import { IconButton, Button } from '@mui/material'
 
@@ -8,32 +9,62 @@ import {
 } from '../../app/api/tasks'
 import { useGlobalState } from '../../state'
 
-export function TasksToolbox({ listId }) {
+function GlobalEnterListener({ allowedContainerRef, onEnter }) {
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key !== 'Enter') {
+        return
+      }
+      if (
+        e.target !== document.body &&
+        !allowedContainerRef.current?.contains(e.target)
+      ) {
+        return
+      }
+      onEnter()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+    // eslint-disable-next-line
+  }, [])
+  return null
+}
+
+export function TasksToolbox({ listId, taskListContainerRef }) {
   const [showCompleted, setShowCompleted] = useGlobalState('showCompleted')
   const addTaskMutation = useAddTaskMutation()
   const clearCompletedMutation = useClearCompletedMutation()
+  const addTask = () => addTaskMutation.mutateAsync({ listId })
   return (
-    <Toolbox>
-      <Button
-        variant="outlined"
-        startIcon={<Add />}
-        onClick={() => addTaskMutation.mutateAsync({ listId })}
-        disabled={addTaskMutation.isLoading}
-      >
-        Task
-      </Button>
-      <IconButton color="primary" onClick={() => setShowCompleted(c => !c)}>
-        {showCompleted ? <Visibility /> : <VisibilityOff />}
-      </IconButton>
-      {showCompleted && (
+    <>
+      <GlobalEnterListener
+        onEnter={addTask}
+        allowedContainerRef={taskListContainerRef}
+      />
+      <Toolbox>
         <Button
-          variant="text"
-          onClick={() => clearCompletedMutation.mutateAsync({ listId })}
-          disabled={clearCompletedMutation.isLoading}
+          variant="outlined"
+          startIcon={<Add />}
+          onClick={addTask}
+          disabled={addTaskMutation.isLoading}
         >
-          Clear
+          Task
         </Button>
-      )}
-    </Toolbox>
+        <IconButton color="primary" onClick={() => setShowCompleted(c => !c)}>
+          {showCompleted ? <Visibility /> : <VisibilityOff />}
+        </IconButton>
+        {showCompleted && (
+          <Button
+            variant="text"
+            onClick={() => clearCompletedMutation.mutateAsync({ listId })}
+            disabled={clearCompletedMutation.isLoading}
+          >
+            Clear
+          </Button>
+        )}
+      </Toolbox>
+    </>
   )
 }

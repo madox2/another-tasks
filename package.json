@@ -41,7 +41,7 @@
     "vite": "^3.0.7"
   },
   "scripts": {
-    "lint": "eslint src",
+    "lint": "eslint --max-warnings 0 --ext .js,.jsx src",
     "start": "vite",
     "preview": "vite preview",
     "deploy": "gh-pages -d dist",

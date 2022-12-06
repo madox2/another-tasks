@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
 import { Add, Visibility, VisibilityOff } from '@mui/icons-material'
 import { IconButton, Button } from '@mui/material'
+import { useEffect } from 'react'
 
 import { Toolbox } from './Toolbox'
 import {
@@ -61,7 +61,7 @@ export function TasksToolbox({ listId, taskListContainerRef }) {
             onClick={() => clearCompletedMutation.mutateAsync({ listId })}
             disabled={clearCompletedMutation.isLoading}
           >
-            Clear
+            Clear completed
           </Button>
         )}
       </Toolbox>

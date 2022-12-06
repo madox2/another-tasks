@@ -6,7 +6,7 @@ import {
   ListItemIcon,
   TextField,
 } from '@mui/material'
-import { DragIndicator } from '@mui/icons-material'
+import { DragIndicator, Notes as NotesIcon } from '@mui/icons-material'
 import { useFormContext, Controller } from 'react-hook-form'
 import { useRef } from 'react'
 
@@ -83,6 +83,9 @@ export function TaskItem({
             },
           }}
         />
+        {task.notes && (
+          <NotesIcon fontSize="small" style={{ marginLeft: 10 }} />
+        )}
       </ListItemButton>
     </ListItem>
   )

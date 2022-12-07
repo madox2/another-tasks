@@ -11,23 +11,23 @@ jobs:
     name: Build-And-Deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 2
       - name: Install
-        uses: borales/actions-yarn@v2.3.0
+        uses: borales/actions-yarn@v4
         with:
           cmd: install # will run `yarn install` command
       - name: Build
-        uses: borales/actions-yarn@v2.3.0
+        uses: borales/actions-yarn@v4
         with:
           cmd: build # will run `yarn build` command
         env:
-          REACT_APP_GAPI_KEY: ${{ secrets.REACT_APP_GAPI_KEY }}
-          REACT_APP_REACT_APP_GAPI_CLINET_ID: ${{ secrets.REACT_APP_REACT_APP_GAPI_CLINET_ID }}
-          REACT_APP_ANALYTICS_GTAG_ID: ${{ secrets.REACT_APP_ANALYTICS_GTAG_ID }}
+          VITE_GAPI_KEY: ${{ secrets.REACT_APP_GAPI_KEY }}
+          VITE_REACT_APP_GAPI_CLINET_ID: ${{ secrets.REACT_APP_REACT_APP_GAPI_CLINET_ID }}
+          VITE_ANALYTICS_GTAG_ID: ${{ secrets.REACT_APP_ANALYTICS_GTAG_ID }}
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./build
+          publish_dir: ./dist

@@ -24,7 +24,7 @@ jobs:
           cmd: build # will run `yarn build` command
         env:
           VITE_GAPI_KEY: ${{ secrets.REACT_APP_GAPI_KEY }}
-          VITE_REACT_APP_GAPI_CLINET_ID: ${{ secrets.REACT_APP_REACT_APP_GAPI_CLINET_ID }}
+          VITE_GAPI_CLINET_ID: ${{ secrets.REACT_APP_REACT_APP_GAPI_CLINET_ID }}
           VITE_ANALYTICS_GTAG_ID: ${{ secrets.REACT_APP_ANALYTICS_GTAG_ID }}
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3

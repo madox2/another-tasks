@@ -6,7 +6,11 @@ import {
   ListItemIcon,
   TextField,
 } from '@mui/material'
-import { DragIndicator, Notes as NotesIcon } from '@mui/icons-material'
+import {
+  DragIndicator,
+  Notes as NotesIcon,
+  InsertInvitation as InsertInvitationIcon,
+} from '@mui/icons-material'
 import { useFormContext, Controller } from 'react-hook-form'
 import { useRef } from 'react'
 
@@ -83,6 +87,9 @@ export function TaskItem({
             },
           }}
         />
+        {task.due && (
+          <InsertInvitationIcon fontSize="small" style={{ marginLeft: 10 }} />
+        )}
         {task.notes && (
           <NotesIcon fontSize="small" style={{ marginLeft: 10 }} />
         )}

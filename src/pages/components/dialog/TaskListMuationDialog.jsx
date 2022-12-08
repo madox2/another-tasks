@@ -18,7 +18,15 @@ export function TaskListMutationDialog({
 }) {
   const [value, setValue] = useState(defaultValue)
   return (
-    <Dialog open onClose={onClose}>
+    <Dialog
+      open
+      onClose={onClose}
+      onKeyUp={e => {
+        if (e.key === 'Enter' && value) {
+          onAction(value)
+        }
+      }}
+    >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <TextField

@@ -10,5 +10,5 @@ export default defineConfig({
       isDev: viteConfig.mode === 'development',
     })),
   ],
-  base: '/another-tasks',
+  base: '/another-tasks/',
 })

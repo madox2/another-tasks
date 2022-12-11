@@ -1,6 +1,7 @@
 export const StorageKeys = {
   LIST_ORDER: 'LIST_ORDER',
   LAST_LIST: 'LAST_LIST',
+  SHOW_COMPLETED: 'SHOW_COMPLETED',
 }
 
 export function setStorageItem(key, value) {

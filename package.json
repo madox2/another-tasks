@@ -20,7 +20,7 @@
     "react-detect-click-outside": "^1.1.7",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.38.0",
-    "react-hooks-global-state": "^2.0.0",
+    "react-hooks-global-state": "^2.1.0",
     "react-router-dom": "^6.4.2",
     "uuid": "^9.0.0",
     "vite-plugin-ejs": "^1.6.4",

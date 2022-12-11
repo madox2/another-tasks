@@ -1,7 +1,6 @@
 import { keyBy } from 'lodash-es'
 import { useEffect, useState } from 'react'
 
-import { StorageKeys, setStorageItem } from '../../utils/storage'
 import { useGlobalState } from '../../state'
 
 export function orderLists(rawLists, listOrder) {
@@ -20,9 +19,6 @@ export function orderLists(rawLists, listOrder) {
 export function useSortedLists(rawLists) {
   const [sorted, setSorted] = useState(null)
   const [listOrder] = useGlobalState('listOrder')
-  useEffect(() => {
-    setStorageItem(StorageKeys.LIST_ORDER, listOrder)
-  }, [listOrder])
 
   useEffect(() => {
     if (!rawLists) {

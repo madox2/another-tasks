@@ -44,6 +44,7 @@ const makeDefaultValues = tasks =>
         completed: task.status === TaskStatus.completed,
         due: task.due && new Date(task.due),
         notes: task.notes,
+        initialized: true,
       },
     }),
     {}
@@ -67,8 +68,24 @@ export function TasksForm({ list }) {
 
   const tasksHash = list?.tasks?.map(t => t.id)?.join('-')
   useEffect(() => {
-    // reset when tasks added/removed/reordered
-    form.reset(makeDefaultValues(list?.tasks))
+    // update each item after tasks is added/removed/reordered
+    const newValues = makeDefaultValues(list?.tasks)
+    const oldValues = form.getValues()
+    const allIds = new Set([
+      ...Object.keys(newValues),
+      ...Object.keys(oldValues),
+    ])
+    allIds.forEach(id => {
+      if (!oldValues[id]?.initialized) {
+        form.setValue(id, newValues[id])
+      }
+      if (!newValues[id]) {
+        form.setValue(id, undefined)
+      }
+      if (!oldValues[id]) {
+        form.setValue(id, newValues[id])
+      }
+    })
     // eslint-disable-next-line
   }, [tasksHash])
 
